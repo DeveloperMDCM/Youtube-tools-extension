@@ -1,0 +1,28 @@
+{
+    "name": "Youtube extra tools",
+    "author": "MDCM2022",
+    "manifest_version": 3,
+    "version": "0.4",
+    "action": {
+        "default_icon": {             
+        "16": "img/2.png",  
+        "24": "img/3.png",   
+        "32": "img/4.png",
+        "128": "img/2.png"
+    }
+ 
+    },
+    "description": "Para activar de click a la extension y se añadiran nuevas opciones de personalizacio a youtube by: MDCM ",
+    "permissions": [
+      "activeTab",
+      "scripting"
+    ],
+    "background": {
+      "service_worker": "/js/background.js",
+      "matches": [
+        "https://www.youtube*"
+      ]
+   
+  }
+
+}
