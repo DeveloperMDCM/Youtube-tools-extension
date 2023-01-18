@@ -6,6 +6,7 @@ window.addEventListener('DOMContentLoaded', cargarScript());
 
 function cargarScript() {
   console.log('Scrip en ejecución by: DeveloperMDCM  MDCM');
+  // alert('https://github.com/DeveloperMDCM/Youtube-toos-extension');
   let urlEnlace = '';
   let verificar = true;
   let ad = true;
@@ -34,6 +35,10 @@ function cargarScript() {
     }
     .containerButtons h1, h2 {
       user-select: none;
+    }
+
+    #MDCM:hover {
+      background-color: gray;
     }
 
     .containerButtons button .containerButtons button svg {
@@ -73,8 +78,11 @@ function cargarScript() {
     </form>
 </div>
   `;
+
+
   
   setInterval(() => {
+    
       const addButton = document.querySelector(".style-scope .ytd-watch-metadata");
       if (addButton != undefined && verificar) {
           addButton.insertAdjacentHTML('beforebegin', menuBotones);
@@ -98,15 +106,16 @@ function cargarScript() {
           document.querySelector("#cinematics > div > canvas:nth-child(1)").style = 'position: absolute; width: 100%; height: 100%;';
           document.querySelector("#cinematics > div > canvas:nth-child(2)").style = 'position: absolute; width: 100%; height: 100%; opacity: 0.4;';
           document.querySelector("html[dark] [dark]").style.backgroundColor = 'transparent';
+         
         }else {
           mostrarAlerta('Active Dark Theme');
           }
           document.body.style.setProperty('--yt-spec-general-background-a', 'transparent');
           document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "border: 3px solid red; background-color: #00000077";
-        
+          document.querySelector('ytd-watch-flexy[flexy][is-two-columns_][is-extra-wide-video_] #primary.ytd-watch-flexy, ytd-watch-flexy[flexy][is-two-columns_][is-four-three-to-sixteen-nine-video_] #primary.ytd-watch-flexy').style.backgroundColor = '#303030ab';
       };
   
-      descarga.onclick = function () {
+      descarga.onclick = function() {
         let enlace;
         enlace = document.baseURI;
         urlEnlace = enlace.split('=')[1].split('&')[0];
@@ -114,7 +123,7 @@ function cargarScript() {
         // console.log(urlEnlace);
       }
       let count = 1;
-      boton.onclick = function () {
+      boton.onclick = function() {
         if (count === 1 && reverse != undefined) {
           count = 2;
           reverse.style.flexDirection = 'row-reverse';
@@ -134,11 +143,12 @@ function cargarScript() {
           document.body.style.setProperty('--ytd-searchbox-legacy-border-shadow-color', InputColor.value);
           document.querySelector("#logo-icon").style.color = InputColor.value;
           document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = 'color: black; background-color: white; border: 2px solid black; ';
+          
         }else {
           mostrarAlerta('Active Dark Theme');
         }
       };
-      btnReset.onclick = function () {
+      btnReset.onclick = function() {
         if(document.querySelector("#cinematics > div") != undefined){
         
         document.body.style.setProperty('--yt-spec-text-primary', '#ffffff');
@@ -165,7 +175,17 @@ function cargarScript() {
         enlace = document.baseURI.split('=')[1].split('&')[0];
         window.open(`https://i.ytimg.com/vi/${enlace}/maxresdefault.jpg`, '_blank');
       };
-      
+      if(document.querySelector('#below > ytd-watch-metadata > div.container > form') != undefined){
+        const mdcm = document.querySelector('#MDCM');
+        const sms = document.querySelector('#below > ytd-watch-metadata > div.container > form');
+        if(!mdcm) {
+          if (sms != undefined) {
+            const mdcm = document.createElement('P');
+            mdcm.innerHTML = '<a id="MDCM" target="_blank" style="font-size: 14px; color: #00fc05;text-decoration-style: wavy; display: flex; align-items: center; justify-content: center;" href="https://github.com/DeveloperMDCM/Youtube-toos-extension">GitHub Repository<h4></h4</a>';
+            sms.appendChild(mdcm);
+        }
+      }
+    }
       }
      
   }, 100);
@@ -243,14 +263,14 @@ function cargarScript() {
     const addButton = document.querySelector('#below > ytd-watch-metadata > div.container > form');
     const existeAlerta = document.querySelector('.alerta');
     if(!existeAlerta) {
-      if (addButton != undefined  ) {
-        const alerta = document.createElement('P');
-        alerta.innerHTML = `
+      if (addButton != undefined) {
+        const modeDark = document.createElement('P');
+        modeDark.innerHTML = `
         <h1 class="alerta" style="color: red; background-color: white; border: 2px solid white; text-aling: center; display: flex;  align-items: center; justify-content: center;">${mensaje}</h1>
         `;
-        addButton.appendChild(alerta);
+        addButton.appendChild(modeDark);
       setTimeout(() =>{
-          alerta.remove();
+        modeDark.remove();
       }, 3000)
     }
         
