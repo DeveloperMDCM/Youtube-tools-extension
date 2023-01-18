@@ -63,15 +63,6 @@ function cargarScript() {
       opacity:0;position:absolute;height: 93%;bottom: 0; top: 2px; width: 62px;
     }
   </style>
-  <div id="cargando" class="hidden">
-    <div class="spinner">
-      <div class="rect1"></div>
-      <div class="rect2"></div>
-      <div class="rect3"></div>
-      <div class="rect4"></div>
-      <div class="rect5"></div>
-    </div>
-  </div>
   <div class="container">
     <form>
       <div class="containerButtons">
