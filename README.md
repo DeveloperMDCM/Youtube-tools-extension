@@ -14,3 +14,6 @@ Reiniciar ajustes
 https://github.com/DeveloperMDCM/Youtube-toos-extension
 
 https://greasyfork.org/es/scripts/456299-opciones-nuevas-opciones-para-personalizar-youtube-by-mdcm2022
+
+![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/youtu.jpg)
+![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/2.jpg)
