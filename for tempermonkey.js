@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name         Return YouTube Dislike
+// @name         Youtube Tools opciones extras
 // @namespace    https://github.com/DeveloperMDCM/
 // @homepage     https://github.com/DeveloperMDCM/
 // @version      5.0
-// @description  Nuevas opciones para modificar YouTube options to customize youtube @MDCM2022
+// @description  Nuevas opciones para modificar la interfaz de YouTube y más  options to customize youtube @MDCM2022
 // @author       MDCM
 // @match        *://*.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -16,14 +16,14 @@
 // ==/UserScript==
 
 (function () {
-// Youtube tools by: DeveloperMDCM MDCM
+    // Youtube tools by: DeveloperMDCM MDCM
 // https://github.com/DeveloperMDCM/Youtube-toos-extension
 // API return dislikes  https://returnyoutubedislike.com/
 
 window.addEventListener('DOMContentLoaded', cargarScript());
-
 function cargarScript() {
   console.log('Scrip en ejecución by: DeveloperMDCM  MDCM');
+  // alert('https://github.com/DeveloperMDCM/Youtube-toos-extension');
   let urlEnlace = '';
   let verificar = true;
   let ad = true;
@@ -54,6 +54,21 @@ function cargarScript() {
       user-select: none;
     }
 
+    #MDCM {
+      animation: mdcm 10s infinite alternate;
+      position: relative;
+      transition: 4s;
+    }
+
+    @keyframes mdcm {
+      0%, 100%{
+        right: 300px;
+      }
+      50% {
+        right: -300px;
+      }
+    }
+
     .containerButtons button .containerButtons button svg {
       width: 50px;
       height: 40px;
@@ -63,6 +78,15 @@ function cargarScript() {
       opacity:0;position:absolute;height: 93%;bottom: 0; top: 2px; width: 62px;
     }
   </style>
+  <div id="cargando" class="hidden">
+    <div class="spinner">
+      <div class="rect1"></div>
+      <div class="rect2"></div>
+      <div class="rect3"></div>
+      <div class="rect4"></div>
+      <div class="rect5"></div>
+    </div>
+  </div>
   <div class="container">
     <form>
       <div class="containerButtons">
@@ -83,11 +107,15 @@ function cargarScript() {
 </div>
   `;
 
+
+
   setInterval(() => {
+
       const addButton = document.querySelector(".style-scope .ytd-watch-metadata");
       if (addButton != undefined && verificar) {
           addButton.insertAdjacentHTML('beforebegin', menuBotones);
           verificar = false;
+          document.querySelector('video').style.borderRadius = '30px';
       const reverse = document.querySelector("#columns");
       const btnReset = document.querySelector('#reset');
       const descarga = document.querySelector('#enlace');
@@ -101,21 +129,23 @@ function cargarScript() {
           buttonsVideo.style = '    display: flex;flex-direction: column;justify-content: center;align-items: center ;';
           document.querySelector("#title > h1").style = 'text-align: center; color: red;';
           document.querySelector("#owner").style.justifyContent = 'center';
+          document.querySelector('#search-icon-legacy.ytd-searchbox').style.backgroundColor = 'black';
       btnFondo.onclick = function () {
         if( document.querySelector("#cinematics > div") != undefined){
           document.querySelector("#cinematics > div").style = 'position: fixed; inset: 0px; pointer-events: none; transform: scale(1.5, 2)';
           document.querySelector("#cinematics > div > canvas:nth-child(1)").style = 'position: absolute; width: 100%; height: 100%;';
           document.querySelector("#cinematics > div > canvas:nth-child(2)").style = 'position: absolute; width: 100%; height: 100%; opacity: 0.4;';
           document.querySelector("html[dark] [dark]").style.backgroundColor = 'transparent';
+          document.body.style.setProperty('--yt-spec-general-background-a', 'transparent');
+          document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "border: 3px solid red; background-color: #352e2e29";
+          // document.querySelector('ytd-watch-flexy[flexy][is-two-columns_][is-extra-wide-video_] #primary.ytd-watch-flexy, ytd-watch-flexy[flexy][is-two-columns_][is-four-three-to-sixteen-nine-video_] #primary.ytd-watch-flexy').style.backgroundColor = '#303030ab';
+
         }else {
           mostrarAlerta('Active Dark Theme');
           }
-          document.body.style.setProperty('--yt-spec-general-background-a', 'transparent');
-          document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "border: 3px solid red; background-color: #00000077";
-
       };
 
-      descarga.onclick = function () {
+      descarga.onclick = function() {
         let enlace;
         enlace = document.baseURI;
         urlEnlace = enlace.split('=')[1].split('&')[0];
@@ -123,7 +153,7 @@ function cargarScript() {
         // console.log(urlEnlace);
       }
       let count = 1;
-      boton.onclick = function () {
+      boton.onclick = function() {
         if (count === 1 && reverse != undefined) {
           count = 2;
           reverse.style.flexDirection = 'row-reverse';
@@ -143,11 +173,12 @@ function cargarScript() {
           document.body.style.setProperty('--ytd-searchbox-legacy-border-shadow-color', InputColor.value);
           document.querySelector("#logo-icon").style.color = InputColor.value;
           document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = 'color: black; background-color: white; border: 2px solid black; ';
+
         }else {
           mostrarAlerta('Active Dark Theme');
         }
       };
-      btnReset.onclick = function () {
+      btnReset.onclick = function() {
         if(document.querySelector("#cinematics > div") != undefined){
 
         document.body.style.setProperty('--yt-spec-text-primary', '#ffffff');
@@ -174,7 +205,17 @@ function cargarScript() {
         enlace = document.baseURI.split('=')[1].split('&')[0];
         window.open(`https://i.ytimg.com/vi/${enlace}/maxresdefault.jpg`, '_blank');
       };
-
+      if(document.querySelector('#below > ytd-watch-metadata > div.container > form') != undefined){
+        const mdcm = document.querySelector('#MDCM');
+        const sms = document.querySelector('#below > ytd-watch-metadata > div.container > form');
+        if(!mdcm) {
+          if (sms != undefined) {
+            const mdcm = document.createElement('P');
+            mdcm.innerHTML = '<a id="MDCM" target="_blank" style="font-size: 14px; color: #0737e6;text-decoration-style: wavy; display: flex; align-items: center; justify-content: center;" href="https://github.com/DeveloperMDCM/Youtube-toos-extension">GitHub Repository<h4></h4</a>';
+            sms.appendChild(mdcm);
+        }
+      }
+    }
       }
 
   }, 100);
@@ -236,7 +277,7 @@ function cargarScript() {
             ratingtext.innerHTML = `Rating <br>${dateCreated.split('T')[0].split('-')[0]} - ${date.getFullYear()}` ;
             // console.log(start);
           }
-        })
+      })
     }
 
   }
@@ -252,14 +293,14 @@ function cargarScript() {
     const addButton = document.querySelector('#below > ytd-watch-metadata > div.container > form');
     const existeAlerta = document.querySelector('.alerta');
     if(!existeAlerta) {
-      if (addButton != undefined  ) {
-        const alerta = document.createElement('P');
-        alerta.innerHTML = `
+      if (addButton != undefined) {
+        const modeDark = document.createElement('P');
+        modeDark.innerHTML = `
         <h1 class="alerta" style="color: red; background-color: white; border: 2px solid white; text-aling: center; display: flex;  align-items: center; justify-content: center;">${mensaje}</h1>
         `;
-        addButton.appendChild(alerta);
+        addButton.appendChild(modeDark);
       setTimeout(() =>{
-          alerta.remove();
+        modeDark.remove();
       }, 3000)
     }
 
@@ -314,6 +355,6 @@ function cargarScript() {
   setInterval(checkURLchange, 100); // Ejecutame esta funcion
   clearInterval(checkURLchange);
 }
-//By: DeveloperMDCM 
+
 
 })();
