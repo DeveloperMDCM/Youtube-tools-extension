@@ -3,7 +3,6 @@
 // API return dislikes  https://returnyoutubedislike.com/
 
 window.addEventListener('DOMContentLoaded', cargarScript());
-
 function cargarScript() {
   console.log('Scrip en ejecución by: DeveloperMDCM  MDCM');
   // alert('https://github.com/DeveloperMDCM/Youtube-toos-extension');
@@ -36,9 +35,20 @@ function cargarScript() {
     .containerButtons h1, h2 {
       user-select: none;
     }
+   
+    #MDCM {
+      animation: mdcm 10s infinite alternate;
+      position: relative;
+      transition: 4s;
+    }
 
-    #MDCM:hover {
-      background-color: gray;
+    @keyframes mdcm {
+      0%, 100%{
+        right: 300px;
+      }
+      50% {
+        right: -300px;
+      }
     }
 
     .containerButtons button .containerButtons button svg {
@@ -87,6 +97,7 @@ function cargarScript() {
       if (addButton != undefined && verificar) {
           addButton.insertAdjacentHTML('beforebegin', menuBotones);
           verificar = false;
+          document.querySelector('video').style.borderRadius = '30px';
       const reverse = document.querySelector("#columns");
       const btnReset = document.querySelector('#reset');
       const descarga = document.querySelector('#enlace');
@@ -100,19 +111,20 @@ function cargarScript() {
           buttonsVideo.style = '    display: flex;flex-direction: column;justify-content: center;align-items: center ;';
           document.querySelector("#title > h1").style = 'text-align: center; color: red;';
           document.querySelector("#owner").style.justifyContent = 'center';
+          document.querySelector('#search-icon-legacy.ytd-searchbox').style.backgroundColor = 'black';
       btnFondo.onclick = function () {
         if( document.querySelector("#cinematics > div") != undefined){
           document.querySelector("#cinematics > div").style = 'position: fixed; inset: 0px; pointer-events: none; transform: scale(1.5, 2)';
           document.querySelector("#cinematics > div > canvas:nth-child(1)").style = 'position: absolute; width: 100%; height: 100%;';
           document.querySelector("#cinematics > div > canvas:nth-child(2)").style = 'position: absolute; width: 100%; height: 100%; opacity: 0.4;';
           document.querySelector("html[dark] [dark]").style.backgroundColor = 'transparent';
+          document.body.style.setProperty('--yt-spec-general-background-a', 'transparent');
+          document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "border: 3px solid red; background-color: #352e2e29";
+          // document.querySelector('ytd-watch-flexy[flexy][is-two-columns_][is-extra-wide-video_] #primary.ytd-watch-flexy, ytd-watch-flexy[flexy][is-two-columns_][is-four-three-to-sixteen-nine-video_] #primary.ytd-watch-flexy').style.backgroundColor = '#303030ab';
          
         }else {
           mostrarAlerta('Active Dark Theme');
           }
-          document.body.style.setProperty('--yt-spec-general-background-a', 'transparent');
-          document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "border: 3px solid red; background-color: #00000077";
-          document.querySelector('ytd-watch-flexy[flexy][is-two-columns_][is-extra-wide-video_] #primary.ytd-watch-flexy, ytd-watch-flexy[flexy][is-two-columns_][is-four-three-to-sixteen-nine-video_] #primary.ytd-watch-flexy').style.backgroundColor = '#303030ab';
       };
   
       descarga.onclick = function() {
@@ -181,7 +193,7 @@ function cargarScript() {
         if(!mdcm) {
           if (sms != undefined) {
             const mdcm = document.createElement('P');
-            mdcm.innerHTML = '<a id="MDCM" target="_blank" style="font-size: 14px; color: #00fc05;text-decoration-style: wavy; display: flex; align-items: center; justify-content: center;" href="https://github.com/DeveloperMDCM/Youtube-toos-extension">GitHub Repository<h4></h4</a>';
+            mdcm.innerHTML = '<a id="MDCM" target="_blank" style="font-size: 14px; color: #0737e6;text-decoration-style: wavy; display: flex; align-items: center; justify-content: center;" href="https://github.com/DeveloperMDCM/Youtube-toos-extension">GitHub Repository<h4></h4</a>';
             sms.appendChild(mdcm);
         }
       }
@@ -247,7 +259,7 @@ function cargarScript() {
             ratingtext.innerHTML = `Rating <br>${dateCreated.split('T')[0].split('-')[0]} - ${date.getFullYear()}` ;
             // console.log(start);
           }
-        })
+      })
     }
 
   }
