@@ -201,67 +201,111 @@ function cargarScript() {
       }
      
   }, 100);
-  
-  
 
+
+  let validoUrl = document.location.href;
   function cargarDislikes() {
+    validoUrl = document.location.href;
     const btnDislike = document.querySelector("#segmented-dislike-button yt-button-shape > button");
+    const validoVentana = document.querySelector("#below > ytd-watch-metadata > div.container > form > div.containerButtons");
     const resultado = document.querySelector("#segmented-dislike-button > ytd-toggle-button-renderer > yt-button-shape > button > yt-touch-feedback-shape");
-    let enlace = document.baseURI.split('=')[0];
-    if (enlace != 'https://www.youtube.com/') {
-      enlace = document.baseURI.split('=')[1].split('&')[0];
-      const url = `https://returnyoutubedislikeapi.com/Votes?videoId=${enlace}`;
-      fetch(url)
-        .then(respuesta => respuesta.json())
-        .then(datos => {
-          const Formatter = (num, digits) => {
-            const lookup = [{
-                value: 1,
-                symbol: ""
-              },
-              {
-                value: 1e3,
-                symbol: " K"
-              },
-              {
-                value: 1e6,
-                symbol: " M"
-              }
-            ];
-            const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
-            const item = lookup.slice().reverse().find((item) => {
-              return num >= item.value
-            })
-            return item ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol : "0"
-          }
-          const {dislikes, dateCreated, rating } = datos; // Objeto
-          addDislike.textContent = `${Formatter(dislikes, 0)}`;
-          btnDislike.style = 'width: 100px';
-          resultado.style = 'margin: 0 6px';
-          resultado.insertAdjacentElement('afterend', addDislike);
+    if(validoUrl.split('/')[3] !== 'shorts'  && validoVentana != undefined && validoUrl != 'https://www.youtube.com/'){
+        validoUrl = document.baseURI.split('=')[1].split('&')[0];
+        const url = `https://returnyoutubedislikeapi.com/Votes?videoId=${validoUrl}`;
+        fetch(url)
+          .then(respuesta => respuesta.json())
+          .then(datos => {
+            const Formatter = (num, digits) => {
+              const lookup = [{
+                  value: 1,
+                  symbol: ""
+                },
+                {
+                  value: 1e3,
+                  symbol: " K"
+                },
+                {
+                  value: 1e6,
+                  symbol: " M"
+                }
+              ];
+              const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+              const item = lookup.slice().reverse().find((item) => {
+                return num >= item.value
+              })
+              return item ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol : "0"
+            }
+            const {dislikes, dateCreated, rating } = datos; // Objeto
+            addDislike.textContent = `${Formatter(dislikes, 0)}`;
+            btnDislike.style = 'width: 100px';
+            resultado.style = 'margin: 0 6px';
+            resultado.insertAdjacentElement('afterend', addDislike);
+            const iconLike = document.querySelector("#segmented-like-button > ytd-toggle-button-renderer > yt-button-shape > button > div.yt-spec-button-shape-next__icon > yt-icon > yt-animated-icon")
+            const inconDislike = document.querySelector("#segmented-dislike-button > ytd-toggle-button-renderer > yt-button-shape > button > div > yt-icon");
+            if(iconLike != undefined && iconLike != inconDislike){
 
-          document.querySelector("#segmented-like-button > ytd-toggle-button-renderer > yt-button-shape > button > div.yt-spec-button-shape-next__icon > yt-icon > yt-animated-icon").innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-            <path d="M7.493 18.75c-.425 0-.82-.236-.975-.632A7.48 7.48 0 016 15.375c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75 2.25 2.25 0 012.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23h-.777zM2.331 10.977a11.969 11.969 0 00-.831 4.398 12 12 0 00.52 3.507c.26.85 1.084 1.368 1.973 1.368H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 01-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227z" />
-            </svg>`;
-          document.querySelector("#segmented-dislike-button > ytd-toggle-button-renderer > yt-button-shape > button > div > yt-icon").innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-            <path d="M15.73 5.25h1.035A7.465 7.465 0 0118 9.375a7.465 7.465 0 01-1.235 4.125h-.148c-.806 0-1.534.446-2.031 1.08a9.04 9.04 0 01-2.861 2.4c-.723.384-1.35.956-1.653 1.715a4.498 4.498 0 00-.322 1.672V21a.75.75 0 01-.75.75 2.25 2.25 0 01-2.25-2.25c0-1.152.26-2.243.723-3.218C7.74 15.724 7.366 15 6.748 15H3.622c-1.026 0-1.945-.694-2.054-1.715A12.134 12.134 0 011.5 12c0-2.848.992-5.464 2.649-7.521.388-.482.987-.729 1.605-.729H9.77a4.5 4.5 0 011.423.23l3.114 1.04a4.5 4.5 0 001.423.23zM21.669 13.773c.536-1.362.831-2.845.831-4.398 0-1.22-.182-2.398-.52-3.507-.26-.85-1.084-1.368-1.973-1.368H19.1c-.445 0-.72.498-.523.898.591 1.2.924 2.55.924 3.977a8.959 8.959 0 01-1.302 4.666c-.245.403.028.959.5.959h1.053c.832 0 1.612-.453 1.918-1.227z" />
-          </svg>
-          `;
-
-          let start = rating;
-          const startRating = document.querySelector("#below > ytd-watch-metadata > div.container > form > h1");
-          const ratingtext = document.querySelector("#ratingtext");
-          const date = new Date();
-          limpiarHTML(startRating);
-          for (let i = 1; i <= Math.round(start); i++) {
-            startRating.textContent += '⭐';
-            ratingtext.innerHTML = `Rating <br>${dateCreated.split('T')[0].split('-')[0]} - ${date.getFullYear()}` ;
-            // console.log(start);
-          }
-      })
+              document.querySelector("#segmented-like-button > ytd-toggle-button-renderer > yt-button-shape > button > div.yt-spec-button-shape-next__icon > yt-icon > yt-animated-icon").innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                <path d="M7.493 18.75c-.425 0-.82-.236-.975-.632A7.48 7.48 0 016 15.375c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75 2.25 2.25 0 012.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23h-.777zM2.331 10.977a11.969 11.969 0 00-.831 4.398 12 12 0 00.52 3.507c.26.85 1.084 1.368 1.973 1.368H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 01-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227z" />
+                </svg>`;
+              document.querySelector("#segmented-dislike-button > ytd-toggle-button-renderer > yt-button-shape > button > div > yt-icon").innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                <path d="M15.73 5.25h1.035A7.465 7.465 0 0118 9.375a7.465 7.465 0 01-1.235 4.125h-.148c-.806 0-1.534.446-2.031 1.08a9.04 9.04 0 01-2.861 2.4c-.723.384-1.35.956-1.653 1.715a4.498 4.498 0 00-.322 1.672V21a.75.75 0 01-.75.75 2.25 2.25 0 01-2.25-2.25c0-1.152.26-2.243.723-3.218C7.74 15.724 7.366 15 6.748 15H3.622c-1.026 0-1.945-.694-2.054-1.715A12.134 12.134 0 011.5 12c0-2.848.992-5.464 2.649-7.521.388-.482.987-.729 1.605-.729H9.77a4.5 4.5 0 011.423.23l3.114 1.04a4.5 4.5 0 001.423.23zM21.669 13.773c.536-1.362.831-2.845.831-4.398 0-1.22-.182-2.398-.52-3.507-.26-.85-1.084-1.368-1.973-1.368H19.1c-.445 0-.72.498-.523.898.591 1.2.924 2.55.924 3.977a8.959 8.959 0 01-1.302 4.666c-.245.403.028.959.5.959h1.053c.832 0 1.612-.453 1.918-1.227z" />
+              </svg>
+              `;
+            }
+  
+            let start = rating;
+            const startRating = document.querySelector("#below > ytd-watch-metadata > div.container > form > h1");
+            const ratingtext = document.querySelector("#ratingtext");
+            const date = new Date();
+            limpiarHTML(startRating);
+            for (let i = 1; i <= Math.round(start); i++) {
+              startRating.textContent += '⭐';
+              ratingtext.innerHTML = `Rating <br>${dateCreated.split('T')[0].split('-')[0]} - ${date.getFullYear()}` ;
+              // console.log(start);
+            }
+        })
+      
     }
+    
 
+  }
+  function shortDislike() {
+    validoUrl = document.location.href;
+    const validoVentanaShort = document.querySelectorAll('#dislike-button > yt-button-shape > label > div > span');
+      if(validoVentanaShort != undefined && document.location.href.split('/')[3] === 'shorts'){
+        validoUrl = document.location.href.split('/')[4];
+        // console.log(document.querySelector('#dislike-button > yt-button-shape > label > div > span').textContent);
+        const urlShorts = `https://returnyoutubedislikeapi.com/Votes?videoId=${validoUrl}`;
+        fetch(urlShorts)
+          .then(respuestas => respuestas.json())
+          .then(datosShort => {
+            const { dislikes } = datosShort;
+            for(var i = 0; i < validoVentanaShort.length; i++){
+              const Formatter = (num, digits) => {
+                const lookup = [{
+                    value: 1,
+                    symbol: ""
+                  },
+                  {
+                    value: 1e3,
+                    symbol: " K"
+                  },
+                  {
+                    value: 1e6,
+                    symbol: " M"
+                  }
+                ];
+                const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+                const item = lookup.slice().reverse().find((item) => {
+                  return num >= item.value
+                })
+                return item ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol : "0"
+              }
+              validoVentanaShort[i].textContent = `${Formatter(dislikes, 0)}`;
+            }
+          })
+        }
   }
 
 
@@ -331,6 +375,7 @@ function cargarScript() {
       function checkURLchange(){
         eliminarAnuancios();
       cargarDislikes();
+      shortDislike();
   }
  
   
