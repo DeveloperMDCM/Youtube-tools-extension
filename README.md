@@ -1,5 +1,6 @@
 # Youtube-toos-extension
-añade opciones extras a la pagina de youtube script o extención
+
+[Text]añade opciones extras a la pagina de youtube script o extención
 Script para youtube
 Auto saltar publicidad
 Return dislikes
