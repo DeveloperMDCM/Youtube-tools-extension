@@ -220,18 +220,7 @@ function cargarScript() {
      
   }, 100);
 
-  //   let url = document.location.href;
-  // setInterval(() =>{
-
-  // url = document.location.href;
-  // if(url.split('/')[3] !== 'shorts' ){
-  //   console.log(url + 'vetana')
-  // }else {
-  //   console.log(url + 'short')
-  // }
-  // },1000)
- 
-
+  
   let validoUrl = document.location.href;
   function cargarDislikes() {
     validoUrl = document.location.href;
@@ -299,7 +288,7 @@ function cargarScript() {
     
 
   }
-  function moises() {
+  function shortDislike() {
     validoUrl = document.location.href;
     const validoVentanaShort = document.querySelectorAll('#dislike-button > yt-button-shape > label > div > span');
       if(validoVentanaShort != undefined && document.location.href.split('/')[3] === 'shorts'){
@@ -404,7 +393,7 @@ function cargarScript() {
       function checkURLchange(){
         eliminarAnuancios();
       cargarDislikes();
-      moises();
+      shortDislike();
   }
  
   
