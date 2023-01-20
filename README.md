@@ -1,7 +1,7 @@
 # Youtube-toos-extension
 
 ### añade opciones extras a la pagina de youtube script o extención
-Script para youtube.
+Script para youtube active dark theme
 
 Auto saltar publicidad.
 
@@ -27,7 +27,6 @@ https://github.com/DeveloperMDCM/Youtube-toos-extension
 
 https://greasyfork.org/es/scripts/456299-opciones-nuevas-opciones-para-personalizar-youtube-by-mdcm2022
 
-https://scripty.abhisheksatre.com/#/share/script_1674097832684
 
 ![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/4.jpg)
 
