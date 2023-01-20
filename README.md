@@ -1,6 +1,6 @@
 # Youtube-toos-extension
 
-[Text]añade opciones extras a la pagina de youtube script o extención
+### añade opciones extras a la pagina de youtube script o extención
 Script para youtube
 Auto saltar publicidad
 Return dislikes
@@ -11,6 +11,7 @@ Desdecar video mp4
 Invertir las columnas
 Adaptar color de fondo segun video
 Reiniciar ajustes
+ver dislikes en las historias ##
 
 https://github.com/DeveloperMDCM/Youtube-toos-extension
 
