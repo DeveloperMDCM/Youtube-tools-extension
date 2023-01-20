@@ -17,6 +17,10 @@ https://greasyfork.org/es/scripts/456299-opciones-nuevas-opciones-para-personali
 
 https://scripty.abhisheksatre.com/#/share/script_1674097832684
 
+![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/4.jpg)
+
+![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/3.jpg)
+
 ![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/youtu.jpg)
 
 
