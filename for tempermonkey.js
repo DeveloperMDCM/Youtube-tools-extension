@@ -4,7 +4,7 @@
 // @homepage     https://github.com/DeveloperMDCM/
 // @version      5.0
 // @description  Nuevas opciones para modificar la interfaz de YouTube y más  options to customize youtube @MDCM2022
-// @author       MDCM
+// @author       DeveloperMDCM MDCM
 // @match        *://*.youtube.com/*
 // @exclude      *://music.youtube.com/*
 // @exclude      *://*.music.youtube.com/*
