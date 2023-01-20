@@ -8,13 +8,20 @@ Auto saltar publicidad.
 Return dislikes.
 
 Rating del video.
+
 Cambiar colores.
+
 Descargar miniatura del video.
+
 Desdecar video mp4.
+
 Invertir las columnas.
+
 Adaptar color de fondo segun video.
+
 Reiniciar ajustes.
-ver dislikes en las historias ##
+
+ver dislikes en las historias ###
 
 https://github.com/DeveloperMDCM/Youtube-toos-extension
 
