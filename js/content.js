@@ -2,7 +2,7 @@
 // @name         Youtube Tools Bets tools for youtube download NOW cool settings Activar modo oscuro / Active Dark Theme
 // @namespace    https://github.com/DeveloperMDCM/
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      6.3
+// @version      6.5
 // @description  Nuevas opciones para modificar la interfaz de YouTube añadiendo caracteristicas cool more  options to customize youtube @MDCM2022
 // @author       MDCM
 // @require      http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js
