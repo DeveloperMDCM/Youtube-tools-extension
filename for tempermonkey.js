@@ -1,19 +1,22 @@
 // ==UserScript==
-// @name         Youtube Tools Bets tools for youtube download NOW cool settings Activar modo oscuro / Active Dark Theme
-// @namespace    https://github.com/DeveloperMDCM/
+// @name         Youtube Tools Bets tools for youtube download NOW todo en 1
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      6.5
+// @version      6.7
 // @description  Nuevas opciones para modificar la interfaz de YouTube añadiendo caracteristicas cool more  options to customize youtube @MDCM2022
 // @author       MDCM
-// @require      http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js
 // @match        *://*.youtube.com/*
 // @exclude      *://music.youtube.com/*
 // @exclude      *://*.music.youtube.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @grant        none
 // @connect      youtube.com
+// @compatible chrome
+// @compatible firefox
+// @compatible opera
+// @compatible safari
+// @license MIT
+// @namespace https://github.com/DeveloperMDCM/
 // ==/UserScript==
-
 (function () {
   // Youtube tools by: DeveloperMDCM MDCM
 // https://github.com/DeveloperMDCM/Youtube-toos-extension
@@ -59,12 +62,12 @@ const menuBotones = `
     align-items: center;
     cursor: pointer;
     border-radius: 10px;
-    
+
   }
   .containerButtons h1, h2 {
     user-select: none;
   }
- 
+
   #MDCM {
     animation: mdcm 10s infinite alternate;
     position: relative;
@@ -95,17 +98,17 @@ const menuBotones = `
     align-items: center;
     justify-content: center;
   }
-  
+
   .container .botoncalidades {
     margin: 3px 2px;
     width: 24.6%;
   }
-  
-  
+
+
   .botoncalidades:first-child {
     background-color: red;
   }
-  
+
   .selectcalidades , .botoncalidades{
     width: 50%;
     height: 27.8px;
@@ -125,17 +128,17 @@ const menuBotones = `
     color: #fff;
     font-size: 20px;
     margin: 2px 2px;
-  
+
   }
   .botoncalidades:hover, .bntcontainer:hover {
     cursor: pointer;
   }
-  
+
   .ocultarframe {
     display: none;
   }
-  
-  
+
+
 </style>
 <div class="container">
   <form>
@@ -163,7 +166,7 @@ const menuBotones = `
       <h2 style="text-align: center; margin: 5px 0" id="ratingtext" >Rating</h2>
   </form>
   <div id="ojosprotect" style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0px; top: 0px; opacity: 0.2; z-index: 10; display: block;"></div>
- 
+
 </div>
 <div class="containerall">
   <button class="botoncalidades btn1">MP4</button>
@@ -172,7 +175,7 @@ const menuBotones = `
 <form class="formulariodescarga" action="">
 <div class="containerall">
   <select class="selectcalidades ocultarframe" required>
-    <option selected disabled>Calidad del video / Quiality video</option> 
+    <option selected disabled>Calidad del video / Quiality video</option>
     <option value="360">360p Mp4</option>
     <option value="480">480p Mp4</option>
     <option value="720">720p Mp4 Default</option>
@@ -194,27 +197,27 @@ setTimeout(() => { // se repite cada 1 segundo
         addButton.insertAdjacentHTML('beforebegin', menuBotones);
         verificar = false;
         document.querySelector('video').style.borderRadius = '30px';
-  
+
         const formulariodescarga = document.querySelector('.formulariodescarga');
         const framedescarga = document.querySelector('#descargando');
         formulariodescarga.addEventListener('click', e=> {
           e.preventDefault();
         });
-      
+
         const btn1mp4 = document.querySelector('.btn1');
         const btn2mp3 = document.querySelector('.btn2');
         const selectcalidades = document.querySelector('.selectcalidades');
         selectcalidades.addEventListener('click', ()=> {
-    
+
         })
-        
-       
+
+
         selectcalidades.addEventListener('change', (e)=> {
           console.log(e.target.value);
           framedescarga.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}`;
           framedescarga.classList.remove('ocultarframe');
         })
-    
+
         btn1mp4.onclick = () =>{
           selectcalidades.classList.remove('ocultarframe');
           framedescarga.classList.add('ocultarframe');
@@ -230,7 +233,7 @@ setTimeout(() => { // se repite cada 1 segundo
             formulariodescarga.classList.remove('ocultarframe');
 
         }
-    
+
     const reverse = document.querySelector("#columns");
     const btnReset = document.querySelector('#reset');
     const InputColor = document.querySelector('#color');
@@ -256,7 +259,7 @@ setTimeout(() => { // se repite cada 1 segundo
         mostrarAlerta('Activar modo oscuro / Active Dark Theme');
         }
     };
-   
+
     let count = 1;
     boton.onclick = function() {
       if (count === 1 && reverse != undefined) {
@@ -286,7 +289,7 @@ setTimeout(() => { // se repite cada 1 segundo
         document.body.style.setProperty('--ytd-searchbox-legacy-border-shadow-color', InputColor.value);
         document.querySelector("#logo-icon").style.color = InputColor.value;
         document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = 'color: black; background-color: white; border: 2px solid black; ';
-        
+
       }else {
         mostrarAlerta('Activar modo oscuro / Active Dark Theme');
       }
@@ -319,7 +322,7 @@ setTimeout(() => { // se repite cada 1 segundo
       enlace = document.baseURI.split('=')[1].split('&')[0];
       window.open(`https://i.ytimg.com/vi/${enlace}/maxresdefault.jpg`, '_blank');
     };
-    
+
 }}, 1000); // Termina
 
 // Función para ratinh de los videos
@@ -381,7 +384,7 @@ function cargarDislikes() {
             startRating.textContent += '⭐';
             ratingtext.innerHTML = `Rating <br>${dateCreated.split('T')[0].split('-')[0]} - ${date.getFullYear()}` ;
           }
-         
+
       })
   }
 }
@@ -389,7 +392,7 @@ function cargarDislikes() {
 
 // Función para formatear los dislikes
 function FormatiarNumero(num, digits) {
- 
+
   const lookup = [{
       value: 1,
       symbol: ""
@@ -446,7 +449,7 @@ function mostrarAlerta(mensaje) {
       modeDark.remove();
     }, 3000)
   }
-      
+
 }
 }
 // Función para eliminar los posibles anuncios
@@ -490,7 +493,7 @@ function eliminarAnuancios() { // Skip ads video / saltar publicidad
           buttonSkip.click();
         }
     }
-   
+
 // Validar que la url a cambiado por una nueva
 let descargo = true;
 let prevUrl = undefined; // Sin cambios
@@ -513,7 +516,7 @@ setInterval(() => {
       shortDislike();
     },1000);
   }
-  
+
   const ventanaShortComentarios = document.querySelector("body > ytd-app > ytd-popup-container > tp-yt-paper-dialog > ytd-engagement-panel-section-list-renderer");
   const historias = document.querySelectorAll("#shorts-inner-container");
   if(ventanaShortComentarios && historias){
