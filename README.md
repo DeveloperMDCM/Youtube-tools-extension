@@ -28,11 +28,13 @@ https://github.com/DeveloperMDCM/Youtube-toos-extension
 https://greasyfork.org/es/scripts/456299-opciones-nuevas-opciones-para-personalizar-youtube-by-mdcm2022
 
 
-![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/4.jpg)
+![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/bg1.jpg)
 
-![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/3.jpg)
+![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/bg3.jpg)
 
-![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/youtu.jpg)
+![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/gb2.jpg)
 
 
-![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/2.jpg)
+![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/bg2.jpg)
+
+![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/bg5.jpg)
