@@ -3,23 +3,31 @@
 ### añade opciones extras a la pagina de youtube script o extención
 Script para youtube active dark theme
 
-Auto saltar publicidad.
+Auto saltar publicidad
 
-Return dislikes.
+Ver dislikes en historias
 
-Rating del video.
+ver dislikes en videos
 
-Cambiar colores.
+Rating del video
 
-Descargar miniatura del video.
+Cambiar colores
 
-Desdecar video mp4.
+Descargar miniatura.
 
-Invertir las columnas.
+Descargar MP3
 
-Adaptar color de fondo segun video.
+Descargar MP4
 
-Reiniciar ajustes.
+Traducir comentarios a idioma nativo
+
+Filtro de pantalla 
+
+Invertir las columnas
+
+Adaptar color de fondo segun video
+
+Reiniciar ajustes
 
 ver dislikes en las historias ###
 
