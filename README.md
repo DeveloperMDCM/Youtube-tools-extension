@@ -30,9 +30,9 @@ https://greasyfork.org/es/scripts/456299-opciones-nuevas-opciones-para-personali
 
 ![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/bg1.jpg)
 
-![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/bg3.jpg)
+![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/b3.jpg)
 
-![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/gb2.jpg)
+![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/gb4.jpg)
 
 
 ![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/bg2.jpg)
