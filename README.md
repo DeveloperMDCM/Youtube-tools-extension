@@ -7,6 +7,10 @@ Auto saltar publicidad
 
 Ver dislikes en historias
 
+Descargar MP3
+
+Descargar MP4 Hasta 8k
+
 ver dislikes en videos
 
 Rating del video
@@ -14,10 +18,6 @@ Rating del video
 Cambiar colores
 
 Descargar miniatura.
-
-Descargar MP3
-
-Descargar MP4
 
 Traducir comentarios a idioma nativo
 
