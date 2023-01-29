@@ -199,7 +199,6 @@
       const addButton = document.querySelector(".style-scope .ytd-watch-metadata");
       if (addButton != undefined) {
         addButton.insertAdjacentHTML('beforebegin', menuBotones);
-        verificar = false;
         document.querySelector('video').style.borderRadius = '30px';
         // Formulario de botones para descargar
         const formulariodescarga = document.querySelector('.formulariodescarga');
@@ -322,6 +321,7 @@
         //
         btnImagen.onclick = () => {
           const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
+          let enlace;
           enlace = parametrosURL.get('v');
           window.open(`https://i.ytimg.com/vi/${enlace}/maxresdefault.jpg`, 'popUpWindow', 'height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
         };
@@ -524,7 +524,7 @@
         limpiarHTML();
       }
       eliminarAnuancios();
-    }, 500); // Cada 2 segundos se ejecuta mientras la url cambie
+    }, 1000); // Cada 2 segundos se ejecuta mientras la url cambie
     eliminarAnuancios();
   }
 
