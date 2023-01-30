@@ -60,7 +60,6 @@
     flex-wrap: wrap;
     user-select: none;
   }
- 
   .containerButtons button , input {
     display: flex;
     flex-direction: column-reverse;
