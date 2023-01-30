@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Youtube Tools All in one mp3, mp4, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      6.7.2
+// @version      6.7.3
 // @description  Nuevas opciones para modificar la interfaz de YouTube añadiendo caracteristicas cool more  options to customize youtube @MDCM2023
 // @author       MDCM
 // @match        *://*.youtube.com/*
@@ -25,6 +25,7 @@
   // Youtube tools by: DeveloperMDCM MDCM
   // https://github.com/DeveloperMDCM/Youtube-toos-extension
   // API return dislikes  https://returnyoutubedislike.com/
+  alert('DeveloperMDCM');
   function paramsVideoURL() {
     const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
     return parametrosURL.get('v');
