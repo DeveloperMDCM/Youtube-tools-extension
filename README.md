@@ -7,21 +7,21 @@ Auto saltar publicidad
 
 Ver dislikes en historias
 
-Descargar MP3
+Descargar MP3 / Download MP3
 
-Descargar MP4 Hasta 8k
+Descargar MP4 Hasta 8k / up High cuality
 
-ver dislikes en videos
+ver dislikes en videos / return dislikes
 
 Rating del video
 
-Cambiar colores
+Cambiar colores / change text color
 
 Descargar miniatura.
 
-Traducir comentarios a idioma nativo
+Traducir comentarios a idioma nativo / Translate 
 
-Filtro de pantalla 
+Filtro de pantalla / Screen 
 
 Invertir las columnas
 
@@ -29,20 +29,17 @@ Adaptar color de fondo segun video
 
 Reiniciar ajustes
 
-ver dislikes en las historias ###
+ver dislikes en las historias
 
-https://github.com/DeveloperMDCM/Youtube-toos-extension
+https://github.com/DeveloperMDCM/Youtube-tools-extension
 
-https://greasyfork.org/es/scripts/456299-opciones-nuevas-opciones-para-personalizar-youtube-by-mdcm2022
+https://greasyfork.org/es/scripts/456299-youtube-tools-all-in-one-mp3-mp4-return-dislikes-and-more
 
+<div align="center">
+<img src="bg5.jpg" width="470">
+<img src="bg1.jpg" width="470">
+<img src="b3.jpg" width="470">
+<img src="bg2.jpg" width="470">
+<img src="bg4.jpg" width="470">
 
-![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/bg5.jpg)
-
-![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/bg1.jpg)
-
-![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/bg2.jpg)
-
-
-![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/bg4.jpg)
-
-![Image](https://github.com/DeveloperMDCM/Youtube-toos-extension/blob/master/b3.jpg)
+</div>
