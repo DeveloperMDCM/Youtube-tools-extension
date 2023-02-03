@@ -31,7 +31,7 @@
 // @name:sr      Download YouTube videos without external service and more.
 // @name:sv      Download YouTube videos without external service and more.
 // @name:th      Download YouTube videos without external service and more.
-// @name:tr      Download YouTube videos without external service and more.
+// @name:tr      Download YouTube videos without external service and more. 
 // @name:uk      Download YouTube videos without external service and more.
 // @name:ug      Download YouTube videos without external service and more.
 // @name:vi      Download YouTube videos without external service and more.
