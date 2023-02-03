@@ -64,7 +64,7 @@
 // @description:ug      Download YouTube videos 8K without external service and more
 // @description:vi      Download YouTube videos 8K without external service and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      6.7.5
+// @version      6.7.6
 // @description        Download YouTube videos without external service and more.
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
