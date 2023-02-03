@@ -801,4 +801,4 @@
   setTimeout(() => {
     cargarScript();
   }, 1500);
-})();
+})(); 
