@@ -607,7 +607,7 @@
       if (
         validoVentanaShort != undefined &&
         document.location.href.split("/")[3] === "shorts"
-      ) {
+      ) { 
         validoUrl = document.location.href.split("/")[4];
         const urlShorts = `https://returnyoutubedislikeapi.com/Votes?videoId=${validoUrl}`;
         try {
