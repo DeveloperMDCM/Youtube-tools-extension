@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
 // @description:vi      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      6.8.1
+// @version      6.8.2
 // @description        Download YouTube videos without external service and more.
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -360,9 +360,7 @@
             const buttonLeft = document.querySelector("#movie_player > div.ytp-chrome-bottom > div.ytp-chrome-controls > div.ytp-left-controls > a.ytp-prev-button.ytp-button");
             switch (countRepeat) {
               case 1:
-                if (videoRepeat.duration) {
-                  console.log(videoRepeat.currentTime);
-                  console.log(aux);
+                if (videoRepeat.duration) {  
                   if (videoRepeat.currentTime >= aux) {
                     videoRepeat.currentTime = 0;
                     buttonLeft.click();
