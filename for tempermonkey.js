@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
 // @description:vi      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      6.7.9
+// @version      6.8.1
 // @description        Download YouTube videos without external service and more.
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -356,13 +356,16 @@
           countRepeat += 1;
           setInterval(() => {
             const videoRepeat = document.querySelector("video"); // vIDEO PLAYER
-
+            let aux = videoRepeat.duration - 2;
+            const buttonLeft = document.querySelector("#movie_player > div.ytp-chrome-bottom > div.ytp-chrome-controls > div.ytp-left-controls > a.ytp-prev-button.ytp-button");
             switch (countRepeat) {
               case 1:
                 if (videoRepeat.duration) {
                   console.log(videoRepeat.currentTime);
-                  if (videoRepeat.currentTime == videoRepeat.duration) {
+                  console.log(aux);
+                  if (videoRepeat.currentTime >= aux) {
                     videoRepeat.currentTime = 0;
+                    buttonLeft.click();
                   }
                   imarepeat.src = "https://cdn-icons-png.flaticon.com/512/3447/3447552.png"; // img repeat
                 }
@@ -374,7 +377,6 @@
             }
           }, 1000);
         };
-
         // Filtro de pantalla
         formularioButtons.addEventListener("input", function () {
           document.querySelector("#ojosprotect").style.backgroundColor =
