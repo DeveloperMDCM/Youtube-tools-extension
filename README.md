@@ -1,4 +1,7 @@
 # Youtube-toos-extension
+https://github.com/DeveloperMDCM/Youtube-tools-extension
+
+https://greasyfork.org/es/scripts/456299-youtube-tools-all-in-one-mp3-mp4-return-dislikes-and-more
 
 ### añade opciones extras a la pagina de youtube script o extención
 Script para youtube active dark theme
@@ -32,9 +35,6 @@ Reiniciar ajustes
 
 ver dislikes en las historias
 
-https://github.com/DeveloperMDCM/Youtube-tools-extension
-
-https://greasyfork.org/es/scripts/456299-youtube-tools-all-in-one-mp3-mp4-return-dislikes-and-more
 
 <div align="center">
 <img src="bg55.jpg" width="470">
