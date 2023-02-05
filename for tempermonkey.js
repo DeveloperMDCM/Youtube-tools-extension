@@ -5,67 +5,67 @@
 // @name:zh-CN   本地 YouTube 下载器
 // @name:ja      ローカル YouTube ダウンローダー
 // @name:kr      로컬 YouTube 다운로더
-// @name:ar      Youtube Tools All in one local Download YouTube videos without external service and more.
-// @name:bg      Youtube Tools All in one local Download YouTube videos without external service and more.
-// @name:cs      Youtube Tools All in one local Download YouTube videos without external service and more.
-// @name:da      Youtube Tools All in one local Download YouTube videos without external service and more.
-// @name:de      Youtube Tools All in one local Download YouTube videos without external service and more.
-// @name:el      Youtube Tools All in one local Download YouTube videos without external service and more.
-// @name:eo      Youtube Tools All in one local Download YouTube videos without external service and more.
-// @name:es      Youtube Tools All in one local Download YouTube videos without external service and more.
-// @name:fi      Youtube Tools All in one local Download YouTube videos without external service and more.
-// @name:fr      Youtube Tools All in one local Download YouTube videos without external service and more.
-// @name:fr-CA   Youtube Tools All in one local Download YouTube videos without external service and more.
-// @name:he      Youtube Tools All in one local Download YouTube videos without external service and more.
-// @name:hu      Youtube Tools All in one local Download YouTube videos without external service and more.
-// @name:id      Youtube Tools All in one local Download YouTube videos without external service and more.
-// @name:it      Youtube Tools All in one local Download YouTube videos without external service and more.
-// @name:ko      Youtube Tools All in one local Download YouTube videos without external service and more.
-// @name:nb      Youtube Tools All in one local Download YouTube videos without external service and more.
-// @name:nl      Youtube Tools All in one local Download YouTube videos without external service and more.
-// @name:pl      Youtube Tools All in one loca Download YouTube videos without external service and more.
-// @name:pt-BR   Youtube Tools All in one loca Download YouTube videos without external service and more.
-// @name:ro      Youtube Tools All in one loca Download YouTube videos without external service and more.
-// @name:ru      Youtube Tools All in one loca Download YouTube videos without external service and more.
-// @name:sk      Youtube Tools All in one loca Download YouTube videos without external service and more.
-// @name:sr      Youtube Tools All in one loca Download YouTube videos without external service and more.
-// @name:sv      Youtube Tools All in one loca Download YouTube videos without external service and more.
-// @name:th      Youtube Tools All in one loca Download YouTube videos without external service and more.
-// @name:tr      Youtube Tools All in one loca Download YouTube videos without external service and more.
-// @name:uk      Youtube Tools All in one loca Download YouTube videos without external service and more.
-// @name:ug      Youtube Tools All in one loca Download YouTube videos without external service and more.
-// @name:vi      Youtube Tools All in one loca Download YouTube videos without external service and more.
-// @description         Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:ar      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:bg      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:da      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:de      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:el      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:eo      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:fi      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:fr-CA   Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:he      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:hu      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:id      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:it      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:ko      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:nb      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:nl      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:pl      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:pt-BR   Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:ro      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:ru      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:sk      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:sr      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:sv      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:th      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:tr      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:uk      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:ug      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
-// @description:vi      Youtube Tools All in one loca Download YouTube videos 8K without external service and more
+// @name:ar      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:bg      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:cs      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:da      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:de      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:el      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:eo      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:es      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:fi      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:fr      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:fr-CA   Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:he      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:hu      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:id      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:it      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:ko      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:nb      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:nl      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:pl      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:pt-BR   Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:ro      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:ru      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:sk      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:sr      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:sv      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:th      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:tr      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:uk      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:ug      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:vi      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @description         Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:ar      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:bg      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:da      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:de      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:el      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:eo      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:fi      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:fr-CA   Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:he      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:hu      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:id      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:it      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:ko      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:nb      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:nl      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:pl      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:pt-BR   Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:ro      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:ru      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:sk      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:sr      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:sv      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:th      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:tr      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:uk      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:ug      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:vi      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      6.8.2
-// @description        Download YouTube videos without external service and more.
+// @version      6.8.6
+// @description        Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
 // @description:zh-CN  无需通过第三方服务等即可下载 YouTube 视频
@@ -73,8 +73,8 @@
 // @description:kr     외부 서비스 등 없이 YouTube 동영상 다운로드
 // @description:fr     Obtenez un lien brut de YouTube sans service externe. et de plus
 // @description:cs     Stahujte videa z YouTube bez externích služeb. a více
-// @description:en     Download YouTube videos without external services. and more
-// @description:es     Youtube Tools All in one loca Descarga videos y mas sin enlaces externos
+// @description:en     Download MP4, MP3 without external services. and more
+// @description:es     Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more
 // @author       MDCM
 // @match        https://*.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -93,7 +93,6 @@
 // @license MIT
 // @namespace https://github.com/DeveloperMDCM/
 // ==/UserScript==
-
 
 (function () {
   // Youtube tools by: DeveloperMDCM
@@ -117,14 +116,12 @@
             <meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
             <meta http-equiv="Pragma" content="no-cache">
             <style>
-
             .mdcm:hover {
               cursor: pointer;
             }
             .mdcm{
               font-size: 10px;
             }
-
             #subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button:hover {
             zoom: 0.9;
             }
@@ -135,7 +132,6 @@
               flex-wrap: wrap;
               user-select: none;
             }
-
             .containerButtons button , input {
               display: flex;
               flex-direction: column-reverse;
@@ -147,13 +143,11 @@
             .containerButtons h1, h2 {
               user-select: none;
             }
-
             #MDCM {
               animation: mdcm 10s infinite alternate;
               position: relative;
               transition: 4s;
             }
-
             @keyframes mdcm {
               0%, 100%{
                 right: 300px;
@@ -162,16 +156,13 @@
                 right: -300px;
               }
             }
-
             .containerButtons button .containerButtons button svg {
               width: 50px;
               height: 40px;
             }
-
             #color, #eyes {
               opacity:0;position:absolute;height: 93%;bottom: 0; top: 2px; width: 62px;
             }
-
             .containerall {
               width: 100%;
               display: flex;
@@ -205,7 +196,6 @@
               font-size: 20px;
               border-radius: 10px;
               margin: 2px 2px;
-
             }
             .botoncalidades:hover, .bntcontainer:hover {
               cursor: pointer;
@@ -213,8 +203,6 @@
             .ocultarframe {
               display: none;
             }
-
-
             </style>
             <div class="container">
             <form>
@@ -235,7 +223,7 @@
                 <option value="#0000ff"/>
                 </datalist>
                 </div>
-                <button type="button"  id="repeat"> <img class="imarepeat" width="35" src="https://cdn-icons-png.flaticon.com/512/3447/3447562.png"></button>
+                <button type="button"  id="repeatvideo"> <img class="imarepeat" width="35" src="https://cdn-icons-png.flaticon.com/512/3447/3447562.png"></button>
               </div>
                 <div>
                 </div>
@@ -243,7 +231,6 @@
                 <h2 style="text-align: center; margin: 5px 0" id="ratingtext" >Rating</h2>
             </form>
             <div id="ojosprotect" style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0px; top: 0px; opacity: 0.2; z-index: 10; display: block;"></div>
-
             </div>
             <div class="containerall">
             <button class="botoncalidades btn1">MP4</button>
@@ -265,13 +252,15 @@
             </form>`;
 
     const addDislike = document.createElement("P"); // Texto count dislikes
+    let validoBotones = true;
     // TODO: Inicia y inserta los botones
-    setTimeout(() => {
+    setInterval(() => {
       // se repite  1 vez
       const addButton = document.querySelector(
         ".style-scope .ytd-watch-metadata"
       );
-      if (addButton != undefined) {
+      if (addButton != undefined && validoBotones) {
+        validoBotones = false;
         addButton.insertAdjacentHTML("beforebegin", menuBotones);
         document.querySelector("video").style.borderRadius = "30px";
         // Formulario de botones para descargar
@@ -350,7 +339,7 @@
           }
         };
         let countRepeat = 0; // count
-        const repeat = document.querySelector("#repeat"); // Repeat button
+        const repeat = document.querySelector("#repeatvideo"); // Repeat button
         const imarepeat = document.querySelector(".imarepeat"); // img repeat
         repeat.onclick = () => {
           countRepeat += 1;
