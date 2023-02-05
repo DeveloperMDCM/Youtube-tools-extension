@@ -5,6 +5,7 @@ Script para youtube active dark theme
 
 Auto saltar publicidad
 
+Auto repetir video / auto repeat video
 Ver dislikes en historias
 
 Descargar MP3 / Download MP3
