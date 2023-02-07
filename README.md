@@ -37,7 +37,7 @@ ver dislikes en las historias
 
 
 <div align="center">
-<img src="options menu.jpg" width="600">
+<img src="options menu 1.jpg" width="600">
 <img src="bg55.jpg" width="470">
 <img src="bg11.jpg" width="470">
 <img src="b33.jpg" width="470">
