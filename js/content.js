@@ -1,71 +1,71 @@
-// ==UserScript==
+// ==UserScript== dislikes, auto repeat vid
 // @name         Youtube Tools All in one local download mp3 mp4 return dislikes and more
 // @name:zh-TW   本地 YouTube 下載器
 // @name:zh-HK   本地 YouTube 下載器
 // @name:zh-CN   本地 YouTube 下载器
 // @name:ja      ローカル YouTube ダウンローダー
 // @name:kr      로컬 YouTube 다운로더
-// @name:ar      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:bg      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:cs      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:da      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:de      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:el      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:eo      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:es      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:fi      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:fr      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:fr-CA   Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:he      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:hu      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:id      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:it      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:ko      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:nb      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:nl      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:pl      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:pt-BR   Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:ro      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:ru      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:sk      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:sr      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:sv      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:th      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:tr      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:uk      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:ug      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @name:vi      Youtube Tools All in one local Download MP4, 8k MP3 without external service and more.
-// @description         Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:ar      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:bg      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:da      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:de      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:el      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:eo      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:fi      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:fr-CA   Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:he      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:hu      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:id      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:it      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:ko      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:nb      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:nl      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:pl      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:pt-BR   Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:ro      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:ru      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:sk      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:sr      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:sv      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:th      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:tr      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:uk      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:ug      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
-// @description:vi      Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more 
+// @name:ar      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:bg      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:cs      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:da      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:de      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:el      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:eo      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:es      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:fi      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:fr      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:fr-CA   Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:he      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:hu      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:id      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:it      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:ko      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:nb      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:nl      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:pl      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:pt-BR   Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:ro      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:ru      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:sk      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:sr      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:sv      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:th      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:tr      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:uk      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:ug      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @name:vi      Youtube Tools All in one local Download MP4, MP3 without external service and more.
+// @description         Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:ar      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:bg      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:da      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:de      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:el      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:eo      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:fi      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:fr-CA   Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:he      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:hu      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:id      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:it      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:ko      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:nb      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:nl      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:pl      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:pt-BR   Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:ro      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:ru      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:sk      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:sr      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:sv      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:th      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:tr      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:uk      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:ug      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
+// @description:vi      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      6.8.8
-// @description        Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more
+// @version      6.9
+// @description        Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
 // @description:zh-CN  无需通过第三方服务等即可下载 YouTube 视频
@@ -73,8 +73,8 @@
 // @description:kr     외부 서비스 등 없이 YouTube 동영상 다운로드
 // @description:fr     Obtenez un lien brut de YouTube sans service externe. et de plus
 // @description:cs     Stahujte videa z YouTube bez externích služeb. a více
-// @description:en     Download MP4, 8k MP3 without external services. and more
-// @description:es     Youtube Tools All in one local Download MP4, 8k mp3 without external service auto repeat video, dislikes, and more
+// @description:en     Download MP4, MP3 without external services. and more
+// @description:es     Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more
 // @author       MDCM
 // @match        https://*.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -89,6 +89,7 @@
 // @compatible firefox
 // @compatible opera
 // @compatible safari
+// @compatible edge
 // @license MIT
 // @namespace https://github.com/DeveloperMDCM/
 // ==/UserScript==
@@ -255,7 +256,9 @@
     // TODO: Inicia y inserta los botones
     setInterval(() => {
       // se repite  1 vez
-      const addButton = document.querySelector(".style-scope .ytd-watch-metadata");
+      const addButton = document.querySelector(
+        ".style-scope .ytd-watch-metadata"
+      );
       if (addButton != undefined && validoBotones) {
         validoBotones = false;
         addButton.insertAdjacentHTML("beforebegin", menuBotones);
@@ -310,7 +313,7 @@
         document.querySelector("#search-icon-legacy.ytd-searchbox").style.backgroundColor = "black";
         // Background transparent
         btnFondo.onclick = function () {
-          if (document.querySelector("#cinematics > div") != undefined) {
+          if (document.querySelector("#cinematics > div") != undefined && document.querySelector("#movie_player > div.html5-video-container > video") != undefined) {
             document.querySelector("#cinematics > div").style = "position: fixed; inset: 0px; pointer-events: none; transform: scale(1.5, 2)";
             document.querySelector("#cinematics > div > canvas:nth-child(1)").style = "position: absolute; width: 100%; height: 100vh;";
             document.querySelector("#cinematics > div > canvas:nth-child(2)").style = "position: absolute; width: 100vw; height: 100%; opacity: 0.2;";
@@ -318,7 +321,7 @@
             document.body.style.setProperty("--yt-spec-general-background-a", "transparent");
             document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "border: 3px solid red; background-color: #352e2e29";
           } else {
-            mostrarAlerta("Activar modo oscuro / Active Dark Theme Navigator");
+            mostrarAlerta("Activar modo oscuro / Active Dark Theme");
           }
         };
 
@@ -369,7 +372,7 @@
 
         // Input color
         InputColor.addEventListener("input", function () {
-          if (document.querySelector("#cinematics > div") != undefined) {
+          if (document.querySelector("#cinematics > div") != undefined && document.querySelector("#movie_player > div.html5-video-container > video") != undefined) {
             document.body.style.setProperty("--yt-spec-text-primary", InputColor.value);
             document.body.style.setProperty("--yt-spec-text-secondary", "#ffffff");
             document.body.style.setProperty("--yt-spec-static-overlay-background-brand", "red");
@@ -380,13 +383,13 @@
             document.querySelector("#logo-icon").style.color = InputColor.value;
             document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = "color: black; background-color: white; border: 2px solid black; ";
           } else {
-            mostrarAlerta("Activar modo oscuro / Active Dark Theme Navigator");
+            mostrarAlerta("Activar modo oscuro / Active Dark Theme");
           }
         });
         // Boton para resetear
         const existeCinematicsDiv = document.querySelector("#cinematics > div");
         btnReset.onclick = () => {
-          if (existeCinematicsDiv != undefined) {
+          if (existeCinematicsDiv && document.querySelector("#movie_player > div.html5-video-container > video") != undefined) {
             document.body.style.setProperty(
               "--yt-spec-text-primary",
               "#ffffff"
@@ -405,9 +408,9 @@
             document.querySelector("html[dark] [dark]").style.backgroundColor = "#000000";
             document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "";
           } else {
-            mostrarAlerta("Activar modo oscuro / Active Dark Theme Navigator");
+            mostrarAlerta("Activar modo oscuro / Active Dark Theme");
           }
-          // reverse.style.flexDirection = "row";
+          reverse.style.flexDirection = "row";
         };
         //
         btnImagen.onclick = () => {
@@ -529,7 +532,7 @@
     // Función para mostrar los dislikes en shorts
     async function shortDislike() {
       validoUrl = document.location.href;
-      const validoVentanaShort = document.querySelector(
+      const validoVentanaShort = document.querySelectorAll(
         "#dislike-button > yt-button-shape > label > div > span"
       );
       if (
@@ -541,12 +544,15 @@
         try {
           const respuesta = await fetch(urlShorts);
           const datosShort = await respuesta.json();
-          const { dislikes} = datosShort;
-            validoVentanaShort.textContent = `${FormatiarNumero(
+          const {
+            dislikes
+          } = datosShort;
+          for (var i = 0; i < validoVentanaShort.length; i++) {
+            validoVentanaShort[i].textContent = `${FormatiarNumero(
               dislikes,
               0
             )}`;
-          
+          }
         } catch (error) {
           console.log(error);
         }
@@ -616,20 +622,19 @@
 
     // Validar que la url a cambiado por una nueva
     let prevUrl = undefined; // Sin cambios
-    let prevUrlTrue = true; // Sin cambios
     setInterval(() => {
       // URL changed / Cambio
       const currUrl2 = window.location.href;
       const video = document.querySelector("video");
-      if (video.currentTime > 0 && prevUrlTrue) {
+      if (video.currentTime < video.duration <= 1 && currUrl2 != prevUrl) {
         cargarDislikes();
-        prevUrlTrue = false;
-      }else if(currUrl2 != prevUrl) {
-        prevUrlTrue = true;
       }
       const currUrl = window.location.href;
       if (currUrl != prevUrl) {
         MDCM();
+        setTimeout(() => {
+          shortDislike();
+        }, 1000)
         const formulariodescarga = document.querySelector(".formulariodescarga");
         setTimeout(() => {
           if (formulariodescarga != undefined) {
@@ -648,7 +653,7 @@
         limpiarHTML();
       }
       eliminarAnuancios();
-    }, 100); // se ejecuta mientras la url cambie
+    }, 500); // Cada 2 segundos se ejecuta mientras la url cambie
     eliminarAnuancios();
   }
 
@@ -704,5 +709,5 @@
   };
   setTimeout(() => {
     cargarScript();
-  }, 2000);
+  }, 1500);
 })();
