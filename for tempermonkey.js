@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
 // @description:vi      Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more 
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      6.9
+// @version      7.0
 // @description        Youtube Tools All in one local Download mp4, mp3 without external service auto repeat video and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -174,7 +174,11 @@
               width: 24.6%;
             }
             .botoncalidades:first-child {
+              background-color: #0af;
+            }
+            .botoncalidades:last-child {
               background-color: red;
+              width: 100px;
             }
             .selectcalidades , .botoncalidades{
               width: 50%;
@@ -235,6 +239,7 @@
             <div class="containerall">
             <button class="botoncalidades btn1">MP4</button>
             <button class="botoncalidades btn2">MP3</button>
+            <button class="botoncalidades btn3">CANCEL</button>
             </div>
             <form class="formulariodescarga" action="">
             <div class="containerall">
@@ -273,20 +278,27 @@
         // });
         const btn1mp4 = document.querySelector(".btn1");
         const btn2mp3 = document.querySelector(".btn2");
+        const btn3cancel = document.querySelector(".btn3");
         const selectcalidades = document.querySelector(".selectcalidades");
         selectcalidades.addEventListener("change", (e) => {
           framedescarga.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}`;
           framedescarga.classList.remove("ocultarframe");
         });
 
+        btn3cancel.onclick = () => {
+          formulariodescarga.style.display = "none"
+        }
+
         btn1mp4.onclick = () => {
           selectcalidades.classList.remove("ocultarframe");
           framedescarga.classList.add("ocultarframe");
           formulariodescarga.classList.remove("ocultarframe");
+          formulariodescarga.style.display = ""
           formulariodescarga.reset();
         };
         btn2mp3.onclick = () => {
           mp3 = "mp3";
+          formulariodescarga.style.display = ""
           selectcalidades.classList.add("ocultarframe");
           framedescarga.classList.remove("ocultarframe");
           framedescarga.src = `https://loader.to/api/button/?url=${window.location.href}&f=${mp3}`;
