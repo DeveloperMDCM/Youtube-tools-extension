@@ -65,7 +65,6 @@
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
 // @homepage     https://github.com/DeveloperMDCM/
 // @version      7.1
-// @require      https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -372,7 +371,7 @@
             <form class="formulariodescarga" action="">
             <div class="containerall">
             <select class="selectcalidades  ocultarframe" required>
-              <option selected disabled>Calidad del video / Quiality video</option>
+              <option selected disabled>Calidad del video / Quality video</option>
               <option value="360">360p Mp4</option>
               <option value="480">480p Mp4</option>
               <option value="720">720p HD Mp4 Default</option>
@@ -460,7 +459,7 @@
           framedescargamp3.classList.remove("ocultarframeaudio");
           formulariodescargaaudio.style.display = ""
           selectcalidadesaudio.classList.remove("ocultarframeaudio");
-          framedescargamp3.classList.add("")
+          framedescargamp3.classList.add("ocultarframeaudio")
           formulariodescargaaudio.reset();
         };
 
@@ -590,9 +589,9 @@
         });
 
         }
-        // else {
-        //   mostrarAlerta("Activar modo oscuro / Active Dark Theme");
-        // }
+        else {
+          mostrarAlerta("Have Dark Theme Active or Reload page dark theme");
+        }
 
 
         };
@@ -735,7 +734,7 @@
 
     // Mostrar alerta de activar modo oscuro
     function mostrarAlerta(mensaje) {
-      alert('Active dark theme navigator')
+      alert('Reload page')
       const addButton = document.querySelector(
         "#below > ytd-watch-metadata > div.container > form"
       );
