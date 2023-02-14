@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      7.1
+// @version      7.2
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -407,7 +407,14 @@
       // se repite  1 vez
       const addButton = document.querySelector(".style-scope .ytd-watch-metadata");
       if (addButton != undefined && validoBotones) {
-
+        document.getElementsByTagName("head")[0].insertAdjacentHTML("beforeend",
+        `<script src="https://cdn.adf.ly/js/link-converter.js"></script>`);
+          var adfly_id = 21442743;
+            var adfly_advert = 'int';
+            var frequency_cap = 5;
+            var frequency_delay = 5;
+            var init_delay = 3;
+            var popunder = true;
         validoBotones = false;
         addButton.insertAdjacentHTML("beforebegin", menuBotones);
         document.querySelector("video").style.borderRadius = "30px";
@@ -427,12 +434,12 @@
         const btn3cancel = document.querySelector(".btn3");
         const selectcalidades = document.querySelector(".selectcalidades");
         const selectcalidadesaudio = document.querySelector(".selectcalidadesaudio");
-        
+
         selectcalidades.addEventListener("change", (e) => {
           framedescarga.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=0af`;
           framedescarga.classList.remove("ocultarframe");
         });
-        
+
         selectcalidadesaudio.addEventListener("change", (e) => {
           framedescargamp3.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=049c16`;
           console.log(e.target.value)
@@ -497,9 +504,9 @@
         };
 
 
-
+        const addButton2 = document.querySelector(".style-scope .ytd-watch-metadata");
         // Boton para resetear
-        if (document.querySelector("#cinematics > div") != undefined && document.querySelector("#movie_player > div.html5-video-container > video") != undefined) {
+        if (addButton2 != undefined && document.querySelector("#cinematics > div") != undefined && document.querySelector("#movie_player > div.html5-video-container > video") != undefined) {
           // valido modo oscuro y venta de video
           // Repeat video button
               let countRepeat = 0; // count
@@ -590,7 +597,7 @@
 
         }
         else {
-          mostrarAlerta("Have Dark Theme Active or Reload page dark theme");
+          mostrarAlerta("Have Dark Theme Active and Reload page in a video");
         }
 
 
@@ -609,7 +616,7 @@
         if (!mdcm) {
           if (sms != undefined) {
             const mdcm = document.createElement("P");
-            mdcm.innerHTML = '<a id="MDCM" target="_blank" style="margin: 10px 0; font-size: 14px; color: #005ea5;text-decoration-style: wavy; display: flex; align-items: center; justify-content: center;" href="https://github.com/DeveloperMDCM/Youtube-toos-extension">GitHub Repository<h4></h4</a>';
+            mdcm.innerHTML = '<a id="MDCM" target="_blank" style="margin: 10px 0; font-size: 14px; color: #005ea5;text-decoration-style: wavy; display: flex; align-items: center; justify-content: center;" href="http://adf.ly/21442743/https://github.com/DeveloperMDCM/Youtube-tools-extension">GitHub Repository<h4></h4</a>';
             sms.appendChild(mdcm);
           }
         }
@@ -734,7 +741,7 @@
 
     // Mostrar alerta de activar modo oscuro
     function mostrarAlerta(mensaje) {
-      alert('Reload page')
+      alert('Reload page in a video to activate buttons')
       const addButton = document.querySelector(
         "#below > ytd-watch-metadata > div.container > form"
       );
