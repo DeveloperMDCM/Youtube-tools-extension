@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      7.2
+// @version      7.3
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -364,9 +364,9 @@
             <div id="ojosprotect" style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0px; top: 0px; opacity: 0.2; z-index: 10; display: block;"></div>
             </div>
             <div class="containerall">
-            <button class="botoncalidades btn1">MP4</button>
-            <button class="botoncalidades btn2">MP3</button>
-            <button class="botoncalidades btn3">CANCEL</button>
+            <button class="botoncalidades btn1"><a style="text-decoration: none; color: white;" target="_black" href="https://publisher.linkvertise.com/ac/613423">MP4</a></button>
+            <button class="botoncalidades btn2"><a style="text-decoration: none; color: white;" target="_black" href="https://publisher.linkvertise.com/ac/613423">MP3</a></button>
+            <button class="botoncalidades btn3"><a style="text-decoration: none; color: white;" target="_black" href="https://publisher.linkvertise.com/ac/613423">CANCEL</a></button>
             </div>
             <form class="formulariodescarga" action="">
             <div class="containerall">
@@ -398,6 +398,10 @@
             </div>
             </form>
             </a>
+            <center>
+            
+            <div style="position: relative;"><iframe src="https://publisher.linkvertise.com/cdn/ads/LV-728x90/index.html" frameborder="0" height="90" width="728"></iframe><a href="https://publisher.linkvertise.com/ac/613423" target="_blank" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"></a></div>
+            </center>
             `;
 
     const addDislike = document.createElement("P"); // Texto count dislikes
@@ -407,14 +411,6 @@
       // se repite  1 vez
       const addButton = document.querySelector(".style-scope .ytd-watch-metadata");
       if (addButton != undefined && validoBotones) {
-        document.getElementsByTagName("head")[0].insertAdjacentHTML("beforeend",
-        `<script src="https://cdn.adf.ly/js/link-converter.js"></script>`);
-          var adfly_id = 21442743;
-            var adfly_advert = 'int';
-            var frequency_cap = 5;
-            var frequency_delay = 5;
-            var init_delay = 3;
-            var popunder = true;
         validoBotones = false;
         addButton.insertAdjacentHTML("beforebegin", menuBotones);
         document.querySelector("video").style.borderRadius = "30px";
