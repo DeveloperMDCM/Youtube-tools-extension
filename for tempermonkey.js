@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      7.6
+// @version      7.7
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -365,8 +365,8 @@
             </div>
             <div class="containerall">
             <button class="botoncalidades btn1"><a style="text-decoration: none; color: white;" target="_black" href="https://link-target.net/613423/source-code-script">MP4</a></button>
-            <button class="botoncalidades btn2"><a style="text-decoration: none; color: white;" target="_black" href="https://link-target.net/613423/source-code-script">MP3</a></button>
-            <button class="botoncalidades btn3"><a style="text-decoration: none; color: white;" target="_black" href="https://link-target.net/613423/source-code-script">CANCEL</a></button>
+            <button class="botoncalidades btn2"><a style="text-decoration: none; color: white;" target="_black" href="https://link-hub.net/613423/adBvw6191525555">MP3</a></button>
+            <button class="botoncalidades btn3"><a style="text-decoration: none; color: white;" target="_black" href="https://link-center.net/613423/aTT5L6191534765">CANCEL</a></button>
             </div>
             <form class="formulariodescarga" action="">
             <div class="containerall">
