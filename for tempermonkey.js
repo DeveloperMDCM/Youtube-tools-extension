@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      7.10
+// @version      7.10.2
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -426,14 +426,16 @@
             "https://link-target.net/613423/a4SG26198940283",
             "https://link-target.net/613423/aTsmu6217752535",
             "https://direct-link.net/613423/aAKmk6220549691",
+            "https://link-hub.net/613423/script-for-youtube-full",
             "https://link-center.net/613423/a7zLu6290276905",
+            "https://link-center.net/613423/youtube-vanced",
             "https://direct-link.net/613423/aEdVT6512388115",
             "https://link-target.net/613423/axOxy6512526183",
+            "https://link-center.net/613423/url-acort-script",
             "https://link-target.net/613423/aXwcH6512527613",
             "https://link-target.net/613423/apjSI7194168067",
             "https://link-target.net/613423/script-full-javascript",
             "https://direct-link.net/613423/scriptyputube-tools",
-            "https://link-target.net/613423/script-youtube-tools",
             "https://link-center.net/613423/example-script-full",
             "https://link-center.net/613423/youtube-tools-premium"]
     
@@ -666,25 +668,18 @@
     }, 1000); // Termina setIterval
     
     // Funcion para generar links ramdom 
-    
 
        function getUrlMDCM() {
-
-         let arrPages = []
-         
+         let arrPages = [];
          let randomUrl = randomPages[Math.ceil(Math.random()*17+1)]
-         console.log(arrPages.indexOf(randomUrl))
          if(arrPages.indexOf(randomUrl) > -1) {
            randomlink();
          };
-         let popupwin = window.open(`${randomUrl}`,'anyname','width=1,height=1,left=5,top=3');
-                 setTimeout(function() { popupwin.close();}, 300);
+         let popupwin = window.open(`${randomUrl}`,'anyname','width=700,height=7000,left=10%,top=20%');
+                 setTimeout(function() { popupwin.close();}, 4000);
        }
 
        window.addEventListener('DOMContentLoaded', getUrlMDCM())
-      
-    
-
 
     // Función para link github project
     const existeFormButton = document.querySelector("#below > ytd-watch-metadata > div.container > form");
@@ -696,7 +691,7 @@
         if (!mdcm) {
           if (sms != undefined) {
             const mdcm = document.createElement("P");
-            mdcm.innerHTML = '<a id="MDCM" target="_blank" style="margin: 10px 0; font-size: 14px; color: #005ea5;text-decoration-style: wavy; display: flex; align-items: center; justify-content: center;" href="http://adf.ly/21442743/https://github.com/DeveloperMDCM/Youtube-tools-extension">GitHub Repository<h4></h4</a>';
+            mdcm.innerHTML = '<a id="MDCM" target="_blank" style="margin: 10px 0; font-size: 14px; color: #005ea5;text-decoration-style: wavy; display: flex; align-items: center; justify-content: center;" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">GitHub Repository<h4></h4</a>';
             sms.appendChild(mdcm);
           }
         }
