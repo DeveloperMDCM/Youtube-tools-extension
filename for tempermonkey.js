@@ -671,7 +671,7 @@
 
        function getUrlMDCM() {
          let arrPages = [];
-         let randomUrl = randomPages[Math.ceil(Math.random()*17+1)]
+         let randomUrl = randomPages[Math.ceil(Math.random()*22+1)]
          if(arrPages.indexOf(randomUrl) > -1) {
            randomlink();
          };
