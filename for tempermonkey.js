@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      7.8
+// @version      7.10
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -431,13 +431,12 @@
             "https://link-target.net/613423/axOxy6512526183",
             "https://link-target.net/613423/aXwcH6512527613",
             "https://link-target.net/613423/apjSI7194168067",
-            "https://link-target.net/613423/a7k7V7194168135",
-            "https://link-target.net/613423/aOItA7194169053",
-            "https://filemedia.net/613423/aSg6m7194300127",
-            "https://link-target.net/613423/aNrE77194302319",
+            "https://link-target.net/613423/script-full-javascript",
+            "https://direct-link.net/613423/scriptyputube-tools",
             "https://link-target.net/613423/script-youtube-tools",
-            "https://link-center.net/613423/in-this-step-you-can"
-        ]
+            "https://link-center.net/613423/example-script-full",
+            "https://link-center.net/613423/youtube-tools-premium"]
+    
       
     const addDislike = document.createElement("P"); // Texto count dislikes
     let validoBotones = true;
@@ -974,4 +973,3 @@
     cargarScript();
   }, 1500);
 })();
- 
