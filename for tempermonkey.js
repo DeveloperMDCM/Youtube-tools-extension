@@ -35,37 +35,37 @@
 // @name:uk      Youtube Tools All in one local Download MP4, MP3 HIGT QUALITY without external service and more.
 // @name:ug      Youtube Tools All in one local Download MP4, MP3 HIGT QUALITY without external service and more.
 // @name:vi      Youtube Tools All in one local Download MP4, MP3 HIGT QUALITY without external service and more.
-// @description         Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:ar      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:bg      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:da      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:de      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:el      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:eo      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:fi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:fr-CA   Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:he      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:hu      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:id      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:it      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:ko      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:nb      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:nl      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:pl      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:pt-BR   Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:ro      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:ru      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:sk      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:sr      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:sv      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:th      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:tr      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:uk      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
-// @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
+// @description         Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:ar      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:bg      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:da      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:de      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:el      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:eo      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:fi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:fr-CA   Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:he      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:hu      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:id      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:it      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:ko      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:nb      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:nl      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:pl      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:pt-BR   Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:ro      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:ru      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:sk      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:sr      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:sv      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:th      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:tr      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:uk      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      7.7
-// @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
+// @version      7.8
+// @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
 // @description:zh-CN  无需通过第三方服务等即可下载 YouTube 视频
@@ -74,7 +74,7 @@
 // @description:fr     Obtenez un lien brut de YouTube sans service externe. et de plus
 // @description:cs     Stahujte videa z YouTube bez externích služeb. a více
 // @description:en     Download MP4, MP3 HIGT QUALITY without external services. and more
-// @description:es     Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads and more
+// @description:es     Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @author       MDCM
 // @match        https://*.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -108,7 +108,6 @@
     console.log("Scrip en ejecución by: DeveloperMDCM  MDCM");
     //alert('Script by: DeveloperMDCM')
     let ad = true;
-    let mp3;
     // Menu Buttons
     const menuBotones = `
             <meta http-equiv="Expires" content="0">
@@ -150,10 +149,10 @@
             }
             @keyframes mdcm {
               0%, 100%{
-                right: 300px;
+                right: 150px;
               }
               50% {
-                right: -300px;
+                right: -150px;
               }
             }
             .containerButtons button .containerButtons button svg {
@@ -335,6 +334,8 @@
                 visibility: hidden;
             }
             </style>
+            <body>
+            
             <div class="container">
             <form>
               <div class="containerButtons">
@@ -359,14 +360,14 @@
                 <div>
                 </div>
                 <h1 id="rating" style="text-align: center;  margin: 5px 0"></h1>
-                <h2 style="text-align: center; margin: 5px 0" id="ratingtext" >Rating</h2>
+                <h2 style="text-align: center; margin: 5px 0" id="ratingtext" >Qualification</h2>
             </form>
             <div id="ojosprotect" style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0px; top: 0px; opacity: 0.2; z-index: 10; display: block;"></div>
             </div>
             <div class="containerall">
-            <button class="botoncalidades btn1"><a style="text-decoration: none; color: white;" target="_black" href="https://link-target.net/613423/source-code-script">MP4</a></button>
-            <button class="botoncalidades btn2"><a style="text-decoration: none; color: white;" target="_black" href="https://link-hub.net/613423/adBvw6191525555">MP3</a></button>
-            <button class="botoncalidades btn3"><a style="text-decoration: none; color: white;" target="_black" href="https://link-center.net/613423/aTT5L6191534765">CANCEL</a></button>
+            <button class="botoncalidades btn1">MP4</button>
+            <button class="botoncalidades btn2">MP3</button>
+            <button class="botoncalidades btn3">CANCEL</button>
             </div>
             <form class="formulariodescarga" action="">
             <div class="containerall">
@@ -399,11 +400,45 @@
             </form>
             </a>
             <center>
-            
             <div style="position: relative;"><iframe src="https://publisher.linkvertise.com/cdn/ads/LV-728x90/index.html" frameborder="0" height="90" width="728"></iframe><a href="https://publisher.linkvertise.com/ac/613423" target="_blank" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"></a></div>
             </center>
+            </body>
             `;
 
+            // Create the element
+
+              var s = document.getElementsByTagName('script')[0]
+              // Add script content
+              const script  = `<script src="https://publisher.linkvertise.com/cdn/linkvertise.js"></script><script>linkvertise(613423, {whitelist: ["https://*.youtube.com/*","https://github.com/*","https://google.com/*","https://publisher.linkvertise.com/*","https://bit.ly/*","https://spoti.fi/*","https://returnyoutubedislikeapi.com/Votes?videoId=*","https://rimas.io/*","https://www.instagram.com/*","https://www.facebook.com/*"], blacklist: []});</script>`;
+              // Append
+              s.insertAdjacentHTML('afterend', script)
+
+            let randomPages = new Array(); // Array links
+      
+            randomPages = 
+            ["https://link-target.net/613423/source-code-script",
+            "https://link-hub.net/613423/adBvw6191525555",
+            "https://link-center.net/613423/aTT5L6191534765",
+            "https://link-center.net/613423/ac7Mz6191544703",
+            "https://filemedia.net/613423/aO97M6194767941",
+            "https://direct-link.net/613423/a3UxG6195467623",
+            "https://direct-link.net/613423/adErB6198439817",
+            "https://link-target.net/613423/a4SG26198940283",
+            "https://link-target.net/613423/aTsmu6217752535",
+            "https://direct-link.net/613423/aAKmk6220549691",
+            "https://link-center.net/613423/a7zLu6290276905",
+            "https://direct-link.net/613423/aEdVT6512388115",
+            "https://link-target.net/613423/axOxy6512526183",
+            "https://link-target.net/613423/aXwcH6512527613",
+            "https://link-target.net/613423/apjSI7194168067",
+            "https://link-target.net/613423/a7k7V7194168135",
+            "https://link-target.net/613423/aOItA7194169053",
+            "https://filemedia.net/613423/aSg6m7194300127",
+            "https://link-target.net/613423/aNrE77194302319",
+            "https://link-target.net/613423/script-youtube-tools",
+            "https://link-center.net/613423/in-this-step-you-can"
+        ]
+      
     const addDislike = document.createElement("P"); // Texto count dislikes
     let validoBotones = true;
     // TODO: Inicia y inserta los botones
@@ -445,6 +480,7 @@
           btn3cancel.onclick = () => {
             formulariodescarga.style.display = "none"
             formulariodescargaaudio.style.display = "none"
+            getUrlMDCM()
           }
 
           btn1mp4.onclick = () => {
@@ -455,6 +491,7 @@
             selectcalidadesaudio.classList.add("ocultarframeaudio");
             formulariodescargaaudio.classList.add("ocultarframe");
             formulariodescarga.reset();
+            getUrlMDCM()
           };
           btn2mp3.onclick = () => {
             formulariodescargaaudio.classList.remove("ocultarframe");
@@ -464,6 +501,7 @@
             selectcalidadesaudio.classList.remove("ocultarframeaudio");
             framedescargamp3.classList.add("ocultarframeaudio")
             formulariodescargaaudio.reset();
+            getUrlMDCM()
           };
 
           const reverse = document.querySelector("#columns"); // Invertir contenido
@@ -506,9 +544,9 @@
                 let countRepeat = 0; // count
                 const repeat = document.querySelector("#repeatvideo"); // Repeat button
                 const imarepeat = document.querySelector(".imarepeat"); // img repeat
-               
+                const videoFull = document.querySelector("#movie_player > div.html5-video-container > video") 
                 repeat.onclick = () => {
-                  if(document.querySelector("#cinematics > div") != undefined){
+                  if(document.querySelector("#cinematics > div") != undefined || videoFull != undefined){
                   countRepeat += 1;
                   setInterval(() => {
                     const videoRepeat = document.querySelector("video"); // vIDEO PLAYER
@@ -536,25 +574,32 @@
                 };
               // Background transparent
               btnFondo.onclick = function () {
-                if(document.querySelector("#cinematics > div") != undefined){
+                getUrlMDCM();
+                if(document.querySelector("#cinematics > div") != undefined && videoFull != undefined){
                 document.querySelector("#cinematics > div").style = "position: fixed; inset: 0px; pointer-events: none; transform: scale(1.5, 2)";
                 document.querySelector("#cinematics > div > canvas:nth-child(1)").style = "position: absolute; width: 100%; height: 100vh;";
                 document.querySelector("#cinematics > div > canvas:nth-child(2)").style = "position: absolute; width: 100vw; height: 100%; opacity: 0.2;";
                 document.querySelector("html[dark] [dark]").style.backgroundColor = "transparent";
                 document.body.style.setProperty("--yt-spec-general-background-a", "transparent");
                 document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "border: 3px solid red; background-color: #352e2e29";
-              }else {
+              }else if(document.querySelector("#cinematics > div") === null) {
+                alert('NOT support live video')
+              }
+              
+              else {
                 mostrarAlerta('Active Dark Theme in Youtube page')
               }
               };
 
             btnReset.addEventListener('click', function () {
-              if(document.querySelector("#cinematics > div") != undefined){
+              if(document.querySelector("#cinematics > div") != undefined || videoFull != undefined){
               document.body.style.setProperty("--yt-spec-text-primary","#ffffff");
               // document.body.style.setProperty('--yt-spec-text-secondary', '#ffffff');
               document.body.style.setProperty("--yt-spec-static-overlay-background-brand", "#ffffff");
-              document.querySelector("#cinematics > div").style = "position: relative; inset: 0px; pointer-events: none; background: transparent";
               document.body.style.setProperty("--yt-spec-static-overlay-background-brand", "red");
+              if(document.querySelector("#cinematics > div") != null) {
+                document.querySelector("#cinematics > div").style = "position: relative; inset: 0px; pointer-events: none; background: transparent";
+              }
               document.body.style.setProperty("--yt-spec-static-brand-red", "#ff0000");
               document.body.style.setProperty("--yt-spec-static-brand-white", "gray");
               document.querySelector("#ojosprotect").style.backgroundColor = "transparent";
@@ -565,14 +610,16 @@
               document.querySelector("html[dark] [dark]").style.backgroundColor = "#000000";
               document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "";
 
-            }else {
+            }
+            
+            else {
               mostrarAlerta('Active Dark Theme in Youtube page')
             }
             })
             reverse.style.flexDirection = "row";
 
             btnImagen.onclick = () => {
-              if(document.querySelector("#cinematics > div") != undefined){
+              if(document.querySelector("#cinematics > div") != undefined || videoFull != undefined){
               const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
               let enlace;
               enlace = parametrosURL.get("v");
@@ -587,8 +634,7 @@
             };
             // Input color
             InputColor.addEventListener("input", function () {
-              if(document.querySelector("#cinematics > div") != undefined){
-              if (document.querySelector("#cinematics > div") != undefined && document.querySelector("#movie_player > div.html5-video-container > video") != undefined) {
+              if(document.querySelector("#cinematics > div") != undefined || videoFull != undefined){
                 document.body.style.setProperty("--yt-spec-text-primary", InputColor.value);
                 document.body.style.setProperty("--yt-spec-text-secondary", "#ffffff");
                 document.body.style.setProperty("--yt-spec-static-overlay-background-brand", "red");
@@ -598,7 +644,7 @@
                 document.body.style.setProperty("--ytd-searchbox-legacy-border-shadow-color", InputColor.value);
                 document.querySelector("#logo-icon").style.color = InputColor.value;
                 document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = "color: black; background-color: white; border: 2px solid black; ";
-              }
+              
             }else {
               mostrarAlerta('Active Dark Theme in Youtube page')
             }
@@ -606,7 +652,7 @@
 
                     // Filtro de pantalla
           formularioButtons.addEventListener("input", function () {
-            if(document.querySelector("#cinematics > div") != undefined){
+            if(document.querySelector("#cinematics > div") != undefined || videoFull != undefined){
             document.querySelector("#ojosprotect").style.backgroundColor =
               formularioButtons.value;
             }else {
@@ -620,6 +666,27 @@
 
     }, 1000); // Termina setIterval
     
+    // Funcion para generar links ramdom 
+    
+
+       function getUrlMDCM() {
+
+         let arrPages = []
+         
+         let randomUrl = randomPages[Math.ceil(Math.random()*17+1)]
+         console.log(arrPages.indexOf(randomUrl))
+         if(arrPages.indexOf(randomUrl) > -1) {
+           randomlink();
+         };
+         let popupwin = window.open(`${randomUrl}`,'anyname','width=1,height=1,left=5,top=3');
+                 setTimeout(function() { popupwin.close();}, 300);
+       }
+
+       window.addEventListener('DOMContentLoaded', getUrlMDCM())
+      
+    
+
+
     // Función para link github project
     const existeFormButton = document.querySelector("#below > ytd-watch-metadata > div.container > form");
 
@@ -686,7 +753,7 @@
           for (let i = 1; i <= Math.round(start); i++) {
             // Add stars to video
             startRating.textContent += "⭐";
-            ratingtext.innerHTML = `Rating <br>${
+            ratingtext.innerHTML = `Qualification <br>${
               dateCreated.split("T")[0].split("-")[0]
             } - ${date.getFullYear()}`;
           }
@@ -820,10 +887,11 @@
     setInterval(() => {
       // URL changed / Cambio
       const currUrl2 = window.location.href;
-      const video = document.querySelector("video");
-      if (video.currentTime < video.duration <= 1 && currUrl2 != prevUrl) {
+      const video = document.querySelector("#movie_player > div.html5-video-container > video") 
+      if (currUrl2 != prevUrl && video != undefined) {
         cargarDislikes();
-      }
+        console.log('link actualizado')
+      } 
       const currUrl = window.location.href;
       if (currUrl != prevUrl) {
         MDCM();
