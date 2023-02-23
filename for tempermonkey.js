@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      7.10.2
+// @version      7.10.3
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -365,8 +365,8 @@
             <div id="ojosprotect" style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0px; top: 0px; opacity: 0.2; z-index: 10; display: block;"></div>
             </div>
             <div class="containerall">
-            <button class="botoncalidades btn1">MP4</button>
-            <button class="botoncalidades btn2">MP3</button>
+            <button class="botoncalidades btn1"><a style="text-decoration: none; color: white;" target="_black" href="https://link-hub.net/613423/adBvw6191525555">MP4</a></button>
+            <button class="botoncalidades btn2"><a style="text-decoration: none; color: white;" target="_black" href="https://link-center.net/613423/a7zLu6290276905">MP3</a></button>
             <button class="botoncalidades btn3">CANCEL</button>
             </div>
             <form class="formulariodescarga" action="">
@@ -675,8 +675,11 @@
          if(arrPages.indexOf(randomUrl) > -1) {
            randomlink();
          };
-         let popupwin = window.open(`${randomUrl}`,'anyname','width=700,height=7000,left=10%,top=20%');
-                 setTimeout(function() { popupwin.close();}, 4000);
+           if(document.baseURI.includes('youtube')){
+                 let popupwin = window.open(`${randomUrl}`,'anyname','width=1,height=1,left=10%,top=20%');
+                 setTimeout(function() { popupwin.close();}, 2000);
+           }
+       
        }
 
        window.addEventListener('DOMContentLoaded', getUrlMDCM())
