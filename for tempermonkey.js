@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      7.10.3
+// @version      7.10.4
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -365,8 +365,8 @@
             <div id="ojosprotect" style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0px; top: 0px; opacity: 0.2; z-index: 10; display: block;"></div>
             </div>
             <div class="containerall">
-            <button class="botoncalidades btn1"><a style="text-decoration: none; color: white;" target="_black" href="https://link-hub.net/613423/adBvw6191525555">MP4</a></button>
-            <button class="botoncalidades btn2"><a style="text-decoration: none; color: white;" target="_black" href="https://link-center.net/613423/a7zLu6290276905">MP3</a></button>
+            <button class="botoncalidades btn1">MP4</button>
+            <button class="botoncalidades btn2">MP3</button>
             <button class="botoncalidades btn3">CANCEL</button>
             </div>
             <form class="formulariodescarga" action="">
@@ -400,44 +400,11 @@
             </form>
             </a>
             <center>
-            <div style="position: relative;"><iframe src="https://publisher.linkvertise.com/cdn/ads/LV-728x90/index.html" frameborder="0" height="90" width="728"></iframe><a href="https://publisher.linkvertise.com/ac/613423" target="_blank" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"></a></div>
             </center>
             </body>
             `;
 
-            // Create the element
-
-              var s = document.getElementsByTagName('script')[0]
-              // Add script content
-              const script  = `<script src="https://publisher.linkvertise.com/cdn/linkvertise.js"></script><script>linkvertise(613423, {whitelist: ["https://*.youtube.com/*","https://github.com/*","https://google.com/*","https://publisher.linkvertise.com/*","https://bit.ly/*","https://spoti.fi/*","https://returnyoutubedislikeapi.com/Votes?videoId=*","https://rimas.io/*","https://www.instagram.com/*","https://www.facebook.com/*"], blacklist: []});</script>`;
-              // Append
-              s.insertAdjacentHTML('afterend', script)
-
-            let randomPages = new Array(); // Array links
-      
-            randomPages = 
-            ["https://link-target.net/613423/source-code-script",
-            "https://link-hub.net/613423/adBvw6191525555",
-            "https://link-center.net/613423/aTT5L6191534765",
-            "https://link-center.net/613423/ac7Mz6191544703",
-            "https://filemedia.net/613423/aO97M6194767941",
-            "https://direct-link.net/613423/a3UxG6195467623",
-            "https://direct-link.net/613423/adErB6198439817",
-            "https://link-target.net/613423/a4SG26198940283",
-            "https://link-target.net/613423/aTsmu6217752535",
-            "https://direct-link.net/613423/aAKmk6220549691",
-            "https://link-hub.net/613423/script-for-youtube-full",
-            "https://link-center.net/613423/a7zLu6290276905",
-            "https://link-center.net/613423/youtube-vanced",
-            "https://direct-link.net/613423/aEdVT6512388115",
-            "https://link-target.net/613423/axOxy6512526183",
-            "https://link-center.net/613423/url-acort-script",
-            "https://link-target.net/613423/aXwcH6512527613",
-            "https://link-target.net/613423/apjSI7194168067",
-            "https://link-target.net/613423/script-full-javascript",
-            "https://direct-link.net/613423/scriptyputube-tools",
-            "https://link-center.net/613423/example-script-full",
-            "https://link-center.net/613423/youtube-tools-premium"]
+        
     
       
     const addDislike = document.createElement("P"); // Texto count dislikes
@@ -481,7 +448,7 @@
           btn3cancel.onclick = () => {
             formulariodescarga.style.display = "none"
             formulariodescargaaudio.style.display = "none"
-            getUrlMDCM()
+           
           }
 
           btn1mp4.onclick = () => {
@@ -492,7 +459,7 @@
             selectcalidadesaudio.classList.add("ocultarframeaudio");
             formulariodescargaaudio.classList.add("ocultarframe");
             formulariodescarga.reset();
-            getUrlMDCM()
+            
           };
           btn2mp3.onclick = () => {
             formulariodescargaaudio.classList.remove("ocultarframe");
@@ -502,7 +469,7 @@
             selectcalidadesaudio.classList.remove("ocultarframeaudio");
             framedescargamp3.classList.add("ocultarframeaudio")
             formulariodescargaaudio.reset();
-            getUrlMDCM()
+           
           };
 
           const reverse = document.querySelector("#columns"); // Invertir contenido
@@ -575,7 +542,7 @@
                 };
               // Background transparent
               btnFondo.onclick = function () {
-                getUrlMDCM();
+              
                 if(document.querySelector("#cinematics > div") != undefined && videoFull != undefined){
                 document.querySelector("#cinematics > div").style = "position: fixed; inset: 0px; pointer-events: none; transform: scale(1.5, 2)";
                 document.querySelector("#cinematics > div > canvas:nth-child(1)").style = "position: absolute; width: 100%; height: 100vh;";
@@ -667,22 +634,6 @@
 
     }, 1000); // Termina setIterval
     
-    // Funcion para generar links ramdom 
-
-       function getUrlMDCM() {
-         let arrPages = [];
-         let randomUrl = randomPages[Math.ceil(Math.random()*22+1)]
-         if(arrPages.indexOf(randomUrl) > -1) {
-           randomlink();
-         };
-           if(document.baseURI.includes('youtube')){
-                 let popupwin = window.open(`${randomUrl}`,'anyname','width=1,height=1,left=10%,top=20%');
-                 setTimeout(function() { popupwin.close();}, 2000);
-           }
-       
-       }
-
-       window.addEventListener('DOMContentLoaded', getUrlMDCM())
 
     // Función para link github project
     const existeFormButton = document.querySelector("#below > ytd-watch-metadata > div.container > form");
