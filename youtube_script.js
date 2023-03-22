@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      1.0
+// @version      1.4
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -335,40 +335,38 @@
             }
             </style>
             <body>
-            
+
             <div class="container">
             <form>
-              <div class="containerButtons">
-                <div style="position:relative; display:inline-block ">
-                <button type="button" class="btn btn-secondary"><img width="35" src="https://cdn-icons-png.flaticon.com/512/674/674468.png"><input id="color" list type="color" value="#ffffff" ></button></div>
-                <button type="button"  id="imagen"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/3342/3342119.png"></button>
-                <button type="button"  id="invertir"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/556/556716.png"></button>
-                <button type="button"  id="fondo"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/4789/4789442.png"></button>
-                <button type="button"  id="reset"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/5632/5632370.png"></button>
-                <div style="position:relative; display:inline-block ">
-                <button type="button"><img width="35" src="https://cdn-icons-png.flaticon.com/512/5946/5946143.png"><input id="eyes" list="presetColors" type="color" value="#ffffff" ></button>
-                <datalist id="presetColors">
-                <option value="#000000"/>
-                <option value="#fbff00"/>
-                <option value="#ff0000"/>
-                <option value="#00ff00"/>
-                <option value="#0000ff"/>
-                </datalist>
-                </div>
-                <button type="button"  id="repeatvideo"> <img class="imarepeat" width="35" src="https://cdn-icons-png.flaticon.com/512/3447/3447562.png"></button>
+            <div class="containerButtons">
+              <div style="position:relative; display:inline-block ">
+              <button type="button" class="btn btn-secondary"><img width="35" src="https://cdn-icons-png.flaticon.com/512/674/674468.png"><input id="color" list type="color" value="#ffffff" ></button></div>
+              <button type="button"  id="imagen"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/3342/3342119.png"></button>
+              <button type="button"  id="invertir"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/556/556716.png"></button>
+              <button type="button"  id="fondo"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/4789/4789442.png"></button>
+              <button type="button"  id="reset"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/5632/5632370.png"></button>
+
+              <div style="position:relative; display:inline-block ">
+              <button type="button"><img width="35" src="https://cdn-icons-png.flaticon.com/512/5946/5946143.png"><input id="eyes" list="presetColors" type="color" value="#ffffff" ></button>
+              <datalist id="presetColors">
+              <option value="#000000"/>
+              <option value="#fbff00"/>
+              <option value="#ff0000"/>
+              <option value="#00ff00"/>
+              <option value="#0000ff"/>
+              </datalist>
               </div>
-                <div>
-                </div>
-                <h1 id="rating" style="text-align: center;  margin: 5px 0"></h1>
-                <h2 style="text-align: center; margin: 5px 0" id="ratingtext" >Qualification</h2>
+              <button type="button"  id="repeatvideo"> <img class="imarepeat" width="35" src="https://cdn-icons-png.flaticon.com/512/3447/3447562.png"></button>
+              <button type="button"  class="btn1"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/5063/5063695.png"></button>
+              <button type="button"  class="btn2"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/2284/2284806.png"></button>
+              <button type="button"  class="btn3"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/1828/1828527.png"></button>
+              </div>
+              <div>
+              </div>
             </form>
             <div id="ojosprotect" style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0px; top: 0px; opacity: 0.2; z-index: 10; display: block;"></div>
             </div>
-            <div class="containerall">
-            <button class="botoncalidades btn1">MP4</button>
-            <button class="botoncalidades btn2">MP3</button>
-            <button class="botoncalidades btn3">CANCEL</button>
-            </div>
+
             <form class="formulariodescarga" action="">
             <div class="containerall">
             <select class="selectcalidades  ocultarframe" required>
@@ -404,9 +402,9 @@
             </body>
             `;
 
-        
-    
-      
+
+
+
     const addDislike = document.createElement("P"); // Texto count dislikes
     let validoBotones = true;
     // TODO: Inicia y inserta los botones
@@ -448,7 +446,7 @@
           btn3cancel.onclick = () => {
             formulariodescarga.style.display = "none"
             formulariodescargaaudio.style.display = "none"
-           
+
           }
 
           btn1mp4.onclick = () => {
@@ -459,7 +457,7 @@
             selectcalidadesaudio.classList.add("ocultarframeaudio");
             formulariodescargaaudio.classList.add("ocultarframe");
             formulariodescarga.reset();
-            
+
           };
           btn2mp3.onclick = () => {
             formulariodescargaaudio.classList.remove("ocultarframe");
@@ -469,7 +467,7 @@
             selectcalidadesaudio.classList.remove("ocultarframeaudio");
             framedescargamp3.classList.add("ocultarframeaudio")
             formulariodescargaaudio.reset();
-           
+
           };
 
           const reverse = document.querySelector("#columns"); // Invertir contenido
@@ -506,13 +504,13 @@
           };
 
 
-       
+
             // valido modo oscuro y venta de video
             // Repeat video button
                 let countRepeat = 0; // count
                 const repeat = document.querySelector("#repeatvideo"); // Repeat button
                 const imarepeat = document.querySelector(".imarepeat"); // img repeat
-                const videoFull = document.querySelector("#movie_player > div.html5-video-container > video") 
+                const videoFull = document.querySelector("#movie_player > div.html5-video-container > video")
                 repeat.onclick = () => {
                   if(document.querySelector("#cinematics > div") != undefined || videoFull != undefined){
                   countRepeat += 1;
@@ -542,7 +540,7 @@
                 };
               // Background transparent
               btnFondo.onclick = function () {
-              
+
                 if(document.querySelector("#cinematics > div") != undefined && videoFull != undefined){
                 document.querySelector("#cinematics > div").style = "position: fixed; inset: 0px; pointer-events: none; transform: scale(1.5, 2)";
                 document.querySelector("#cinematics > div > canvas:nth-child(1)").style = "position: absolute; width: 100%; height: 100vh;";
@@ -553,7 +551,7 @@
               }else if(document.querySelector("#cinematics > div") === null) {
                 alert('NOT support live video')
               }
-              
+
               else {
                 mostrarAlerta('Active Dark Theme in Youtube page')
               }
@@ -579,7 +577,7 @@
               document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "";
 
             }
-            
+
             else {
               mostrarAlerta('Active Dark Theme in Youtube page')
             }
@@ -612,7 +610,7 @@
                 document.body.style.setProperty("--ytd-searchbox-legacy-border-shadow-color", InputColor.value);
                 document.querySelector("#logo-icon").style.color = InputColor.value;
                 document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = "color: black; background-color: white; border: 2px solid black; ";
-              
+
             }else {
               mostrarAlerta('Active Dark Theme in Youtube page')
             }
@@ -627,13 +625,13 @@
               mostrarAlerta('Active Dark Theme in Youtube page')
             }
           });
-                
-        } 
-        
+
+        }
+
         //
 
     }, 1000); // Termina setIterval
-    
+
 
     // Función para link github project
     const existeFormButton = document.querySelector("#below > ytd-watch-metadata > div.container > form");
@@ -690,21 +688,7 @@
         `;
           }
 
-          let start = rating;
-          const startRating = document.querySelector("#below > ytd-watch-metadata > div.container > form > h1");
-          const ratingtext = document.querySelector("#ratingtext");
-          const date = new Date(); // Year current
-          while (startRating.firstChild) {
-            // limpiar HTML previed - previo
-            startRating.removeChild(startRating.firstChild);
-          } // Rating califiacion del video
-          for (let i = 1; i <= Math.round(start); i++) {
-            // Add stars to video
-            startRating.textContent += "⭐";
-            ratingtext.innerHTML = `Qualification <br>${
-              dateCreated.split("T")[0].split("-")[0]
-            } - ${date.getFullYear()}`;
-          }
+
         } catch (error) {
           // Error
           console.log(error);
@@ -835,11 +819,11 @@
     setInterval(() => {
       // URL changed / Cambio
       const currUrl2 = window.location.href;
-      const video = document.querySelector("#movie_player > div.html5-video-container > video") 
+      const video = document.querySelector("#movie_player > div.html5-video-container > video")
       if (currUrl2 != prevUrl && video != undefined) {
         cargarDislikes();
         console.log('link actualizado')
-      } 
+      }
       const currUrl = window.location.href;
       if (currUrl != prevUrl) {
         MDCM();
