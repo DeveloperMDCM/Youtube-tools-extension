@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      1.4
+// @version      1.6
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -97,6 +97,7 @@
 (function () {
   // Youtube tools by: DeveloperMDCM
   // https://github.com/DeveloperMDCM/Youtube-tools-extension
+
   "use strict";
 
   function paramsVideoURL() {
@@ -106,7 +107,9 @@
 
   function cargarScript() {
     console.log("Scrip en ejecución by: DeveloperMDCM  MDCM");
-    //alert('Script by: DeveloperMDCM')
+    
+
+   // alert('Script by: DeveloperMDCM', cat)
     let ad = true;
     // Menu Buttons
     const menuBotones = `
@@ -147,14 +150,7 @@
               position: relative;
               transition: 4s;
             }
-            @keyframes mdcm {
-              0%, 100%{
-                right: 150px;
-              }
-              50% {
-                right: -150px;
-              }
-            }
+           
             .containerButtons button .containerButtons button svg {
               width: 50px;
               height: 40px;
@@ -162,6 +158,24 @@
             #color, #eyes {
               opacity:0;position:absolute;height: 93%;bottom: 0; top: 2px; width: 62px;
             }
+                      /* width */
+          ::-webkit-scrollbar {
+            width: 4px;
+            height: 10px;
+          }
+
+          /* Track */
+          ::-webkit-scrollbar-track {
+            background: ##d5d5d5; 
+            
+          }
+          
+          /* Handle */
+          ::-webkit-scrollbar-thumb {
+            background: #000; 
+
+          }
+
             .containerall {
               width: 100%;
               display: flex;
@@ -340,7 +354,15 @@
             <form>
             <div class="containerButtons">
               <div style="position:relative; display:inline-block ">
-              <button type="button" class="btn btn-secondary"><img width="35" src="https://cdn-icons-png.flaticon.com/512/674/674468.png"><input id="color" list type="color" value="#ffffff" ></button></div>
+              
+              <button type="button" class="btn btn-secondary"><img width="35" src="https://cdn-icons-png.flaticon.com/512/674/674468.png"><input id="color"  list="presetColors1" type="color" value="#ffffff" ></button></div>
+               <datalist id="presetColors1">
+              <option value="#ff00aa"/>
+              <option value="#fbff00"/>
+              <option value="#ff0000"/>
+              <option value="#00ff00"/>
+              <option value="#0000ff"/>
+              </datalist>
               <button type="button"  id="imagen"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/3342/3342119.png"></button>
               <button type="button"  id="invertir"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/556/556716.png"></button>
               <button type="button"  id="fondo"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/4789/4789442.png"></button>
@@ -414,7 +436,7 @@
       if (addButton != undefined && validoBotones) {
           validoBotones = false;
           addButton.insertAdjacentHTML("beforebegin", menuBotones);
-          document.querySelector("video").style.borderRadius = "30px";
+          // document.querySelector("video").style.borderRadius = "30px";
           // Formulario de botones para descargar
           const formulariodescarga = document.querySelector(".formulariodescarga");
           const formulariodescargaaudio = document.querySelector(".formulariodescargaaudio");
@@ -439,13 +461,14 @@
 
           selectcalidadesaudio.addEventListener("change", (e) => {
             framedescargamp3.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=049c16`;
-            console.log(e.target.value)
+            // console.log(e.target.value)
             framedescargamp3.classList.remove("ocultarframeaudio");
           });
 
           btn3cancel.onclick = () => {
-            formulariodescarga.style.display = "none"
-            formulariodescargaaudio.style.display = "none"
+            formulariodescarga.style.display = "none";
+            formulariodescargaaudio.style.display = "none";
+          
 
           }
 
@@ -486,7 +509,7 @@
           buttonsVideo.style = "display: flex;flex-direction: column;justify-content: center;align-items: center ;";
           document.querySelector("#title > h1").style = "text-align: center; color: red;";
           document.querySelector("#owner").style.justifyContent = "center";
-          document.querySelector("#search-icon-legacy.ytd-searchbox").style.backgroundColor = "black";
+          //document.querySelector("#search-icon-legacy.ytd-searchbox").style.backgroundColor = "gray";
 
 
           let countViewRow = 0; // Count
@@ -502,6 +525,21 @@
                 break;
             }
           };
+
+                // Color text page in localstorage refresh page
+                   const colorTextPageValidate = localStorage.getItem('colorTextPage');
+                //   console.log('validando nuevo color', colorTextPageValidate)
+                if(colorTextPageValidate !== null) {
+                  document.body.style.setProperty("--yt-spec-text-primary", colorTextPageValidate);
+                    //document.body.style.setProperty("--yt-spec-text-secondary", "#ffffff");
+                    document.body.style.setProperty("--yt-spec-static-overlay-background-brand", "red");
+                    document.body.style.setProperty("--yt-spec-static-brand-red", colorTextPageValidate);
+                    //document.body.style.setProperty("--yt-spec-static-brand-white", colorTextPageValidate);
+                    document.body.style.setProperty("--ytd-searchbox-legacy-border-color", colorTextPageValidate);
+                    document.body.style.setProperty("--ytd-searchbox-legacy-border-shadow-color", colorTextPageValidate);
+                    document.querySelector("#logo-icon").style.color = colorTextPageValidate;
+                    document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = "color: black; background-color: white; border: 2px solid black; ";
+                }
 
 
 
@@ -549,34 +587,41 @@
                 document.body.style.setProperty("--yt-spec-general-background-a", "transparent");
                 document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "border: 3px solid red; background-color: #352e2e29";
               }else if(document.querySelector("#cinematics > div") === null) {
-                alert('NOT support live video')
+                alert('NOT support live video And Theme Light')
               }
 
               else {
                 mostrarAlerta('Active Dark Theme in Youtube page')
               }
               };
-
+                
             btnReset.addEventListener('click', function () {
-              if(document.querySelector("#cinematics > div") != undefined || videoFull != undefined){
-              document.body.style.setProperty("--yt-spec-text-primary","#ffffff");
-              // document.body.style.setProperty('--yt-spec-text-secondary', '#ffffff');
-              document.body.style.setProperty("--yt-spec-static-overlay-background-brand", "#ffffff");
-              document.body.style.setProperty("--yt-spec-static-overlay-background-brand", "red");
-              if(document.querySelector("#cinematics > div") != null) {
+                localStorage.clear();
+              if(document.querySelector("#cinematics > div") != undefined){
+                
+                  document.body.style.setProperty("--yt-spec-text-primary","#ffffff");
+                  // document.body.style.setProperty('--yt-spec-text-secondary', '#ffffff');
+                  document.body.style.setProperty("--yt-spec-static-overlay-background-brand", "#ffffff");
+                  document.body.style.setProperty("--yt-spec-static-overlay-background-brand", "red");
                 document.querySelector("#cinematics > div").style = "position: relative; inset: 0px; pointer-events: none; background: transparent";
-              }
-              document.body.style.setProperty("--yt-spec-static-brand-red", "#ff0000");
-              document.body.style.setProperty("--yt-spec-static-brand-white", "gray");
-              document.querySelector("#ojosprotect").style.backgroundColor = "transparent";
-              document.body.style.setProperty("--ytd-searchbox-legacy-border-color", "#ffffff");
-              document.body.style.setProperty("--ytd-searchbox-legacy-border-shadow-color", "#ffffff");
-              document.querySelector("#logo-icon").style.color = "#ffffff";
-              document.body.style.setProperty("--yt-spec-general-background-a", "#000000");
-              document.querySelector("html[dark] [dark]").style.backgroundColor = "#000000";
-              document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "";
+                document.body.style.setProperty("--yt-spec-static-brand-red", "#ff0000");
+                document.body.style.setProperty("--yt-spec-static-brand-white", "gray");
+                document.querySelector("#ojosprotect").style.backgroundColor = "transparent";
+                // document.body.style.setProperty("--ytd-searchbox-legacy-border-color", "#ffffff");
+                document.querySelector("#logo-icon").style.color = "#ffffff";
+                document.body.style.setProperty("--yt-spec-general-background-a", "#000000");
+                document.querySelector("html[dark] [dark]").style.backgroundColor = "#000000";
+                document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "";
+              
 
-            }
+            }else if(document.querySelector("#cinematics > div") === null) {
+                document.body.style.setProperty("--yt-spec-text-primary","#000");
+                document.body.style.setProperty("--yt-spec-static-brand-red", "#ff0000");
+                document.body.style.setProperty("--yt-spec-static-brand-white", "#fff");
+                document.querySelector("#ojosprotect").style.backgroundColor = "transparent";
+                document.querySelector("#logo-icon").style.color = "#000";
+                document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "";
+              }
 
             else {
               mostrarAlerta('Active Dark Theme in Youtube page')
@@ -600,20 +645,22 @@
             };
             // Input color
             InputColor.addEventListener("input", function () {
+              localStorage.setItem('colorTextPage', InputColor.value);
+              const colorTextPage = localStorage.getItem('colorTextPage');
+            //   console.log(colorTextPage);
               if(document.querySelector("#cinematics > div") != undefined || videoFull != undefined){
-                document.body.style.setProperty("--yt-spec-text-primary", InputColor.value);
-                document.body.style.setProperty("--yt-spec-text-secondary", "#ffffff");
+                document.body.style.setProperty("--yt-spec-text-primary", colorTextPage);
+                //document.body.style.setProperty("--yt-spec-text-secondary", "#ffffff");
                 document.body.style.setProperty("--yt-spec-static-overlay-background-brand", "red");
-                document.body.style.setProperty("--yt-spec-static-brand-red", InputColor.value);
-                document.body.style.setProperty("--yt-spec-static-brand-white", InputColor.value);
-                document.body.style.setProperty("--ytd-searchbox-legacy-border-color", InputColor.value);
-                document.body.style.setProperty("--ytd-searchbox-legacy-border-shadow-color", InputColor.value);
-                document.querySelector("#logo-icon").style.color = InputColor.value;
+                document.body.style.setProperty("--yt-spec-static-brand-red", colorTextPage);
+                //document.body.style.setProperty("--yt-spec-static-brand-white", colorTextPage);
+                document.querySelector("#logo-icon").style.color = colorTextPage;
                 document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = "color: black; background-color: white; border: 2px solid black; ";
 
             }else {
               mostrarAlerta('Active Dark Theme in Youtube page')
             }
+         
               });
 
                     // Filtro de pantalla
@@ -643,7 +690,7 @@
         if (!mdcm) {
           if (sms != undefined) {
             const mdcm = document.createElement("P");
-            mdcm.innerHTML = '<a id="MDCM" target="_blank" style="margin: 10px 0; font-size: 14px; color: #005ea5;text-decoration-style: wavy; display: flex; align-items: center; justify-content: center;" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">GitHub Repository<h4></h4</a>';
+            mdcm.innerHTML = '<a id="MDCM" target="_blank" style="margin: 10px 0; font-size: 14px; color: #24ff; text-decoration: none; display: flex; align-items: center; justify-content: center; font-style: italic;font-weight: 700;" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">Link GitHub Repository<h4></h4</a>';
             sms.appendChild(mdcm);
           }
         }
@@ -821,8 +868,9 @@
       const currUrl2 = window.location.href;
       const video = document.querySelector("#movie_player > div.html5-video-container > video")
       if (currUrl2 != prevUrl && video != undefined) {
+        setTimeout(() => {
         cargarDislikes();
-        console.log('link actualizado')
+        }, 500)
       }
       const currUrl = window.location.href;
       if (currUrl != prevUrl) {
@@ -831,9 +879,11 @@
           shortDislike();
         }, 1000)
         const formulariodescarga = document.querySelector(".formulariodescarga");
+        const formulariodescargaaudio = document.querySelector(".formulariodescargaaudio");
         setTimeout(() => {
           if (formulariodescarga != undefined) {
             formulariodescarga.classList.add("ocultarframe");
+            formulariodescargaaudio.classList.add("ocultarframe");
           }
         }, 500);
         prevUrl = currUrl;
@@ -878,7 +928,7 @@
           .then((response) => response.json())
           .then((datos) => {
             texto[i].textContent = datos[0][0];
-            mdcm[i].textContent = "Traducido";
+            mdcm[i].textContent = "Translated";
           });
       };
     }
