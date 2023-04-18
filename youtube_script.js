@@ -107,7 +107,7 @@
 
   function cargarScript() {
     console.log("Scrip en ejecución by: DeveloperMDCM  MDCM");
-    
+
 
    // alert('Script by: DeveloperMDCM', cat)
     let ad = true;
@@ -150,7 +150,7 @@
               position: relative;
               transition: 4s;
             }
-           
+
             .containerButtons button .containerButtons button svg {
               width: 50px;
               height: 40px;
@@ -166,13 +166,13 @@
 
           /* Track */
           ::-webkit-scrollbar-track {
-            background: ##d5d5d5; 
-            
+            background: ##d5d5d5;
+
           }
-          
+
           /* Handle */
           ::-webkit-scrollbar-thumb {
-            background: #000; 
+            background: #000;
 
           }
 
@@ -354,7 +354,7 @@
             <form>
             <div class="containerButtons">
               <div style="position:relative; display:inline-block ">
-              
+
               <button type="button" class="btn btn-secondary"><img width="35" src="https://cdn-icons-png.flaticon.com/512/674/674468.png"><input id="color"  list="presetColors1" type="color" value="#ffffff" ></button></div>
                <datalist id="presetColors1">
               <option value="#ff00aa"/>
@@ -432,6 +432,23 @@
     // TODO: Inicia y inserta los botones
     setInterval(() => {
       // se repite  1 vez
+
+                // Color text page in localstorage refresh page
+                   const colorTextPageValidate = localStorage.getItem('colorTextPage');
+                //   console.log('validando nuevo color', colorTextPageValidate)
+                if(colorTextPageValidate !== undefined) {
+                  document.body.style.setProperty("--yt-spec-text-primary", colorTextPageValidate);
+                    //document.body.style.setProperty("--yt-spec-text-secondary", "#ffffff");
+                    document.body.style.setProperty("--yt-spec-static-overlay-background-brand", "red");
+                    document.body.style.setProperty("--yt-spec-static-brand-red", colorTextPageValidate);
+                    //document.body.style.setProperty("--yt-spec-static-brand-white", colorTextPageValidate);
+                    document.body.style.setProperty("--ytd-searchbox-legacy-border-color", colorTextPageValidate);
+                    document.body.style.setProperty("--ytd-searchbox-legacy-border-shadow-color", colorTextPageValidate);
+                    document.querySelector("#logo-icon").style.color = colorTextPageValidate;
+                    document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = "color: black; background-color: white; border: 2px solid black; ";
+                }
+
+
       const addButton = document.querySelector(".style-scope .ytd-watch-metadata");
       if (addButton != undefined && validoBotones) {
           validoBotones = false;
@@ -468,7 +485,7 @@
           btn3cancel.onclick = () => {
             formulariodescarga.style.display = "none";
             formulariodescargaaudio.style.display = "none";
-          
+
 
           }
 
@@ -526,22 +543,6 @@
             }
           };
 
-                // Color text page in localstorage refresh page
-                   const colorTextPageValidate = localStorage.getItem('colorTextPage');
-                //   console.log('validando nuevo color', colorTextPageValidate)
-                if(colorTextPageValidate !== null) {
-                  document.body.style.setProperty("--yt-spec-text-primary", colorTextPageValidate);
-                    //document.body.style.setProperty("--yt-spec-text-secondary", "#ffffff");
-                    document.body.style.setProperty("--yt-spec-static-overlay-background-brand", "red");
-                    document.body.style.setProperty("--yt-spec-static-brand-red", colorTextPageValidate);
-                    //document.body.style.setProperty("--yt-spec-static-brand-white", colorTextPageValidate);
-                    document.body.style.setProperty("--ytd-searchbox-legacy-border-color", colorTextPageValidate);
-                    document.body.style.setProperty("--ytd-searchbox-legacy-border-shadow-color", colorTextPageValidate);
-                    document.querySelector("#logo-icon").style.color = colorTextPageValidate;
-                    document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = "color: black; background-color: white; border: 2px solid black; ";
-                }
-
-
 
             // valido modo oscuro y venta de video
             // Repeat video button
@@ -594,11 +595,11 @@
                 mostrarAlerta('Active Dark Theme in Youtube page')
               }
               };
-                
+
             btnReset.addEventListener('click', function () {
                 localStorage.clear();
               if(document.querySelector("#cinematics > div") != undefined){
-                
+
                   document.body.style.setProperty("--yt-spec-text-primary","#ffffff");
                   // document.body.style.setProperty('--yt-spec-text-secondary', '#ffffff');
                   document.body.style.setProperty("--yt-spec-static-overlay-background-brand", "#ffffff");
@@ -612,7 +613,7 @@
                 document.body.style.setProperty("--yt-spec-general-background-a", "#000000");
                 document.querySelector("html[dark] [dark]").style.backgroundColor = "#000000";
                 document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "";
-              
+
 
             }else if(document.querySelector("#cinematics > div") === null) {
                 document.body.style.setProperty("--yt-spec-text-primary","#000");
@@ -651,7 +652,7 @@
               if(document.querySelector("#cinematics > div") != undefined || videoFull != undefined){
                 document.body.style.setProperty("--yt-spec-text-primary", colorTextPage);
                 //document.body.style.setProperty("--yt-spec-text-secondary", "#ffffff");
-                document.body.style.setProperty("--yt-spec-static-overlay-background-brand", "red");
+                document.body.style.setProperty("--yt-spec-static-overlay-background-brand", colorTextPage);
                 document.body.style.setProperty("--yt-spec-static-brand-red", colorTextPage);
                 //document.body.style.setProperty("--yt-spec-static-brand-white", colorTextPage);
                 document.querySelector("#logo-icon").style.color = colorTextPage;
@@ -660,7 +661,7 @@
             }else {
               mostrarAlerta('Active Dark Theme in Youtube page')
             }
-         
+
               });
 
                     // Filtro de pantalla
@@ -741,6 +742,7 @@
           console.log(error);
         }
       }
+      cargarDislikes();
     }
     // Función para formatear los dislikes
     function FormatiarNumero(num, digits) {
@@ -870,7 +872,7 @@
       if (currUrl2 != prevUrl && video != undefined) {
         setTimeout(() => {
         cargarDislikes();
-        }, 500)
+        }, 1000)
       }
       const currUrl = window.location.href;
       if (currUrl != prevUrl) {
@@ -954,5 +956,5 @@
   };
   setTimeout(() => {
     cargarScript();
-  }, 1500);
+  }, 2000);
 })();
