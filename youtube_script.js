@@ -121,7 +121,7 @@
             .mdcm:hover {
               cursor: pointer;
             }
-            .mdcm{
+            .mdcm{ 
               font-size: 10px;
             }
             #subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button:hover {
