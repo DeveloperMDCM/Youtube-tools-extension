@@ -742,7 +742,7 @@
           console.log(error);
         }
       }
-      cargarDislikes();
+
     }
     // Función para formatear los dislikes
     function FormatiarNumero(num, digits) {
@@ -877,6 +877,7 @@
       const currUrl = window.location.href;
       if (currUrl != prevUrl) {
         MDCM();
+        cargarDislikes();
         setTimeout(() => {
           shortDislike();
         }, 1000)
@@ -889,6 +890,9 @@
           }
         }, 500);
         prevUrl = currUrl;
+        setTimeout(() => {
+          cargarDislikes();
+        }, 1000)
         setTimeout(() => {
           cargarDislikes();
         }, 1000)
