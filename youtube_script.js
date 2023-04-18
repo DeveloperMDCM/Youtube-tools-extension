@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      1.7.2
+// @version      1.7.1
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -121,7 +121,7 @@
             .mdcm:hover {
               cursor: pointer;
             }
-            .mdcm{ 
+            .mdcm{
               font-size: 10px;
             }
             #subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button:hover {
@@ -433,21 +433,7 @@
     setInterval(() => {
       // se repite  1 vez
 
-                // Color text page in localstorage refresh page
-                   const colorTextPageValidate = localStorage.getItem('colorTextPage');
-                //   console.log('validando nuevo color', colorTextPageValidate)
-                if(colorTextPageValidate !== undefined) {
-                  document.body.style.setProperty("--yt-spec-text-primary", colorTextPageValidate);
-                    //document.body.style.setProperty("--yt-spec-text-secondary", "#ffffff");
-                    document.body.style.setProperty("--yt-spec-static-overlay-background-brand", "red");
-                    document.body.style.setProperty("--yt-spec-static-brand-red", colorTextPageValidate);
-                    //document.body.style.setProperty("--yt-spec-static-brand-white", colorTextPageValidate);
-                    document.body.style.setProperty("--ytd-searchbox-legacy-border-color", colorTextPageValidate);
-                    document.body.style.setProperty("--ytd-searchbox-legacy-border-shadow-color", colorTextPageValidate);
-                    document.querySelector("#logo-icon").style.color = colorTextPageValidate;
-                    document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = "color: black; background-color: white; border: 2px solid black; ";
-                }
-
+              
 
       const addButton = document.querySelector(".style-scope .ytd-watch-metadata");
       if (addButton != undefined && validoBotones) {
