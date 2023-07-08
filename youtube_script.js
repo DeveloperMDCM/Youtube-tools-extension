@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      1.7.2
+// @version      1.7.3
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -129,15 +129,20 @@
             }
             .containerButtons {
               position: relative;
+              
               display: flex;
               justify-content: center;
               flex-wrap: wrap;
               user-select: none;
+              
+              border-radius: 20px;
+              margin: 0 auto;
+              padding: 4px;
             }
             .containerButtons button , input {
               display: flex;
               flex-direction: column-reverse;
-              margin: 0 4px;
+              margin: 0 5px;
               align-items: center;
               cursor: pointer;
               border-radius: 10px;
@@ -156,7 +161,7 @@
               height: 40px;
             }
             #color, #eyes {
-              opacity:0;position:absolute;height: 93%;bottom: 0; top: 2px; width: 62px;
+              opacity:0;position:absolute;height: 93%;bottom: 0; top: 2px; width: 30px;
             }
                       /* width */
           ::-webkit-scrollbar {
@@ -247,7 +252,7 @@
 
             .progress-button.in-progress,
             .progress-button.finished {
-                color: red !;
+                color: red;
             }
 
             .progress-button.in-progress:after,
@@ -259,7 +264,7 @@
                 text-align: center;
                 top: 0;
                 padding-top: inherit;
-                color: #fff !;
+                color: #fff;
                 left: 0;
             }
 
@@ -347,6 +352,11 @@
             .grecaptcha-badge {
                 visibility: hidden;
             }
+
+            .botones_div {
+              background-color: #fff;
+              border: none;
+            }
             </style>
             <body>
 
@@ -355,7 +365,7 @@
             <div class="containerButtons">
               <div style="position:relative; display:inline-block ">
 
-              <button type="button" class="btn btn-secondary"><img width="35" src="https://cdn-icons-png.flaticon.com/512/674/674468.png"><input id="color"  list="presetColors1" type="color" value="#ffffff" ></button></div>
+              <button class="botones_div"  type="button"><img width="35" src="https://www.svgrepo.com/show/277433/pantone-paint.svg"><input id="color"  list="presetColors1" type="color" value="#ffffff" ></button></div>
                <datalist id="presetColors1">
               <option value="#ff00aa"/>
               <option value="#fbff00"/>
@@ -363,13 +373,12 @@
               <option value="#00ff00"/>
               <option value="#0000ff"/>
               </datalist>
-              <button type="button"  id="imagen"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/3342/3342119.png"></button>
-              <button type="button"  id="invertir"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/556/556716.png"></button>
-              <button type="button"  id="fondo"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/4789/4789442.png"></button>
-              <button type="button"  id="reset"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/5632/5632370.png"></button>
+              <button class="botones_div" type="button"  id="imagen"> <img width="35" src="https://www.svgrepo.com/show/33989/jpg.svg"></button>
+              <button class="botones_div" type="button"  id="invertir"> <img width="35" src="https://www.svgrepo.com/show/253535/reverse.svg"></button>
+              <button class="botones_div" type="button"  id="reset"> <img width="35" src="https://www.svgrepo.com/show/285786/turn-on-reset.svg"></button>
 
               <div style="position:relative; display:inline-block ">
-              <button type="button"><img width="35" src="https://cdn-icons-png.flaticon.com/512/5946/5946143.png"><input id="eyes" list="presetColors" type="color" value="#ffffff" ></button>
+              <button class="botones_div" type="button"><img width="35" src="https://www.svgrepo.com/show/195571/brightness-sun.svg"><input id="eyes" list="presetColors" type="color" value="#ffffff" ></button>
               <datalist id="presetColors">
               <option value="#000000"/>
               <option value="#fbff00"/>
@@ -378,10 +387,10 @@
               <option value="#0000ff"/>
               </datalist>
               </div>
-              <button type="button"  id="repeatvideo"> <img class="imarepeat" width="35" src="https://cdn-icons-png.flaticon.com/512/3447/3447562.png"></button>
-              <button type="button"  class="btn1"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/5063/5063695.png"></button>
-              <button type="button"  class="btn2"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/2284/2284806.png"></button>
-              <button type="button"  class="btn3"> <img width="35" src="https://cdn-icons-png.flaticon.com/512/1828/1828527.png"></button>
+              <button class="botones_div" type="button"  id="repeatvideo"> <img class="imarepeat" width="35" src="https://www.svgrepo.com/show/498215/money-change.svg"></button>
+              <button  type="button"  class="btn1 botones_div"> <img width="35" src="https://www.svgrepo.com/show/41018/mp4.svg"></button>
+              <button  type="button"  class="btn2 botones_div"> <img width="35" src="https://www.svgrepo.com/show/25848/mp3.svg"></button>
+              <button  type="button"  class="btn3 botones_div"> <img width="35" src="https://www.svgrepo.com/show/286637/cancel-close.svg"></button>
               </div>
               <div>
               </div>
@@ -471,8 +480,6 @@
           btn3cancel.onclick = () => {
             formulariodescarga.style.display = "none";
             formulariodescargaaudio.style.display = "none";
-
-
           }
 
           btn1mp4.onclick = () => {
@@ -550,12 +557,12 @@
                             videoRepeat.currentTime = 0;
                             buttonLeft.click();
                           }
-                          imarepeat.src = "https://cdn-icons-png.flaticon.com/512/3447/3447552.png"; // img repeat
+                          imarepeat.src = "https://www.svgrepo.com/show/496405/money-change.svg"; // img repeat
                         }
                         break;
                       case 2:
                         countRepeat = 0;
-                        imarepeat.src = "https://cdn-icons-png.flaticon.com/512/3447/3447562.png";
+                        imarepeat.src = "https://www.svgrepo.com/show/498215/money-change.svg";
                         break;
                     }
                   }, 1000);
@@ -564,23 +571,28 @@
                 }
                 };
               // Background transparent
-              btnFondo.onclick = function () {
-
+            
+                
+              // localStorage.setItem('colorTextPage', "");
                 if(document.querySelector("#cinematics > div") != undefined && videoFull != undefined){
                 document.querySelector("#cinematics > div").style = "position: fixed; inset: 0px; pointer-events: none; transform: scale(1.5, 2)";
                 document.querySelector("#cinematics > div > canvas:nth-child(1)").style = "position: absolute; width: 100%; height: 100vh;";
-                document.querySelector("#cinematics > div > canvas:nth-child(2)").style = "position: absolute; width: 100vw; height: 100%; opacity: 0.2;";
+                document.querySelector("#cinematics > div > canvas:nth-child(2)").style = "position: absolute; width: 100%; height: 100vh; opacity: 0.2;";
                 document.querySelector("html[dark] [dark]").style.backgroundColor = "transparent";
                 document.body.style.setProperty("--yt-spec-general-background-a", "transparent");
                 document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "border: 3px solid red; background-color: #352e2e29";
-              }else if(document.querySelector("#cinematics > div") === null) {
-                alert('NOT support live video And Theme Light')
-              }
+                const colorTextPage = localStorage.getItem('colorTextPage');
 
-              else {
-                mostrarAlerta('Active Dark Theme in Youtube page')
-              }
-              };
+                document.body.style.setProperty("--yt-spec-text-primary", colorTextPage);
+                //document.body.style.setProperty("--yt-spec-text-secondary", "#ffffff");
+                document.body.style.setProperty("--yt-spec-static-overlay-background-brand", colorTextPage);
+                document.body.style.setProperty("--yt-spec-static-brand-red", colorTextPage);
+                //document.body.style.setProperty("--yt-spec-static-brand-white", colorTextPage);
+                document.querySelector("#logo-icon").style.color = colorTextPage;
+                // document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = "color: black; background-color: white; border: 2px solid black;";
+
+                }
+             
 
             btnReset.addEventListener('click', function () {
                 localStorage.clear();
@@ -599,8 +611,6 @@
                 document.body.style.setProperty("--yt-spec-general-background-a", "#000000");
                 document.querySelector("html[dark] [dark]").style.backgroundColor = "#000000";
                 document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "";
-
-
             }else if(document.querySelector("#cinematics > div") === null) {
                 document.body.style.setProperty("--yt-spec-text-primary","#000");
                 document.body.style.setProperty("--yt-spec-static-brand-red", "#ff0000");
@@ -626,7 +636,7 @@
                 "popUpWindow",
                 "height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes"
               );
-            }else {
+            } else {
               mostrarAlerta('Active Dark Theme in Youtube page')
             }
             };
@@ -634,7 +644,7 @@
             InputColor.addEventListener("input", function () {
               localStorage.setItem('colorTextPage', InputColor.value);
               const colorTextPage = localStorage.getItem('colorTextPage');
-            //   console.log(colorTextPage);
+              // console.log(colorTextPage);
               if(document.querySelector("#cinematics > div") != undefined || videoFull != undefined){
                 document.body.style.setProperty("--yt-spec-text-primary", colorTextPage);
                 //document.body.style.setProperty("--yt-spec-text-secondary", "#ffffff");
@@ -642,7 +652,7 @@
                 document.body.style.setProperty("--yt-spec-static-brand-red", colorTextPage);
                 //document.body.style.setProperty("--yt-spec-static-brand-white", colorTextPage);
                 document.querySelector("#logo-icon").style.color = colorTextPage;
-                document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = "color: black; background-color: white; border: 2px solid black; ";
+                // document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = "color: black; background-color: white; border: 2px solid black;";
 
             }else {
               mostrarAlerta('Active Dark Theme in Youtube page')
@@ -653,8 +663,7 @@
                     // Filtro de pantalla
           formularioButtons.addEventListener("input", function () {
             if(document.querySelector("#cinematics > div") != undefined || videoFull != undefined){
-            document.querySelector("#ojosprotect").style.backgroundColor =
-              formularioButtons.value;
+            document.querySelector("#ojosprotect").style.backgroundColor = formularioButtons.value;
             }else {
               mostrarAlerta('Active Dark Theme in Youtube page')
             }
@@ -726,6 +735,7 @@
         } catch (error) {
           // Error
           console.log(error);
+          cargarDislikes();
         }
       }
 
