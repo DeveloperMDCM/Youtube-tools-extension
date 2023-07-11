@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      1.7.3
+// @version      1.7.5
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -90,6 +90,7 @@
 // @compatible opera
 // @compatible safari
 // @compatible edge
+// @compatible brave
 // @license MIT
 // @namespace https://github.com/DeveloperMDCM/
 // ==/UserScript==
@@ -573,25 +574,7 @@
               // Background transparent
             
                 
-              // localStorage.setItem('colorTextPage', "");
-                if(document.querySelector("#cinematics > div") != undefined && videoFull != undefined){
-                document.querySelector("#cinematics > div").style = "position: fixed; inset: 0px; pointer-events: none; transform: scale(1.5, 2)";
-                document.querySelector("#cinematics > div > canvas:nth-child(1)").style = "position: absolute; width: 100%; height: 100vh;";
-                document.querySelector("#cinematics > div > canvas:nth-child(2)").style = "position: absolute; width: 100%; height: 100vh; opacity: 0.2;";
-                document.querySelector("html[dark] [dark]").style.backgroundColor = "transparent";
-                document.body.style.setProperty("--yt-spec-general-background-a", "transparent");
-                document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "border: 3px solid red; background-color: #352e2e29";
-                const colorTextPage = localStorage.getItem('colorTextPage');
-
-                document.body.style.setProperty("--yt-spec-text-primary", colorTextPage);
-                //document.body.style.setProperty("--yt-spec-text-secondary", "#ffffff");
-                document.body.style.setProperty("--yt-spec-static-overlay-background-brand", colorTextPage);
-                document.body.style.setProperty("--yt-spec-static-brand-red", colorTextPage);
-                //document.body.style.setProperty("--yt-spec-static-brand-white", colorTextPage);
-                document.querySelector("#logo-icon").style.color = colorTextPage;
-                // document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = "color: black; background-color: white; border: 2px solid black;";
-
-                }
+            
              
 
             btnReset.addEventListener('click', function () {
@@ -672,6 +655,24 @@
         }
 
         //
+          // localStorage.setItem('colorTextPage', ""); Update
+                if(document.querySelector("#cinematics > div") != undefined){
+                document.querySelector("#cinematics > div").style = "position: fixed; inset: 0px; pointer-events: none; transform: scale(1.5, 2)";
+                document.querySelector("#cinematics > div > canvas:nth-child(1)").style = "position: absolute; width: 100%; height: 100vh;";
+                document.querySelector("#cinematics > div > canvas:nth-child(2)").style = "position: absolute; width: 100%; height: 100vh; opacity: 0.2;";
+                document.querySelector("html[dark] [dark]").style.backgroundColor = "transparent";
+                document.body.style.setProperty("--yt-spec-general-background-a", "transparent");
+                document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "border: 3px solid red; background-color: #352e2e29";
+                const colorTextPage = localStorage.getItem('colorTextPage');
+                document.body.style.setProperty("--yt-spec-text-primary", colorTextPage);
+                //document.body.style.setProperty("--yt-spec-text-secondary", "#ffffff");
+                document.body.style.setProperty("--yt-spec-static-overlay-background-brand", colorTextPage);
+                document.body.style.setProperty("--yt-spec-static-brand-red", colorTextPage);
+                //document.body.style.setProperty("--yt-spec-static-brand-white", colorTextPage);
+                document.querySelector("#logo-icon").style.color = colorTextPage;
+                // document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = "color: black; background-color: white; border: 2px solid black;";
+
+                }
 
     }, 1000); // Termina setIterval
 
@@ -735,7 +736,7 @@
         } catch (error) {
           // Error
           console.log(error);
-          cargarDislikes();
+          
         }
       }
 
@@ -868,6 +869,7 @@
       if (currUrl2 != prevUrl && video != undefined) {
         setTimeout(() => {
         cargarDislikes();
+        setTimeout(() => {cargarDislikes()})
         }, 1000)
       }
       const currUrl = window.location.href;
