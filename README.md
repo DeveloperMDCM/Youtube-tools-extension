@@ -1,5 +1,8 @@
 # Youtube-tools-extension
-https://github.com/DeveloperMDCM/Youtube-tools-extension
+<p align="center">
+   <a href="https://github.com/DeveloperMDCM/Youtube-tools-extension/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/DeveloperMDCM/Youtube-tools-extension"></a>
+  <img alt="GitHub stars" src="https://img.shields.io/github/stars/DeveloperMDCM/Youtube-tools-extension">
+<p align="center">
 
 https://greasyfork.org/es/scripts/460680-youtube-tools-all-in-one-local-download-mp3-mp4-higt-quality-return-dislikes-and-more
 
