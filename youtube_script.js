@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      1.8.2
+// @version      1.8.3
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -1202,53 +1202,55 @@ button:hover {
       }
     }
   }
-
-  // Variables para la traduccion de comentarios
-  let traducido; // Texto traducido
-  let urlLista; // Url lista
-  //TODO: Traducir comentarios
-  async function traductor() {
-    const texto = document.querySelectorAll("#content-text");
-    let o = `?client=dict-chrome-ex&sl=auto&tl=${navigator.language}&q=`;
-    for (let i = 0; i < texto.length; i++) {
-      const botonTraducir = document.createElement("BUTTON");
-      botonTraducir.classList.add("mdcm");
-      botonTraducir.textContent = "Traslate";
-      botonTraducir.style =
-        "background-color: #000; color: #fff; border-radius: 5px; padding: 2px; ";
-      botonTraducir.setAttribute("id", `btn${i}`);
-      texto[i].insertAdjacentElement("afterend", botonTraducir);
-      const mdcm = document.querySelectorAll(`.mdcm`);
-      mdcm[i].onclick = function () {
-        traducido = o;
-        urlLista = traducido + texto[i].textContent;
-        fetch("https://transl.googleapis.com/transl_a/t" + urlLista) //API
-          .then((response) => response.json())
-          .then((datos) => {
-            texto[i].textContent = datos[0][0];
-            mdcm[i].textContent = "transld";
-          });
-      };
-    }
+// Variables para la traduccion de comentarios
+let traducido; // Texto traducido
+let urlLista; // Url lista
+//TODO: Traducir comentarios
+async function traductor() {
+  const texto = document.querySelectorAll("#content-text");
+  let o = `?client=dict-chrome-ex&sl=auto&tl=${navigator.language}&q=`;
+  for (let i = 0; i < texto.length; i++) {
+    const botonTraducir = document.createElement("BUTTON");
+    botonTraducir.classList.add("mdcm");
+    botonTraducir.textContent = "Traducir";
+    botonTraducir.style.backgroundColor = "black";
+    botonTraducir.style.color = "white";
+    botonTraducir.style.borderRadius = "5px";
+    botonTraducir.style.padding = "2px";
+    botonTraducir.setAttribute("id", `btn${i}`);
+    texto[i].insertAdjacentElement("afterend", botonTraducir);
+    const mdcm = document.querySelectorAll(`.mdcm`);
+    mdcm[i].onclick = function () {
+      traducido = o;
+      urlLista = traducido + texto[i].textContent;
+      fetch("https://translate.googleapis.com/translate_a/t" + urlLista) //API
+        .then((response) => response.json())
+        .then((datos) => {
+          texto[i].textContent = datos[0][0];
+          mdcm[i].textContent = "Traducido";
+        });
+    };
   }
+}
 
-  // Limpiar botones de comentarios
-  function limpiarHTML() {
-    const buttons = document.querySelectorAll(".mdcm");
-    [].forEach.call(buttons, function (buttons) {
-      buttons.remove();
-    });
-    traductor();
+// Limpiar botones de comentarios
+function limpiarHTML() {
+  const buttons = document.querySelectorAll(".mdcm");
+  [].forEach.call(buttons, function (buttons) {
+
+    buttons.remove();
+
+  });
+  traductor();
+}
+
+// TODO: mostrar boton de traducir en comentarios cuando sean visibles
+window.onscroll = () => {
+  const divEl = document.querySelector("#content-text");
+  if (divEl != undefined) {
+    limpiarHTML();
   }
-
-  // TODO: mostrar boton de traducir en comentarios cuando sean visibles
-  window.onscroll = () => {
-    const divEl = document.querySelector("#content-text");
-    if (divEl != undefined) {
-      limpiarHTML();
-    }
-  };
-  // Función para eliminar los posibles anuncios
+};
 
   function init() {
     cargarScript();
