@@ -1,0 +1,348 @@
+<!-- Example -->
+<!-- http://localhost:5501/?url=https://www.youtube.com/watch?v=gEkCRlqWAJA&f=mp3 -->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="robots" content="noindex" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="language" content="en" />
+<meta name="description" content="Download your favorite YouTube videos and playlists from the internet without registration for free. Convert your favorite YouTube videos to MP3, MP4 and M4A." />
+<meta name="google" content="notranslate" />
+<title>Loader.to Button API</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8" />
+<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<style>
+        html,
+        body {
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: black;
+            font-size: 24px;
+        }
+
+        @media (max-height:150px) and (max-width:400px) {
+            body {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width:200px) {
+            body {
+                font-size: 14px;
+            }
+
+            svg {
+                display: none;
+            }
+        }
+
+        button {
+            font-size: 1em;
+            border-radius: 2px;
+            border: 0;
+            font-family: 'Open Sans', sans-serif;
+            height: 100%;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .progress-button {
+            display: inline-block;
+            font-size: 1em;
+            color: #fff !important;
+            text-decoration: none !important;
+            line-height: 1;
+            overflow: hidden;
+            position: relative;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            box-shadow: 0 1px 1px #ccc;
+            border-radius: 2px;
+            cursor: pointer;
+            background-color: #64c896;
+        }
+
+        #downloadButton:hover .progress-button {
+            filter: brightness(95%);
+        }
+
+        .progress-button.in-progress,
+        .progress-button.finished {
+            color: transparent !important;
+        }
+
+        .progress-button.in-progress:after,
+        .progress-button.finished:after {
+            position: absolute;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            top: 0;
+            padding-top: inherit;
+            color: #fff !important;
+            left: 0;
+        }
+
+        .progress-button.in-progress:after {
+            content: attr(data-loading);
+        }
+
+        .progress-button.finished:after {
+            content: attr(data-finished);
+        }
+
+        .progress-button .tz-bar {
+            background-color: #4e9672;
+            height: 3px;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            position: absolute;
+            z-index: 1;
+            border-radius: 0 0 2px 2px;
+            -webkit-transition: width 0.5s, height 0.5s;
+            -moz-transition: width 0.5s, height 0.5s;
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .progress-button .tz-bar.background-horizontal {
+            height: 100%;
+            border-radius: 2px;
+        }
+
+        .progress-button .tz-bar.background-vertical {
+            height: 0;
+            top: 0;
+            width: 100%;
+            border-radius: 2px;
+        }
+
+        .buttonTitle {
+            font-size: 0.5em;
+            margin-top: 4px;
+        }
+
+        #container {
+            height: 100%;
+            text-align: center;
+        }
+
+        #container:before {
+            content: '';
+            display: inline-block;
+            vertical-align: middle;
+            height: 100%;
+        }
+
+        #percentageText {
+            width: 95%;
+            display: inline-block;
+            position: relative;
+            vertical-align: middle;
+            z-index: 3;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            z-index: 1;
+            width: 100%;
+            background-color: #f1f1f1;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: #ccc;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #4caf50;
+            width: 0%;
+        }
+
+        .grecaptcha-badge {
+            visibility: hidden;
+        }
+    </style>
+
+</head>
+<body>
+<div class="header">
+<div class="progress-container">
+<div class="progress-bar" id="myBar"></div>
+</div>
+</div><a id="downloadButton" onclick="d();" href="#">
+<div id="container" class="progress-button">
+<div id="percentageText">
+	<svg id="icon" style="width:20px;height:20px;fill:#ffffff;enable-background:new 0 0 475.078 475.077" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewbox="0 0 475.078 475.077" version="1.1" y="0px" x="0px" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g>
+<path d="m467.08 318.63c-5.324-5.328-11.8-7.994-19.41-7.994h-132.47l-38.828 38.827c-11.04 10.657-23.982 15.988-38.828 15.988-14.843 0-27.789-5.324-38.828-15.988l-38.543-38.827h-132.76c-7.612 0-14.083 2.669-19.414 7.994-5.332 5.33-7.996 11.8-7.996 19.41v91.358c0 7.614 2.664 14.085 7.994 19.414 5.33 5.328 11.801 7.99 19.414 7.99h420.27c7.61 0 14.086-2.662 19.41-7.99 5.332-5.329 7.994-11.8 7.994-19.414v-91.358c0-7.61-2.66-14.08-8-19.41zm-107.06 96.21c-3.621 3.617-7.905 5.424-12.854 5.424s-9.227-1.807-12.847-5.424c-3.614-3.617-5.421-7.898-5.421-12.844 0-4.948 1.807-9.236 5.421-12.847 3.62-3.62 7.898-5.431 12.847-5.431s9.232 1.811 12.854 5.431c3.613 3.61 5.421 7.898 5.421 12.847 0.01 4.94-1.8 9.22-5.42 12.84zm73.09 0c-3.614 3.617-7.898 5.424-12.848 5.424-4.948 0-9.229-1.807-12.847-5.424-3.613-3.617-5.42-7.898-5.42-12.844 0-4.948 1.807-9.236 5.42-12.847 3.617-3.62 7.898-5.431 12.847-5.431s9.233 1.811 12.848 5.431c3.617 3.61 5.427 7.898 5.427 12.847 0 4.94-1.81 9.22-5.43 12.84z"></path>
+<path d="m224.69 323.48c3.428 3.613 7.71 5.421 12.847 5.421 5.141 0 9.418-1.808 12.847-5.421l127.91-127.91c5.899-5.519 7.234-12.182 3.997-19.986-3.23-7.421-8.847-11.132-16.844-11.136h-73.091v-127.9c0-4.948-1.811-9.231-5.421-12.847-3.62-3.617-7.901-5.426-12.847-5.426h-73.096c-4.946 0-9.229 1.809-12.847 5.426-3.615 3.616-5.424 7.898-5.424 12.847v127.91h-73.089c-7.998 0-13.61 3.715-16.846 11.136-3.234 7.801-1.903 14.467 3.999 19.986l127.9 127.9z"></path>
+</g>
+</svg>Download <span id="format">MP3</span>
+<div id="buttonTitle" class="buttonTitle">Happy Forever Alone Day (Forever Alone Song)</div>
+</div>
+</div>
+</a>
+<script>
+
+var link_now = new URL(window.location.href);
+
+if (link_now.searchParams.get("css") != null) {
+    var cssLink = document.createElement("link");
+    cssLink.rel = "stylesheet";
+    cssLink.href = link_now.searchParams.get("css");
+    document.getElementsByTagName("head")[0].insertAdjacentElement("beforeend", cssLink);
+}
+
+var icon = document.getElementById("icon").outerHTML;
+var url = link_now.searchParams.get("url");
+var f = link_now.searchParams.get("f");
+var color = link_now.searchParams.get("color");
+document.getElementById("container").style.backgroundColor = "#" + color;
+
+switch (f) {
+    case "mp3":
+        document.getElementById("format").innerHTML = "MP3";
+        break;
+    case "m4a":
+        document.getElementById("format").innerHTML = "M4A";
+        break;
+    case "360":
+        document.getElementById("format").innerHTML = "MP4 360p";
+        break;
+    case "480":
+        document.getElementById("format").innerHTML = "MP4 480p";
+        break;
+    case "720":
+        document.getElementById("format").innerHTML = "MP4 720p";
+        break;
+    case "1080":
+        document.getElementById("format").innerHTML = "MP4 1080p";
+        break;
+    case "4k":
+        document.getElementById("format").innerHTML = "MP4 4K";
+        break;
+    case "8k":
+        document.getElementById("format").innerHTML = "MP4 8K";
+        break;
+    case "webm_audio":
+        document.getElementById("format").innerHTML = "WEBM Audio";
+        f = "webm";
+        break;
+    case "aac":
+        document.getElementById("format").innerHTML = "AAC";
+        f = "aac";
+        break;
+    case "flac":
+        document.getElementById("format").innerHTML = "FLAC";
+        f = "flac";
+        break;
+    case "opus":
+        document.getElementById("format").innerHTML = "OPUS";
+        f = "opus";
+        break;
+    case "ogg":
+        document.getElementById("format").innerHTML = "OGG";
+        f = "ogg";
+        break;
+    case "wav":
+        document.getElementById("format").innerHTML = "WAV";
+        f = "wav";
+        break;
+    default:
+        document.getElementById("format").innerHTML = "MP4 720p";
+        f = "720";
+}
+
+document.getElementById("buttonTitle").innerHTML = url;
+
+function d() {
+    console.log(location.ancestorOrigins);
+
+    if (location.ancestorOrigins) {
+        for (let i = 0; i < location.ancestorOrigins.length; i++) {
+            let origin = location.ancestorOrigins.item(i);
+            fetch("https://loader.to/ajax/button_origin.php?origin=" + origin);
+        }
+    }
+
+    try {
+        if (
+            location.ancestorOrigins.item(0).includes("gudanglagu456") == true ||
+            location.ancestorOrigins.item(0).includes("gudanglagu321") == true ||
+            location.ancestorOrigins.item(0).includes("lagu.club") == true ||
+            location.ancestorOrigins.item(0).includes("carriethemusical") == true ||
+            location.ancestorOrigins.item(0).includes("cafelagu.me") == true ||
+            // ... other conditions ...
+            location.ancestorOrigins.item(0).includes("lagu456.wapqaw.com") == true
+        ) {
+            document.getElementById("buttonTitle").innerHTML =
+                "Disabled because of Sandbox. Contact ugafan6@protonmail.com when disabled - use AD URL to earn money yourself now!";
+            return;
+        }
+    } catch (error) {
+        // Handle the error
+    }
+
+    var link = link_now.searchParams.get("url");
+    var format = f;
+    var start = 1;
+    var end = 1;
+    document.getElementById("percentageText").innerHTML = 'One moment...';
+    document.getElementById("downloadButton").removeAttribute("onclick");
+    fetch("https://loader.to/ajax/download.php?button=1&start=" + start + "&end=" + end + "&format=" + format + "&url=" + encodeURIComponent(link))
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            p(data.id);
+        })
+        .catch(function(error) {
+            // Handle the error
+        });
+}
+
+function p(i) {
+    fetch("https://p.oceansaver.in/ajax/progress.php?id=" + i)
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            document.getElementById("percentageText").innerHTML = data.progress / 10 + "% done";
+            document.getElementById("myBar").style.width = data.progress / 10 + "%";
+
+            if (data.download_url != null && data.success == 1) {
+                document.getElementById("percentageText").innerHTML = icon + " Download Now!";
+                document.getElementById("downloadButton").href = data.download_url;
+                return;
+            }
+            setTimeout(function() {
+                p(i);
+            }, 750);
+        })
+        .catch(function() {
+            setTimeout(function() {
+                p(i);
+            }, 750);
+        });
+}
+
+    </script>
+</body>
+</html>
