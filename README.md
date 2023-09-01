@@ -4,7 +4,7 @@
   <img alt="GitHub stars" src="https://img.shields.io/github/stars/DeveloperMDCM/Youtube-tools-extension">
 <p align="center">
 
-[GreasyFork](https://greasyfork.org/es/scripts/460680-youtube-tools-all-in-one-local-download-mp3-mp4-higt-quality-return-dislikes-and-more)
+[GreasyFork](https://greasyfork.org/es/scripts/460680-youtube-tools-all-in-one-local-download-mp3-mp4-higt-quality-return-dislikes-and-more])
 
 ### añade opciones extras a la pagina de youtube script o extención
 Script para youtube active dark theme
