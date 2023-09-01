@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      1.8.1
+// @version      1.8.2
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -76,6 +76,7 @@
 // @description:en     Download MP4, MP3 HIGT QUALITY without external services. and more
 // @description:es     Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @author       MDCM
+// @homepage            https://github.com/DeveloperMDCM/
 // @match        https://*.youtube.com/*
 // @exclude      *://music.youtube.com/*
 // @exclude      *://*.music.youtube.com/*
@@ -1035,8 +1036,11 @@ button:hover {
               "--yt-spec-general-background-a",
               "#000000"
             );
-            document.querySelector("html[dark] [dark]").style.backgroundColor =
-              "#000000";
+            if(document.querySelector("html[dark] [dark]") != undefined) {
+              
+              document.querySelector("html[dark] [dark]").style.backgroundColor =
+                "#000000";
+            }
             document.querySelector(
               "ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer"
             ).style = "";
@@ -1140,8 +1144,12 @@ button:hover {
           ).style =
             "position: absolute; width: 100%; height: 100vh; opacity: 0.2;";
         }
-        document.querySelector("html[dark] [dark]").style.backgroundColor =
+        if(document.querySelector("html[dark] [dark]") != undefined) {
+              
+          document.querySelector("html[dark] [dark]").style.backgroundColor =
           "transparent";
+        }
+        
         document.body.style.setProperty(
           "--yt-spec-general-background-a",
           "transparent"
