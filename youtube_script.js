@@ -333,8 +333,8 @@
   }, 1000); // Cada 1s
 
   function cargarScript() {
-    console.log("Scrip en ejecución by: DeveloperMDCM  MDCM");
-
+    console.log("Scrip en ejecución by: DeveloperMDCM");
+    console.log("https://github.com/DeveloperMDCM")
     //('Script by: DeveloperMDCM')
 
     // Menu Buttons
