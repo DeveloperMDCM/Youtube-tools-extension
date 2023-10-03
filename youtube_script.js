@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      1.8.3
+// @version      1.8.6
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -132,6 +132,7 @@
     return parametrosURL.get("v");
   }
   let ad = true;
+
   function eliminarAnuancios() {
     // Skip ads video / saltar publicidad
     const buttonSkip = document.querySelector(".ytp-ad-skip-button.ytp-button");
@@ -207,10 +208,12 @@
         const res = await fetch(
           `https://returnyoutubedislikeapi.com/Votes?videoId=${paramsVideoURL()}`
         );
-        const { dislikes } = await res.json();
+        const {
+          dislikes
+        } = await res.json();
         addDislike.textContent = `${FormatiarNumero(dislikes, 0)}`;
         if (btnDislike != undefined) {
-          btnDislike.style = "width: 90px; margin: 0 6px; padding: 2px;";
+          btnDislike.style = "width: 90px; margin: 0 2px; padding: 0 2px";
         }
         resultado.insertAdjacentElement("afterend", addDislike);
         const iconLike = document.querySelector(
@@ -243,22 +246,21 @@
   // Función para adaptar dislikes
   let validoUrl = document.location.href;
   // Función para formatear los dislikes
-
   let prevUrl = undefined;
+
   function FormatiarNumero(num, digits) {
-    const lookup = [
-      {
-        value: 1,
-        symbol: "",
-      },
-      {
-        value: 1e3,
-        symbol: " K",
-      },
-      {
-        value: 1e6,
-        symbol: " M",
-      },
+    const lookup = [{
+      value: 1,
+      symbol: "",
+    },
+    {
+      value: 1e3,
+      symbol: " K",
+    },
+    {
+      value: 1e6,
+      symbol: " M",
+    },
     ];
     const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
     const item = lookup
@@ -267,9 +269,9 @@
       .find((item) => {
         return num >= item.value;
       });
-    return item
-      ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol
-      : "0";
+    return item ?
+      (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol :
+      "0";
   }
   const shortDislike = async () => {
     validoUrl = document.location.href;
@@ -282,11 +284,12 @@
         validoUrl.split("/")[3] === "shorts"
       ) {
         const res = await fetch(
-          `https://returnyoutubedislikeapi.com/Votes?videoId=${
-            validoUrl.split("/")[4]
+          `https://returnyoutubedislikeapi.com/Votes?videoId=${validoUrl.split("/")[4]
           }`
         );
-        const { dislikes } = await res.json();
+        const {
+          dislikes
+        } = await res.json();
         for (var i = 0; i < validoVentanaShort.length; i++) {
           validoVentanaShort[i].textContent = `${FormatiarNumero(dislikes, 0)}`;
         }
@@ -317,7 +320,7 @@
         ) {
           cargarDislikes();
         }
-      }, 1500);
+      }, 2000);
       if (
         validoVentanaShort != undefined &&
         validoUrl.split("/")[3] === "shorts"
@@ -334,7 +337,7 @@
 
   function cargarScript() {
     console.log("Scrip en ejecución by: DeveloperMDCM");
-    console.log("https://github.com/DeveloperMDCM")
+    console.log("https://github.com/DeveloperMDCM");
     //('Script by: DeveloperMDCM')
 
     // Menu Buttons
@@ -682,7 +685,7 @@ button:hover {
     <div class="containerButtons">
       <div style="position:relative; display:inline-block ">
 
-        <button class="botones_div" type="button">
+        <button title="Text color" class="botones_div" type="button">
 
           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-palette" width="24"
             height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
@@ -703,7 +706,7 @@ button:hover {
         <option value="#00ff00" />
         <option value="#0000ff" />
       </datalist>
-      <button class="botones_div" type="button" id="imagen">
+      <button title="Image video" class="botones_div" type="button" id="imagen">
 
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-photo-down" width="24"
           height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
@@ -717,7 +720,7 @@ button:hover {
           <path d="M22 19l-3 3l-3 -3"></path>
         </svg>
       </button>
-      <button class="botones_div" type="button" id="invertir">
+      <button title="Reverse" class="botones_div" type="button" id="invertir">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrows-diff" width="24"
           height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
           stroke-linecap="round" stroke-linejoin="round">
@@ -730,7 +733,7 @@ button:hover {
           <path d="M13 8l-4 -4"></path>
         </svg>
       </button>
-      <button class="botones_div" type="button" id="reset">
+      <button title="reset" class="botones_div" type="button" id="reset">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-power" width="24"
           height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
           stroke-linecap="round" stroke-linejoin="round">
@@ -741,7 +744,7 @@ button:hover {
       </button>
 
       <div style="position:relative; display:inline-block ">
-        <button class="botones_div" type="button">
+        <button title="Filter eyes" class="botones_div" type="button">
           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-half"
             width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
             fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -760,7 +763,7 @@ button:hover {
           <option value="#0000ff" />
         </datalist>
       </div>
-      <button class="botones_div" type="button" id="repeatvideo">
+      <button title="Repeat video" class="botones_div" type="button" id="repeatvideo">
 
         <svg  xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-repeat" width="24"
           height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
@@ -770,7 +773,7 @@ button:hover {
           <path d="M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3"></path>
         </svg>
       </button>
-      <button type="button" class="btn1 botones_div">
+      <button title="MP4" type="button" class="btn1 botones_div">
 
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-download"
           width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
@@ -782,7 +785,7 @@ button:hover {
           <path d="M9.5 14.5l2.5 2.5l2.5 -2.5"></path>
         </svg>
       </button>
-      <button type="button" class="btn2 botones_div">
+      <button title="MP3" type="button" class="btn2 botones_div">
 
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-music" width="24"
           height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
@@ -794,7 +797,16 @@ button:hover {
           <path d="M12 16l0 -5l2 1"></path>
         </svg>
       </button>
-      <button type="button" class="btn3 botones_div">
+      <button title="External Download" type="button" class="external_link botones_div">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-external-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+            <path d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6"></path>
+            <path d="M11 13l9 -9"></path>
+            <path d="M15 4h5v5"></path>
+         </svg>
+      </button>
+      <button title="Close" type="button" class="btn3 botones_div">
 
         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-x" width="24"
           height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
@@ -847,7 +859,7 @@ button:hover {
   </form>
     </body>
     </html>
-`;
+    `;
 
     // TODO: Inicia y inserta los botones
     setInterval(() => {
@@ -862,21 +874,27 @@ button:hover {
         // document.querySelector("video").style.borderRadius = "30px";
         // Formulario de botones para descargar
 
-        const formulariodescarga = document.querySelector(".formulariodescarga");
-        const formulariodescargaaudio = document.querySelector(".formulariodescargaaudio");
+        const formulariodescarga = document.querySelector(
+          ".formulariodescarga"
+        );
+        const formulariodescargaaudio = document.querySelector(
+          ".formulariodescargaaudio"
+        );
         const framedescarga = document.querySelector("#descargando");
         const framedescargamp3 = document.querySelector("#descargandomp3");
-        formulariodescarga.addEventListener('click', e=> {
+        formulariodescarga.addEventListener("click", (e) => {
           e.preventDefault();
         });
-        formulariodescargaaudio.addEventListener('click', e=> {
+        formulariodescargaaudio.addEventListener("click", (e) => {
           e.preventDefault();
         });
         const btn1mp4 = document.querySelector(".btn1");
         const btn2mp3 = document.querySelector(".btn2");
         const btn3cancel = document.querySelector(".btn3");
         const selectcalidades = document.querySelector(".selectcalidades");
-        const selectcalidadesaudio = document.querySelector(".selectcalidadesaudio");
+        const selectcalidadesaudio = document.querySelector(
+          ".selectcalidadesaudio"
+        );
 
         selectcalidades.addEventListener("change", (e) => {
           framedescarga.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=f00`;
@@ -892,38 +910,34 @@ button:hover {
         btn3cancel.onclick = () => {
           formulariodescarga.style.display = "none";
           formulariodescargaaudio.style.display = "none";
-        }
+        };
 
         btn1mp4.onclick = () => {
           selectcalidades.classList.remove("ocultarframe");
           framedescarga.classList.add("ocultarframe");
           formulariodescarga.classList.remove("ocultarframe");
-          formulariodescarga.style.display = ""
+          formulariodescarga.style.display = "";
           selectcalidadesaudio.classList.add("ocultarframeaudio");
           formulariodescargaaudio.classList.add("ocultarframe");
           formulariodescarga.reset();
-
         };
         btn2mp3.onclick = () => {
           formulariodescargaaudio.classList.remove("ocultarframe");
           formulariodescarga.classList.add("ocultarframe");
           framedescargamp3.classList.remove("ocultarframeaudio");
-          formulariodescargaaudio.style.display = ""
+          formulariodescargaaudio.style.display = "";
           selectcalidadesaudio.classList.remove("ocultarframeaudio");
-          framedescargamp3.classList.add("ocultarframeaudio")
+          framedescargamp3.classList.add("ocultarframeaudio");
           formulariodescargaaudio.reset();
-
         };
-
 
         const reverse = document.querySelector("#columns"); // Invertir contenido
         const btnReset = document.querySelector("#reset"); // Reset button
         const InputColor = document.querySelector("#color"); // Input color
         const btnImagen = document.querySelector("#imagen"); // Download image video
         const formularioButtons = document.querySelector("#eyes"); // Filtro de pantalla
-        const btnFondo = document.querySelector("#fondo"); // Fondo cinematica completa
         const invertirVista = document.querySelector("#invertir"); // Intercambiar vista
-
+        const externalLink = document.querySelector(".external_link");
         const buttonsVideo = document.querySelector(
           "#top-row.ytd-watch-metadata"
         ); // Botones para video
@@ -932,7 +946,7 @@ button:hover {
         buttonsVideo.style =
           "display: flex;flex-direction: column;justify-content: center;align-items: center ;";
         document.querySelector("#title > h1").style =
-          "text-align: center; color: red;";
+          "text-align: center; color: #939392;";
         document.querySelector("#owner").style.justifyContent = "center";
         //document.querySelector("#search-icon-legacy.ytd-searchbox").style.backgroundColor = "gray";
 
@@ -1036,10 +1050,10 @@ button:hover {
               "--yt-spec-general-background-a",
               "#000000"
             );
-            if(document.querySelector("html[dark] [dark]") != undefined) {
-              
-              document.querySelector("html[dark] [dark]").style.backgroundColor =
-                "#000000";
+            if (document.querySelector("html[dark] [dark]") != undefined) {
+              document.querySelector(
+                "html[dark] [dark]"
+              ).style.backgroundColor = "#000000";
             }
             document.querySelector(
               "ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer"
@@ -1065,6 +1079,17 @@ button:hover {
           }
         });
         reverse.style.flexDirection = "row";
+
+        externalLink.onclick = () => {
+          const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
+          let enlace;
+          enlace = parametrosURL.get("v");
+          window.open(
+            `https://www.y2mate.com/es/convert-youtube/${enlace}`,
+            "popUpWindow",
+            "height=800,width=1000,left=50%,top=100,resizable=no,scrollbars=yes,toolbar=no,menubar=yes,location=no,directories=yes, status=no"
+          );
+        };
 
         btnImagen.onclick = () => {
           if (
@@ -1135,51 +1160,43 @@ button:hover {
       ) {
         if (document.querySelector("#cinematics > div") != undefined) {
           document.querySelector("#cinematics > div").style =
-            "position: fixed; inset: 0px; pointer-events: none; transform: scale(1.5, 2)";
-          document.querySelector(
-            "#cinematics > div > canvas:nth-child(1)"
-          ).style = "position: absolute; width: 100%; height: 100vh;";
-          document.querySelector(
-            "#cinematics > div > canvas:nth-child(2)"
-          ).style =
-            "position: absolute; width: 100%; height: 100vh; opacity: 0.2;";
+            "position: fixed; inset: 0px; pointer-events: none; transform: scale(1.5, 3)";
+          if (document.querySelector("html[dark] [dark]") != undefined) {
+            document.querySelector("html[dark] [dark]").style.backgroundColor =
+              "transparent";
+          }
+
+          document.body.style.setProperty(
+            "--yt-spec-general-background-a",
+            "transparent"
+          );
+          if (
+            document.querySelector(
+              "ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer"
+            ) != undefined
+          ) {
+            document.querySelector(
+              "ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer"
+            ).style = "border: 3px solid red; background-color: #352e2e29";
+          }
+          const colorTextPage = localStorage.getItem("colorTextPage");
+          document.body.style.setProperty(
+            "--yt-spec-text-primary",
+            colorTextPage
+          );
+          //document.body.style.setProperty("--yt-spec-text-secondary", "#ffffff");
+          document.body.style.setProperty(
+            "--yt-spec-static-overlay-background-brand",
+            colorTextPage
+          );
+          document.body.style.setProperty(
+            "--yt-spec-static-brand-red",
+            colorTextPage
+          );
+          //document.body.style.setProperty("--yt-spec-static-brand-white", colorTextPage);
+          document.querySelector("#logo-icon").style.color = colorTextPage;
+          // document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = "color: black; background-color: white; border: 2px solid black;";
         }
-        if(document.querySelector("html[dark] [dark]") != undefined) {
-              
-          document.querySelector("html[dark] [dark]").style.backgroundColor =
-          "transparent";
-        }
-        
-        document.body.style.setProperty(
-          "--yt-spec-general-background-a",
-          "transparent"
-        );
-        if (
-          document.querySelector(
-            "ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer"
-          ) != undefined
-        ) {
-          document.querySelector(
-            "ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer"
-          ).style = "border: 3px solid red; background-color: #352e2e29";
-        }
-        const colorTextPage = localStorage.getItem("colorTextPage");
-        document.body.style.setProperty(
-          "--yt-spec-text-primary",
-          colorTextPage
-        );
-        //document.body.style.setProperty("--yt-spec-text-secondary", "#ffffff");
-        document.body.style.setProperty(
-          "--yt-spec-static-overlay-background-brand",
-          colorTextPage
-        );
-        document.body.style.setProperty(
-          "--yt-spec-static-brand-red",
-          colorTextPage
-        );
-        //document.body.style.setProperty("--yt-spec-static-brand-white", colorTextPage);
-        document.querySelector("#logo-icon").style.color = colorTextPage;
-        // document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = "color: black; background-color: white; border: 2px solid black;";
       }
     }, 1000); // Termina setIterval
 
@@ -1202,55 +1219,53 @@ button:hover {
       }
     }
   }
-// Variables para la traduccion de comentarios
-let traducido; // Texto traducido
-let urlLista; // Url lista
-//TODO: Traducir comentarios
-async function traductor() {
-  const texto = document.querySelectorAll("#content-text");
-  let o = `?client=dict-chrome-ex&sl=auto&tl=${navigator.language}&q=`;
-  for (let i = 0; i < texto.length; i++) {
-    const botonTraducir = document.createElement("BUTTON");
-    botonTraducir.classList.add("mdcm");
-    botonTraducir.textContent = "Traducir";
-    botonTraducir.style.backgroundColor = "black";
-    botonTraducir.style.color = "white";
-    botonTraducir.style.borderRadius = "5px";
-    botonTraducir.style.padding = "2px";
-    botonTraducir.setAttribute("id", `btn${i}`);
-    texto[i].insertAdjacentElement("afterend", botonTraducir);
-    const mdcm = document.querySelectorAll(`.mdcm`);
-    mdcm[i].onclick = function () {
-      traducido = o;
-      urlLista = traducido + texto[i].textContent;
-      fetch("https://translate.googleapis.com/translate_a/t" + urlLista) //API
-        .then((response) => response.json())
-        .then((datos) => {
-          texto[i].textContent = datos[0][0];
-          mdcm[i].textContent = "Traducido";
-        });
-    };
+  // Variables para la traduccion de comentarios
+  let traducido; // Texto traducido
+  let urlLista; // Url lista
+  //TODO: Traducir comentarios
+  async function traductor() {
+    const texto = document.querySelectorAll("#content-text");
+    let o = `?client=dict-chrome-ex&sl=auto&tl=${navigator.language}&q=`;
+    for (let i = 0; i < texto.length; i++) {
+      const botonTraducir = document.createElement("BUTTON");
+      botonTraducir.classList.add("mdcm");
+      botonTraducir.textContent = "Traducir";
+      botonTraducir.style.backgroundColor = "black";
+      botonTraducir.style.color = "white";
+      botonTraducir.style.borderRadius = "5px";
+      botonTraducir.style.padding = "2px";
+      botonTraducir.setAttribute("id", `btn${i}`);
+      texto[i].insertAdjacentElement("afterend", botonTraducir);
+      const mdcm = document.querySelectorAll(`.mdcm`);
+      mdcm[i].onclick = function () {
+        traducido = o;
+        urlLista = traducido + texto[i].textContent;
+        fetch("https://translate.googleapis.com/translate_a/t" + urlLista) //API
+          .then((response) => response.json())
+          .then((datos) => {
+            texto[i].textContent = datos[0][0];
+            mdcm[i].textContent = "Traducido";
+          });
+      };
+    }
   }
-}
 
-// Limpiar botones de comentarios
-function limpiarHTML() {
-  const buttons = document.querySelectorAll(".mdcm");
-  [].forEach.call(buttons, function (buttons) {
-
-    buttons.remove();
-
-  });
-  traductor();
-}
-
-// TODO: mostrar boton de traducir en comentarios cuando sean visibles
-window.onscroll = () => {
-  const divEl = document.querySelector("#content-text");
-  if (divEl != undefined) {
-    limpiarHTML();
+  // Limpiar botones de comentarios
+  function limpiarHTML() {
+    const buttons = document.querySelectorAll(".mdcm");
+    [].forEach.call(buttons, function (buttons) {
+      buttons.remove();
+    });
+    traductor();
   }
-};
+
+  // TODO: mostrar boton de traducir en comentarios cuando sean visibles
+  window.onscroll = () => {
+    const divEl = document.querySelector("#content-text");
+    if (divEl != undefined) {
+      limpiarHTML();
+    }
+  };
 
   function init() {
     cargarScript();
