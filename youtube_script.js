@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      1.8.6
+// @version      1.8.7
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -95,42 +95,13 @@
 // @license MIT
 // @namespace https://github.com/DeveloperMDCM/
 // ==/UserScript==
-// new update 1/09/2023
+// new update 16/10/2023
 (function () {
   // Youtube tools by: DeveloperMDCM
   // https://github.com/DeveloperMDCM/Youtube-tools-extension
 
   "use strict";
-  // // Obtén la referencia al elemento de video
-  // const videoElement = document.getElementById('miVideo'); // Reemplaza 'miVideo' con el ID de tu elemento de video
-
-  // // Establece el atributo loop en true
-  // if (videoElement) {
-  //   videoElement.loop = true;
-  // }
-
-  function MDCM() {
-    const existeFormButton = document.querySelector(
-      "#below > ytd-watch-metadata > div.container > form"
-    );
-    if (!existeFormButton) {
-      const mdcm = document.querySelector("#MDCM");
-      const sms = document.querySelector("#below > ytd-watch-metadata");
-      if (!mdcm) {
-        if (sms != undefined) {
-          const mdcm = document.createElement("P");
-          mdcm.innerHTML =
-            '<a id="MDCM" target="_blank" style="margin: 10px 0; font-size: 14px; color: #24ff; text-decoration: none; display: flex; align-items: center; justify-content: center; font-style: italic;font-weight: 700;" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">Link GitHub Repository<h4></h4</a>';
-          sms.appendChild(mdcm);
-        }
-      }
-    }
-  }
-
-  function paramsVideoURL() {
-    const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
-    return parametrosURL.get("v");
-  }
+ 
   let ad = true;
 
   function eliminarAnuancios() {
@@ -191,6 +162,29 @@
     }
   }
 
+  function MDCM() {
+    const existeFormButton = document.querySelector(
+      "#below > ytd-watch-metadata > div.container > form"
+    );
+    if (!existeFormButton) {
+      const mdcm = document.querySelector("#MDCM");
+      const sms = document.querySelector("#below > ytd-watch-metadata");
+      if (!mdcm) {
+        if (sms != undefined) {
+          const mdcm = document.createElement("P");
+          mdcm.innerHTML =
+            '<a id="MDCM" target="_blank" style="margin: 10px 0; font-size: 14px; color: #24ff; text-decoration: none; display: flex; align-items: center; justify-content: center; font-style: italic;font-weight: 700;" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">Link GitHub Repository<h4></h4</a>';
+          sms.appendChild(mdcm);
+        }
+      }
+    }
+  }
+
+  function paramsVideoURL() {
+    const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
+    return parametrosURL.get("v");
+  }
+
   const cargarDislikes = async () => {
     try {
       const video = document.querySelector(
@@ -208,9 +202,7 @@
         const res = await fetch(
           `https://returnyoutubedislikeapi.com/Votes?videoId=${paramsVideoURL()}`
         );
-        const {
-          dislikes
-        } = await res.json();
+        const { dislikes } = await res.json();
         addDislike.textContent = `${FormatiarNumero(dislikes, 0)}`;
         if (btnDislike != undefined) {
           btnDislike.style = "width: 90px; margin: 0 2px; padding: 0 2px";
@@ -249,18 +241,19 @@
   let prevUrl = undefined;
 
   function FormatiarNumero(num, digits) {
-    const lookup = [{
-      value: 1,
-      symbol: "",
-    },
-    {
-      value: 1e3,
-      symbol: " K",
-    },
-    {
-      value: 1e6,
-      symbol: " M",
-    },
+    const lookup = [
+      {
+        value: 1,
+        symbol: "",
+      },
+      {
+        value: 1e3,
+        symbol: " K",
+      },
+      {
+        value: 1e6,
+        symbol: " M",
+      },
     ];
     const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
     const item = lookup
@@ -269,30 +262,77 @@
       .find((item) => {
         return num >= item.value;
       });
-    return item ?
-      (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol :
-      "0";
+    return item
+      ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol
+      : "0";
   }
   const shortDislike = async () => {
     validoUrl = document.location.href;
     const validoVentanaShort = document.querySelectorAll(
       "#dislike-button > yt-button-shape > label > div > span"
     );
+    const clasicShort = `
+      <div title="clasic video" class="clasic-mode-short">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-device-tv-old" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z"></path>
+        <path d="M16 3l-4 4l-4 -4"></path>
+        <path d="M15 7v13"></path>
+        <path d="M18 15v.01"></path>
+        <path d="M18 12v.01"></path>
+      </svg>
+      </div>
+      `
+       
+      const resultado =   document.querySelectorAll("#like-button > ytd-like-button-renderer")
+
+   
     try {
       if (
         validoVentanaShort != undefined &&
         validoUrl.split("/")[3] === "shorts"
       ) {
         const res = await fetch(
-          `https://returnyoutubedislikeapi.com/Votes?videoId=${validoUrl.split("/")[4]
+          `https://returnyoutubedislikeapi.com/Votes?videoId=${
+            validoUrl.split("/")[4]
           }`
         );
-        const {
-          dislikes
-        } = await res.json();
+        const { dislikes } = await res.json();
         for (var i = 0; i < validoVentanaShort.length; i++) {
           validoVentanaShort[i].textContent = `${FormatiarNumero(dislikes, 0)}`;
+          resultado[i].insertAdjacentHTML("afterbegin", clasicShort);
+         
         }
+           // Limpiar botones de clasic video
+          function limpiarHTML() {
+            const buttonsClasicVideo = document.querySelectorAll(".clasic-mode-short");
+            [].forEach.call(buttonsClasicVideo, function (buttonsClasicVideo) {
+              buttonsClasicVideo.remove();
+            });
+            
+
+          }
+          limpiarHTML();
+          for (var i = 0; i < validoVentanaShort.length; i++) {
+            resultado[i].insertAdjacentHTML("afterbegin", clasicShort);
+            
+          }
+          const addClasicVideo = () => {
+            const colorTextPage = localStorage.getItem("colorTextPage");
+            const buttonsClasicVideo1 = document.querySelectorAll(".clasic-mode-short");
+            const colorButton = document.querySelectorAll("#like-button > ytd-like-button-renderer > div > svg")
+            for (var i = 0; i < buttonsClasicVideo1.length; i++) {
+              colorButton[i].style.color = colorTextPage
+              buttonsClasicVideo1[i].onclick = () => {
+                window.open(
+                  `https://www.youtube.com/watch?v=${validoUrl.split("/")[4]}`,
+                  "popUpWindow",
+                  "height=800,width=1000,left=50%,top=100,resizable=no,scrollbars=yes,toolbar=no,menubar=yes,location=no,directories=yes, status=no"
+                );
+              };
+            }
+          }
+          addClasicVideo()
       }
     } catch (error) {
       console.log(error);
@@ -307,9 +347,6 @@
     if (currUrl != prevUrl) {
       MDCM();
       setTimeout(() => {
-        eliminarAnuancios();
-      }, 100);
-      setTimeout(() => {
         if (
           document.querySelector(
             "#movie_player > div.html5-video-container > video"
@@ -320,20 +357,21 @@
         ) {
           cargarDislikes();
         }
-      }, 2000);
+      }, 2100);
       if (
         validoVentanaShort != undefined &&
         validoUrl.split("/")[3] === "shorts"
       ) {
         setTimeout(() => {
           shortDislike();
-        }, 500);
+        }, 1100);
       }
       prevUrl = currUrl;
     }
+    eliminarAnuancios();
 
     // Lógica adicional
-  }, 1000); // Cada 1s
+  }, 500); // Cada 0.5s
 
   function cargarScript() {
     console.log("Scrip en ejecución by: DeveloperMDCM");
@@ -363,6 +401,18 @@ progress::-webkit-progress-bar {
 
 progress::-webkit-progress-value {
   background-color: #06d406;
+}
+
+.clasic-mode-short svg{
+  background-color: #272727;
+  padding: 13px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  color: #fff;
+  cursor: pointer;
+}
+.clasic-mode-short svg:hover{
+  background-color: #252525
 }
 
 
@@ -1108,6 +1158,11 @@ button:hover {
             mostrarAlerta("Active Dark Theme in Youtube page");
           }
         };
+        const colorTextPage = localStorage.getItem("colorTextPage");
+        document.body.style.setProperty(
+          "--yt-spec-text-primary",
+          colorTextPage
+        );
         // Input color
         InputColor.addEventListener("input", function () {
           localStorage.setItem("colorTextPage", InputColor.value);
@@ -1180,6 +1235,7 @@ button:hover {
             ).style = "border: 3px solid red; background-color: #352e2e29";
           }
           const colorTextPage = localStorage.getItem("colorTextPage");
+         
           document.body.style.setProperty(
             "--yt-spec-text-primary",
             colorTextPage
