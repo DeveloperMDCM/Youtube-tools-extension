@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      1.8.7
+// @version      1.8.9
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -95,17 +95,22 @@
 // @license MIT
 // @namespace https://github.com/DeveloperMDCM/
 // ==/UserScript==
-// new update 16/10/2023
+// new update 17/11/2023
 (function () {
   // Youtube tools by: DeveloperMDCM
   // https://github.com/DeveloperMDCM/Youtube-tools-extension
 
   "use strict";
- 
+
   let ad = true;
 
   function eliminarAnuancios() {
     // Skip ads video / saltar publicidad
+    
+      if(document.querySelector(".ytp-ad-skip-button-modern.ytp-button") != undefined || document.querySelector(".ytp-ad-text.ytp-ad-preview-text-modern")) {
+          document.querySelector("#movie_player > div.html5-video-container > video").currentTime = 100000;
+          document.querySelector(".ytp-ad-skip-button-modern.ytp-button").click(); 
+      }
     const buttonSkip = document.querySelector(".ytp-ad-skip-button.ytp-button");
     const validar = undefined;
     let ytpminiplayerscrim = document.querySelector("ytp-miniplayer-scrim");
@@ -113,6 +118,7 @@
       "ytp-ad-overlay-close-container"
     )[0];
     let skip = document.getElementsByClassName("ytp-ad-skip-button")[0];
+    let skip2 = document.querySelector("#skip-button\\:a > span > button");
     let ad1 = document.querySelector(
       "#contents > ytd-promoted-sparkles-web-renderer"
     );
@@ -138,6 +144,7 @@
     const adTimeVideo = document.querySelector(
       ".ytp-ad-text.ytp-ad-preview-text"
     );
+   let ad10 = document.querySelector("#skip-button\\:a > span > button");
     const video = document.querySelector("video");
     if (adVideo != validar && video != validar && adTimeVideo != validar) {
       video.currentTime = video.duration;
@@ -148,6 +155,7 @@
     if (ad3 != validar) ad3.remove();
     if (ad4 != validar) ad4.remove();
     if (ad5 != validar) ad5.remove();
+    if (ad10 != validar) ad10.remove();
     if (ad6 != validar && ad) {
       ad6.style.display = "none";
       ad = false;
@@ -157,6 +165,7 @@
     if (ad9 != validar) ad9.remove();
     if (cross != validar) cross.click();
     if (skip != validar) skip.click();
+    if (skip2 != validar) skip2.click();
     if (buttonSkip != validar) {
       buttonSkip.click();
     }
