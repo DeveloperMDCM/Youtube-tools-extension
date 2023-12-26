@@ -99,7 +99,7 @@
 (function () {
   // Youtube tools by: DeveloperMDCM
   // https://github.com/DeveloperMDCM/Youtube-tools-extension
-  // next update 12/16/23 👀 
+  // new extension for google chrome coming soon view description 👀 
   // and soon reconstruction of extension for google chrome
   "use strict";
 
