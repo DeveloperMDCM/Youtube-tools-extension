@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      1.8.9
+// @version      1.9
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -94,13 +94,14 @@
 // @compatible brave
 // @license MIT
 // @namespace https://github.com/DeveloperMDCM/
+// @downloadURL https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js
+// @updateURL https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.meta.js
 // ==/UserScript==
 // new update 17/11/2023
 (function () {
   // Youtube tools by: DeveloperMDCM
   // https://github.com/DeveloperMDCM/Youtube-tools-extension
-  // new extension for google chrome coming soon view description 👀 
-  // and soon reconstruction of extension for google chrome
+
   "use strict";
 
   let ad = true;
@@ -195,55 +196,37 @@
     return parametrosURL.get("v");
   }
 
-  const cargarDislikes = async () => {
-    try {
-      const video = document.querySelector(
-        "#movie_player > div.html5-video-container > video"
+    async function cargarDislikes() {
+      validoUrl = document.location.href;
+
+      const validoVentana = document.querySelector(
+        "#below > ytd-watch-metadata > div.container > form > div.containerButtons"
       );
-      if (video != undefined && validoUrl.split("/")[3] !== "shorts") {
-        const addDislike = document.createElement("P"); // Texto count dislikes
-        validoUrl = document.location.href;
-        const btnDislike = document.querySelector(
-          "#segmented-dislike-button yt-button-shape > button"
-        );
-        const resultado = document.querySelector(
-          "#segmented-dislike-button > ytd-toggle-button-renderer > yt-button-shape > button > yt-touch-feedback-shape"
-        );
-        const res = await fetch(
-          `https://returnyoutubedislikeapi.com/Votes?videoId=${paramsVideoURL()}`
-        );
-        const { dislikes } = await res.json();
-        addDislike.textContent = `${FormatiarNumero(dislikes, 0)}`;
-        if (btnDislike != undefined) {
-          btnDislike.style = "width: 90px; margin: 0 2px; padding: 0 2px";
-        }
-        resultado.insertAdjacentElement("afterend", addDislike);
-        const iconLike = document.querySelector(
-          "#segmented-like-button > ytd-toggle-button-renderer > yt-button-shape > button > div.yt-spec-button-shape-next__icon > yt-icon > yt-animated-icon"
-        );
-        const inconDislike = document.querySelector(
-          "#segmented-dislike-button > ytd-toggle-button-renderer > yt-button-shape > button > div > yt-icon"
-        );
-        if (iconLike != undefined && iconLike != inconDislike) {
+      if (
+        validoVentana != undefined &&
+        document.location.href.split("?v=")[0].includes("youtube.com/watch")
+      ) {
+        validoUrl = paramsVideoURL();
+        const urlShorts = `https://returnyoutubedislikeapi.com/Votes?videoId=${validoUrl}`;
+        try {
+          const respuesta = await fetch(urlShorts);
+          const datosShort = await respuesta.json();
+          const { dislikes } = datosShort;
+          // alert(dislikes, 'Video')
           document.querySelector(
-            "#segmented-like-button > ytd-toggle-button-renderer > yt-button-shape > button > div.yt-spec-button-shape-next__icon > yt-icon > yt-animated-icon"
+            "#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > dislike-button-view-model > toggle-button-view-model > button"
+          ).style = "width: 90px";
+          // document.querySelector('#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > dislike-button-view-model > toggle-button-view-model > button > yt-touch-feedback-shape > div').insertAdjacentHTML("beforebegin", `${FormatiarNumero(dislikes, 0)}`);
+          document.querySelector(
+            "#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > dislike-button-view-model > toggle-button-view-model > button"
           ).innerHTML = `
-       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-       <path d="M7.493 18.75c-.425 0-.82-.236-.975-.632A7.48 7.48 0 016 15.375c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 012.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 00.322-1.672V3a.75.75 0 01.75-.75 2.25 2.25 0 012.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 01-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 00-1.423-.23h-.777zM2.331 10.977a11.969 11.969 0 00-.831 4.398 12 12 0 00.52 3.507c.26.85 1.084 1.368 1.973 1.368H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 01-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227z" />
-       </svg>`;
-          document.querySelector(
-            "#segmented-dislike-button > ytd-toggle-button-renderer > yt-button-shape > button > div > yt-icon"
-          ).innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
-       <path d="M15.73 5.25h1.035A7.465 7.465 0 0118 9.375a7.465 7.465 0 01-1.235 4.125h-.148c-.806 0-1.534.446-2.031 1.08a9.04 9.04 0 01-2.861 2.4c-.723.384-1.35.956-1.653 1.715a4.498 4.498 0 00-.322 1.672V21a.75.75 0 01-.75.75 2.25 2.25 0 01-2.25-2.25c0-1.152.26-2.243.723-3.218C7.74 15.724 7.366 15 6.748 15H3.622c-1.026 0-1.945-.694-2.054-1.715A12.134 12.134 0 011.5 12c0-2.848.992-5.464 2.649-7.521.388-.482.987-.729 1.605-.729H9.77a4.5 4.5 0 011.423.23l3.114 1.04a4.5 4.5 0 001.423.23zM21.669 13.773c.536-1.362.831-2.845.831-4.398 0-1.22-.182-2.398-.52-3.507-.26-.85-1.084-1.368-1.973-1.368H19.1c-.445 0-.72.498-.523.898.591 1.2.924 2.55.924 3.977a8.959 8.959 0 01-1.302 4.666c-.245.403.028.959.5.959h1.053c.832 0 1.612-.453 1.918-1.227z" />
-     </svg>
-     `;
+          <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 13v-8a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v7a1 1 0 0 0 1 1h3a4 4 0 0 1 4 4v1a2 2 0 0 0 4 0v-5h3a2 2 0 0 0 2 -2l-1 -5a2 3 0 0 0 -2 -2h-7a3 3 0 0 0 -3 3" /></svg>
+          ${FormatiarNumero(dislikes, 0)}`;
+        } catch (error) {
+          console.log(error);
         }
       }
-    } catch (error) {
-      // Error
-      console.log(error);
     }
-  };
 
   // Función para adaptar dislikes
   let validoUrl = document.location.href;
@@ -323,7 +306,7 @@
 
           }
           limpiarHTML();
-          for (var i = 0; i < validoVentanaShort.length; i++) {
+          for (i = 0; i < validoVentanaShort.length; i++) {
             resultado[i].insertAdjacentHTML("afterbegin", clasicShort);
             
           }
