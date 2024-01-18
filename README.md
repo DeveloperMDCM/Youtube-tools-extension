@@ -1,30 +1,53 @@
-# React + TypeScript + Vite
+# Youtube-tools-extension
+# Youtube-tools-extension v1.0 Beta for Google Chrome 
+# General Settings and Themes works
+<p align="center">
+   <a href="https://github.com/DeveloperMDCM/Youtube-tools-extension/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/DeveloperMDCM/Youtube-tools-extension"></a>
+  <img alt="GitHub stars" src="https://img.shields.io/github/stars/DeveloperMDCM/Youtube-tools-extension">
+<p align="center">
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[GreasyFork](https://greasyfork.org/es/scripts/460680-youtube-tools-all-in-one-local-download-mp3-mp4-higt-quality-return-dislikes-and-more])
 
-Currently, two official plugins are available:
+### añade opciones extras a la pagina de youtube script o extención
+Script para youtube active dark theme
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Auto saltar publicidad
 
-## Expanding the ESLint configuration
+Imagen a Image / Picture to Picture
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Auto repetir video / auto repeat video
+Ver dislikes en historias
 
-- Configure the top-level `parserOptions` property like this:
+Descargar MP3 / Download MP3
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+Descargar MP4 Hasta 8k / up High cuality
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+ver dislikes en videos / return dislikes
+
+Rating del video
+
+Cambiar colores / change text color
+
+Descargar miniatura. 
+
+Captura de pantalla / Screenshot video
+
+Traducir comentarios a idioma nativo / Translate 
+
+Filtro de pantalla / Screen 
+
+Invertir las columnas
+
+Adaptar color de fondo segun video
+
+Reiniciar ajustes
+
+ver dislikes en las historias
+
+
+<div align="center">
+<img src="/images/ex2.png" width="470">
+<img src="/images/ex1.png" width="470">
+<img src="/images/ex3.png" width="470">
+
+</div>
