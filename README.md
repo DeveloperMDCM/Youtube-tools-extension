@@ -15,8 +15,6 @@
 - npm i
 - npm run buid
 - In Google Chrome go to extension activate developer mode and load the dist folder
-- git clone https://github.com/DeveloperMDCM/Youtube-tools-extension.git
-- In Google Chrome go to extension activate developer mode and load the dist folder
 
 <img src="/images/how install.png" width="470">
 
