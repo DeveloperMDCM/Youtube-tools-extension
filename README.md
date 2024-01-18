@@ -6,9 +6,21 @@
   <img alt="GitHub stars" src="https://img.shields.io/github/stars/DeveloperMDCM/Youtube-tools-extension">
 <p align="center">
 
-[GreasyFork](https://greasyfork.org/es/scripts/460680-youtube-tools-all-in-one-local-download-mp3-mp4-higt-quality-return-dislikes-and-more])
+[Script for GreasyFork](https://greasyfork.org/es/scripts/460680-youtube-tools-all-in-one-local-download-mp3-mp4-higt-quality-return-dislikes-and-more])
 
 ### añade opciones extras a la pagina de youtube script o extención
+
+## how to install
+- git clone https://github.com/DeveloperMDCM/Youtube-tools-extension.git
+- npm i
+- npm run buid
+- In Google Chrome go to extension activate developer mode and load the dist folder
+- git clone https://github.com/DeveloperMDCM/Youtube-tools-extension.git
+- In Google Chrome go to extension activate developer mode and load the dist folder
+
+<img src="/images/how install.png" width="470">
+
+
 Script para youtube active dark theme
 
 Auto saltar publicidad
@@ -46,6 +58,7 @@ ver dislikes en las historias
 
 
 <div align="center">
+
 <img src="/images/ex2.png" width="470">
 <img src="/images/ex1.png" width="470">
 <img src="/images/ex3.png" width="470">
