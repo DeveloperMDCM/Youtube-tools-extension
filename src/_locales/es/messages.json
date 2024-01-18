@@ -1,0 +1,20 @@
+{
+    "global.text.color": "Color",
+    "global.text.colors": "Colores",
+    "lan": "Lenguajes",
+    "general": "General",
+    "themes": "Temas",
+    "appearance": "Apaciencia",
+    "setting": "Configuración",
+    "primary.color": "Color primario",
+    "secondary.color": "Color segundario",
+    "icon.color": "Color iconos",
+    "line.color.preview.video": "Linea previa video",
+    "time.color.preview.video": "Tiempo previo video",
+    "header.color": "Header color",
+    "menu.color": "Header color",
+    "sidebar.color": "Sidebar color",
+    "general.setting.description": "Colores en la página",
+    "general.setting.info.description": "Configuración general"
+  }
+  

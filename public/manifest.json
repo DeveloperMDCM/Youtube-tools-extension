@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Youtube Tools Extension",
+  "author": "MDCM",
+  "version": "2.0",
+  "description": "Añade opciones extras a youtube by: DeveloperMDCM",
+  "permissions": ["storage", "activeTab"],
+  "action": {
+    "default_icon": "img/1.png",
+    "default_popup": "index.html"
+  },
+  "default_locale": "en",
+
+  "content_scripts": [
+    {
+      "exclude_matches": [
+				"*://www.youtube.com/audiolibrary/*",
+				"*://www.youtube.com/tv*"
+			],
+      "matches": ["*://www.youtube.com/*"],
+      "js": [
+        "/contentScript.js",
+        "/content.js"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "icons": {
+    "48": "img/2.png"
+  },
+  "background": {
+    "service_worker": "/background.js"
+  }
+}

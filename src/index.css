@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body { 
+width: 568px;
+background-color: #000;
+}
+
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #000;
+
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #ff0000;
+
+}
+
+.checkmark {
+ display: block;
+ width: 30px;
+ height: 30px;
+ background-color: #ddd;
+ border-radius: 10px;
+ position: relative;
+ transition: background-color 0.4s;
+ overflow: hidden;
+ cursor: pointer;
+}
+
+.check:checked ~ .checkmark {
+ background-color: #08bb68;
+}
+
+.checkmark::after {
+ content: "";
+ position: absolute;
+ width: 5px;
+ height: 10px;
+ border-right: 3px solid #fff;
+ border-bottom: 3px solid #fff;
+ top: 44%;
+ left: 50%;
+ transform: translate(-50%, -50%) rotateZ(40deg) scale(10);
+ opacity: 0;
+ transition: all 0.4s;
+}
+
+.check:checked ~ .checkmark::after {
+ opacity: 1;
+ transform: translate(-50%, -50%) rotateZ(40deg) scale(1);
+}

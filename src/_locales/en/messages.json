@@ -1,0 +1,23 @@
+{
+    "global.text.color": "Color",
+    "global.text.colors": "Colors",
+    "global.text.themes": "Themes",
+    "lan": "Languaes",
+    "general": "General",
+    "themes": "Themes",
+    "themes.setting.description": "Themes for the page",
+    "themes.setting.info.description": "Themes configuration",
+    "appearance": "Appearance",
+    "setting": "Setting",
+    "primary.color": "Primary color",
+    "secondary.color": "Secondary color",
+    "icon.color": "Icons color",
+    "line.color.preview.video": "Line color preview",
+    "time.color.preview.video": "Time color preview",
+    "header.color": "Header color",
+    "menu.color": "Menu color",
+    "sidebar.color": "Sidebar color",
+    "general.setting.description": "Colors on the page",
+    "general.setting.info.description": "General configuration"
+  }
+  

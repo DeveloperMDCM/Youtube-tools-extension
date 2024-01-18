@@ -1,0 +1,63 @@
+// Colors style
+
+export const  palette_1: string[] = [
+  "#ff0000",
+  "#fbff00",
+  "#00ff00",
+  "#0000ff",
+  "#f000ff",
+  "#ffffff",
+  "#ffc107",
+  "#009688",
+  "#35d4f7",
+  "#673ab7",
+  "#7b5f02",
+  "#9d0000",
+  "#4CAF50",
+  "#047dbe",
+  "#8900ae",
+];
+export const  palette_2: string[] = [
+  "#ffffff",
+  "#fbff00",
+  "#00ff00",
+  "#0000ff",
+  "#f000ff",
+];
+export const  palette_themes: string[] = [
+  "#000000",
+  "darkslategrey",
+  "#c5352b",
+  "#aa1849",
+  "#333333",
+  "#000929",
+  "#0135f9",
+  "#644203",
+  "#036430",
+  "#036264",
+  "#080364",
+  "#3e0364",
+  "#64035f",
+  "#640334",
+  "#2c1a3b",
+];
+export const  palette_header: string[] = [
+  "#000000",
+  "darkslategrey",
+  "#f718ca ",
+  "#251822 ",
+  "#c5352b",
+  "#972800",
+  "#9d0000",
+  "#aa1849",
+  "#e53700",
+  "#333333",
+  "#4b4b4b",
+  "#008c91",
+  "#009688",
+  "#795548",
+  "#99a900",
+  "#df920b",
+  "transparent",
+];
+
