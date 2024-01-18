@@ -9,7 +9,6 @@
     "default_icon": "img/1.png",
     "default_popup": "index.html"
   },
-  "default_locale": "en",
 
   "content_scripts": [
     {
