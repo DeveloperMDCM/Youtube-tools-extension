@@ -11,6 +11,7 @@
 ### añade opciones extras a la pagina de youtube script o extención
 
 ## how to install
+- Node js >= 18
 - git clone https://github.com/DeveloperMDCM/Youtube-tools-extension.git
 - npm i
 - npm run buid
