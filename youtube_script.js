@@ -602,7 +602,7 @@
 
     `;
     const screenShot = `
-    <button title="Picture to picture" type="button" class="screenshot_video botones_div">  
+    <button title="Screenshot video" type="button" class="screenshot_video botones_div">  
     <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 8h.01" /><path d="M6 13l2.644 -2.644a1.21 1.21 0 0 1 1.712 0l3.644 3.644" /><path d="M13 13l1.644 -1.644a1.21 1.21 0 0 1 1.712 0l1.644 1.644" /><path d="M4 8v-2a2 2 0 0 1 2 -2h2" /><path d="M4 16v2a2 2 0 0 0 2 2h2" /><path d="M16 4h2a2 2 0 0 1 2 2v2" /><path d="M16 20h2a2 2 0 0 0 2 -2v-2" /></svg>
   </button>
 
@@ -718,6 +718,10 @@
                 active: true,
                 html: colorsTextPage,
               },
+              resetButton: {
+                active: true,
+                html: resetButton,
+              },
               modeReverse: {
                 active: true,
                 html: modeReverse,
@@ -725,10 +729,6 @@
               filterEyes: {
                 active: true,
                 html: filterEyes,
-              },
-              resetButton: {
-                active: true,
-                html: resetButton,
               },
               repeatVideo: {
                 active: true,
@@ -833,7 +833,6 @@
           }
 
           const reverse = document.querySelector("#columns"); // Invertir contenido
-          // const btnReset = document.querySelector("#reset"); // Reset button
           const InputColor = document.querySelector("#color"); // Input color
           const btnImagen = document.querySelector("#imagen");
           // Download image video
@@ -922,6 +921,32 @@
           // Background transparent
           reverse.style.flexDirection = "row";
 
+          const btnReset = document.querySelector("#reset"); // Reset button
+          if(btnReset) {
+            console.log('');
+            btnReset.addEventListener('click', function () {
+              if(document.querySelector("#cinematics > div") != undefined || videoFull != undefined){
+              document.body.style.setProperty("--yt-spec-text-primary","#ffffff");
+              // document.body.style.setProperty('--yt-spec-text-secondary', '#ffffff');
+              document.body.style.setProperty("--yt-spec-static-overlay-background-brand", "#ffffff");
+              document.body.style.setProperty("--yt-spec-static-overlay-background-brand", "red");
+              if(document.querySelector("#cinematics > div") != null) {
+                document.querySelector("#cinematics > div").style = "position: relative; inset: 0px; pointer-events: none; background: transparent";
+              }
+              document.body.style.setProperty("--yt-spec-static-brand-red", "#ff0000");
+              document.body.style.setProperty("--yt-spec-static-brand-white", "gray");
+              document.querySelector("#ojosprotect").style.backgroundColor = "transparent";
+              document.body.style.setProperty("--ytd-searchbox-legacy-border-color", "#ffffff");
+              document.body.style.setProperty("--ytd-searchbox-legacy-border-shadow-color", "#ffffff");
+              document.querySelector("#logo-icon").style.color = "#ffffff";
+              document.body.style.setProperty("--yt-spec-general-background-a", "#000000");
+              document.querySelector("html[dark] [dark]").style.backgroundColor = "#000000";
+              document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "";
+          
+        }
+      });
+    }
+
           if (btnImagen) {
             btnImagen.onclick = () => {
               if (
@@ -975,18 +1000,17 @@
                       console.log(
                         "La imagen excede los 20 KB. No se descargará."
                       );
-                      // Puedes mostrar un mensaje de error o tomar otra acción según tus necesidades
                     }
                   })
                   .catch((error) => {
                     console.error("Error al obtener la imagen:", error);
-                    // Puedes manejar el error según tus necesidades
                   });
               } else {
                 mostrarAlerta("Active Dark Theme in Youtube page");
               }
             };
           }
+
 
           const colorTextPage = localStorage.getItem("colorTextPage");
           document.body.style.setProperty(
@@ -1048,7 +1072,7 @@
               let enlace;
               enlace = parametrosURL.get("v");
               window.open(
-                `https://www.youtube.com/embed/${enlace}?rel=0&controls=2&color=yellow&iv_load_policy=3&showinfo=0&modestbranding=1&autoplay=1`
+                `https://www.youtube.com/embed/${enlace}?rel=0&controls=2&color=white&iv_load_policy=3&showinfo=0&modestbranding=1&autoplay=1`
               );
             };
           }
@@ -1075,11 +1099,11 @@
                       );
                     });
                 } else {
-                  // El video ya está en modo Picture-in-Picture, puedes manejarlo según tus necesidades
+                  // video picture
                 }
               } else {
-                console.error(
-                  "El modo Picture-in-Picture no está soportado en este navegador."
+                alert(
+                  "Picture-in-Picture not supported"
                 );
               }
             };
@@ -1274,10 +1298,13 @@
           ".ytp-ad-text.ytp-ad-preview-text-modern" !== null
         ) ||
         document.querySelector(".ytp-ad-preview-container" !== null)
+        || document.querySelector('.ytp-ad-preview-container.ytp-ad-preview-container-detached')
       ) {
-        document.querySelector(
-          "#movie_player > div.html5-video-container > video"
-        ).currentTime = 100000;
+        if(document.querySelector('.ytp-ad-preview-container.ytp-ad-preview-container-detached') != undefined) {
+          document.querySelector(
+            "#movie_player > div.html5-video-container > video"
+          ).currentTime = 100000;
+        }
         document.querySelector(".ytp-ad-skip-button-modern.ytp-button").click();
         document.querySelector(".video-ads.ytp-ad-module").click();
       }
