@@ -49,3 +49,6 @@
 <img src="/images/ex3.png" width="470">
 
 </div>
+
+
+[![Star History Chart](https://api.star-history.com/svg?repos=DeveloperMDCM/Youtube-tools-extension&type=Date)](https://star-history.com/#DeveloperMDCM/Youtube-tools-extension&Date)
