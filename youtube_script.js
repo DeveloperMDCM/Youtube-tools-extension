@@ -692,473 +692,492 @@
     `;
 
     let validoBotones = true;
-   
+
     // TODO: Inicia y inserta los botones
     function renderizarContenido() {
-     
-        const addButton = document.querySelector(
-          ".style-scope .ytd-watch-metadata"
-        );
-        if (addButton != undefined && validoBotones) {
-          validoBotones = false;
+      const addButton = document.querySelector(
+        ".style-scope .ytd-watch-metadata"
+      );
+      if (addButton != undefined && validoBotones) {
+        validoBotones = false;
+        addButton.insertAdjacentHTML("beforebegin", menuBotones);
+        // document.querySelector("video").style.borderRadius = "30px";
+        const containerButtons = document.querySelector(".containerButtons");
+        // Agregar cada contenido al contenedor si está activo
+        if (containerButtons) {
           addButton.insertAdjacentHTML("beforebegin", menuBotones);
-          // document.querySelector("video").style.borderRadius = "30px";
-          const containerButtons = document.querySelector(".containerButtons");
-          // Agregar cada contenido al contenedor si está activo
-          if (containerButtons) {
-            addButton.insertAdjacentHTML("beforebegin", menuBotones);
 
-            containerButtons.innerHTML = "";
-            const contentData = {
-              thumbnailVideo: {
-                active: true,
-                html: thumbnailVideo,
-              },
-              colorTextPage: {
-                active: true,
-                html: colorsTextPage,
-              },
-              resetButton: {
-                active: true,
-                html: resetButton,
-              },
-              modeReverse: {
-                active: true,
-                html: modeReverse,
-              },
-              filterEyes: {
-                active: true,
-                html: filterEyes,
-              },
-              repeatVideo: {
-                active: true,
-                html: repeatVideo,
-              },
-              downloadMp4Mp3: {
-                active: true,
-                html: downloadMp4Mp3,
-              },
-              donwloadExternal: {
-                active: true,
-                html: donwloadExternal,
-              },
-              viewExternalVideo: {
-                active: true,
-                html: viewExternalVideo,
-              },
-              pictureToPicture: {
-                active: true,
-                html: pictureToPicture,
-              },
-              screenShot: {
-                active: true,
-                html: screenShot,
-              },
-            };
-            for (const key in contentData) {
-              if (contentData[key].active) {
-                containerButtons.innerHTML += contentData[key].html;
-              }
+          containerButtons.innerHTML = "";
+          const contentData = {
+            thumbnailVideo: {
+              active: true,
+              html: thumbnailVideo,
+            },
+            colorTextPage: {
+              active: true,
+              html: colorsTextPage,
+            },
+            resetButton: {
+              active: true,
+              html: resetButton,
+            },
+            modeReverse: {
+              active: true,
+              html: modeReverse,
+            },
+            filterEyes: {
+              active: true,
+              html: filterEyes,
+            },
+            repeatVideo: {
+              active: true,
+              html: repeatVideo,
+            },
+            downloadMp4Mp3: {
+              active: true,
+              html: downloadMp4Mp3,
+            },
+            donwloadExternal: {
+              active: true,
+              html: donwloadExternal,
+            },
+            viewExternalVideo: {
+              active: true,
+              html: viewExternalVideo,
+            },
+            pictureToPicture: {
+              active: true,
+              html: pictureToPicture,
+            },
+            screenShot: {
+              active: true,
+              html: screenShot,
+            },
+          };
+          for (const key in contentData) {
+            if (contentData[key].active) {
+              containerButtons.innerHTML += contentData[key].html;
             }
-
-            // Resto del código para formularios y eventos...
-          } else {
-            console.error("Elemento .containerButtons no encontrado");
           }
-          // Formulario de botones para descargar
-          const formulariodescarga = document.querySelector(
-            ".formulariodescarga"
-          );
-          const formulariodescargaaudio = document.querySelector(
-            ".formulariodescargaaudio"
-          );
-          const framedescarga = document.querySelector("#descargando");
-          const framedescargamp3 = document.querySelector("#descargandomp3");
-          if (formulariodescarga && formulariodescargaaudio) {
-            formulariodescarga.addEventListener("click", (e) => {
-              e.preventDefault();
-            });
-            formulariodescargaaudio.addEventListener("click", (e) => {
-              e.preventDefault();
-            });
-          }
-          const btn1mp4 = document.querySelector(".btn1");
-          const btn2mp3 = document.querySelector(".btn2");
-          const btn3cancel = document.querySelector(".btn3");
-          const selectcalidades = document.querySelector(".selectcalidades");
-          const selectcalidadesaudio = document.querySelector(
-            ".selectcalidadesaudio"
-          );
 
-          selectcalidades.addEventListener("change", (e) => {
-            framedescarga.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=0af`;
-            framedescarga.classList.remove("ocultarframe");
+          // Resto del código para formularios y eventos...
+        } else {
+          console.error("Elemento .containerButtons no encontrado");
+        }
+        // Formulario de botones para descargar
+        const formulariodescarga = document.querySelector(
+          ".formulariodescarga"
+        );
+        const formulariodescargaaudio = document.querySelector(
+          ".formulariodescargaaudio"
+        );
+        const framedescarga = document.querySelector("#descargando");
+        const framedescargamp3 = document.querySelector("#descargandomp3");
+        if (formulariodescarga && formulariodescargaaudio) {
+          formulariodescarga.addEventListener("click", (e) => {
+            e.preventDefault();
           });
+          formulariodescargaaudio.addEventListener("click", (e) => {
+            e.preventDefault();
+          });
+        }
+        const btn1mp4 = document.querySelector(".btn1");
+        const btn2mp3 = document.querySelector(".btn2");
+        const btn3cancel = document.querySelector(".btn3");
+        const selectcalidades = document.querySelector(".selectcalidades");
+        const selectcalidadesaudio = document.querySelector(
+          ".selectcalidadesaudio"
+        );
 
-          selectcalidadesaudio.addEventListener("change", (e) => {
-            framedescargamp3.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=049c16`;
-            // console.log(e.target.value)
+        selectcalidades.addEventListener("change", (e) => {
+          framedescarga.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=0af`;
+          framedescarga.classList.remove("ocultarframe");
+        });
+
+        selectcalidadesaudio.addEventListener("change", (e) => {
+          framedescargamp3.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=049c16`;
+          // console.log(e.target.value)
+          framedescargamp3.classList.remove("ocultarframeaudio");
+        });
+
+        if (btn3cancel) {
+          btn3cancel.onclick = () => {
+            formulariodescarga.style.display = "none";
+            formulariodescargaaudio.style.display = "none";
+          };
+        }
+
+        if (btn1mp4) {
+          btn1mp4.onclick = () => {
+            selectcalidades.classList.remove("ocultarframe");
+            framedescarga.classList.add("ocultarframe");
+            formulariodescarga.classList.remove("ocultarframe");
+            formulariodescarga.style.display = "";
+            selectcalidadesaudio.classList.add("ocultarframeaudio");
+            formulariodescargaaudio.classList.add("ocultarframe");
+            formulariodescarga.reset();
+          };
+        }
+
+        if (btn2mp3) {
+          btn2mp3.onclick = () => {
+            formulariodescargaaudio.classList.remove("ocultarframe");
+            formulariodescarga.classList.add("ocultarframe");
             framedescargamp3.classList.remove("ocultarframeaudio");
-          });
+            formulariodescargaaudio.style.display = "";
+            selectcalidadesaudio.classList.remove("ocultarframeaudio");
+            framedescargamp3.classList.add("ocultarframeaudio");
+            formulariodescargaaudio.reset();
+          };
+        }
 
-          if (btn3cancel) {
-            btn3cancel.onclick = () => {
-              formulariodescarga.style.display = "none";
-              formulariodescargaaudio.style.display = "none";
-            };
-          }
+        const reverse = document.querySelector("#columns"); // Invertir contenido
+        const InputColor = document.querySelector("#color"); // Input color
+        const btnImagen = document.querySelector("#imagen");
+        // Download image video
+        const formularioButtons = document.querySelector("#eyes"); // Filtro de pantalla
+        // const btnFondo = document.querySelector("#fondo"); // Fondo cinematica completa
+        const invertirVista = document.querySelector("#invertir"); // Intercambiar vista
 
-          if (btn1mp4) {
-            btn1mp4.onclick = () => {
-              selectcalidades.classList.remove("ocultarframe");
-              framedescarga.classList.add("ocultarframe");
-              formulariodescarga.classList.remove("ocultarframe");
-              formulariodescarga.style.display = "";
-              selectcalidadesaudio.classList.add("ocultarframeaudio");
-              formulariodescargaaudio.classList.add("ocultarframe");
-              formulariodescarga.reset();
-            };
-          }
+        const buttonsVideo = document.querySelector(
+          "#top-row.ytd-watch-metadata"
+        ); // Botones para video
 
-          if (btn2mp3) {
-            btn2mp3.onclick = () => {
-              formulariodescargaaudio.classList.remove("ocultarframe");
-              formulariodescarga.classList.add("ocultarframe");
-              framedescargamp3.classList.remove("ocultarframeaudio");
-              formulariodescargaaudio.style.display = "";
-              selectcalidadesaudio.classList.remove("ocultarframeaudio");
-              framedescargamp3.classList.add("ocultarframeaudio");
-              formulariodescargaaudio.reset();
-            };
-          }
+        reverse.style.flexDirection = "row";
+        buttonsVideo.style =
+          "display: flex;flex-direction: column;justify-content: center;align-items: center ;";
+        document.querySelector("#title > h1").style =
+          "text-align: center; color: red;";
+        document.querySelector("#owner").style.justifyContent = "center";
+        //document.querySelector("#search-icon-legacy.ytd-searchbox").style.backgroundColor = "gray";
 
-          const reverse = document.querySelector("#columns"); // Invertir contenido
-          const InputColor = document.querySelector("#color"); // Input color
-          const btnImagen = document.querySelector("#imagen");
-          // Download image video
-          const formularioButtons = document.querySelector("#eyes"); // Filtro de pantalla
-          // const btnFondo = document.querySelector("#fondo"); // Fondo cinematica completa
-          const invertirVista = document.querySelector("#invertir"); // Intercambiar vista
+        let countViewRow = 0; // Count
+        if (invertirVista) {
+          invertirVista.onclick = () => {
+            countViewRow += 1;
+            switch (countViewRow) {
+              case 1:
+                reverse.style.flexDirection = "row-reverse";
+                break;
+              case 2:
+                reverse.style.flexDirection = "row";
+                countViewRow = 0;
+                break;
+            }
+          };
+        }
 
-          const buttonsVideo = document.querySelector(
-            "#top-row.ytd-watch-metadata"
-          ); // Botones para video
-
-          reverse.style.flexDirection = "row";
-          buttonsVideo.style =
-            "display: flex;flex-direction: column;justify-content: center;align-items: center ;";
-          document.querySelector("#title > h1").style =
-            "text-align: center; color: red;";
-          document.querySelector("#owner").style.justifyContent = "center";
-          //document.querySelector("#search-icon-legacy.ytd-searchbox").style.backgroundColor = "gray";
-
-          let countViewRow = 0; // Count
-          if (invertirVista) {
-            invertirVista.onclick = () => {
-              countViewRow += 1;
-              switch (countViewRow) {
+        // valido modo oscuro y venta de video
+        // Repeat video button
+        let countRepeat = 0; // count
+        const repeat = document.querySelector("#repeatvideo"); // Repeat button
+        const imarepeat = document.querySelector(".icon-tabler-repeat"); // img repeat
+        const videoFull = document.querySelector(
+          "#movie_player > div.html5-video-container > video"
+        );
+        repeat.onclick = () => {
+          if (
+            document.querySelector("#cinematics > div") != undefined ||
+            videoFull != undefined
+          ) {
+            countRepeat += 1;
+            setInterval(() => {
+              switch (countRepeat) {
                 case 1:
-                  reverse.style.flexDirection = "row-reverse";
-                  break;
-                case 2:
-                  reverse.style.flexDirection = "row";
-                  countViewRow = 0;
-                  break;
-              }
-            };
-          }
-
-          // valido modo oscuro y venta de video
-          // Repeat video button
-          let countRepeat = 0; // count
-          const repeat = document.querySelector("#repeatvideo"); // Repeat button
-          const imarepeat = document.querySelector(".icon-tabler-repeat"); // img repeat
-          const videoFull = document.querySelector(
-            "#movie_player > div.html5-video-container > video"
-          );
-          repeat.onclick = () => {
-            if (
-              document.querySelector("#cinematics > div") != undefined ||
-              videoFull != undefined
-            ) {
-              countRepeat += 1;
-              setInterval(() => {
-                switch (countRepeat) {
-                  case 1:
-                    document
-                      .querySelector(
-                        "#movie_player > div.html5-video-container > video"
-                      )
-                      .setAttribute("loop", "true");
-                    imarepeat.innerHTML = `  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-repeat-off" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                  document
+                    .querySelector(
+                      "#movie_player > div.html5-video-container > video"
+                    )
+                    .setAttribute("loop", "true");
+                  imarepeat.innerHTML = `  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-repeat-off" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                       <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                       <path d="M4 12v-3c0 -1.336 .873 -2.468 2.08 -2.856m3.92 -.144h10m-3 -3l3 3l-3 3"></path>
                       <path d="M20 12v3a3 3 0 0 1 -.133 .886m-1.99 1.984a3 3 0 0 1 -.877 .13h-13m3 3l-3 -3l3 -3"></path>
                       <path d="M3 3l18 18"></path>
                    </svg> `; // img repeat
-                    break;
-                  case 2:
-                    countRepeat = 0;
-                    document
-                      .querySelector(
-                        "#movie_player > div.html5-video-container > video"
-                      )
-                      .removeAttribute("loop");
-                    imarepeat.innerHTML = ` <svg  xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-repeat" width="24"
+                  break;
+                case 2:
+                  countRepeat = 0;
+                  document
+                    .querySelector(
+                      "#movie_player > div.html5-video-container > video"
+                    )
+                    .removeAttribute("loop");
+                  imarepeat.innerHTML = ` <svg  xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-repeat" width="24"
                       height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                       stroke-linecap="round" stroke-linejoin="round">
                       <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                       <path d="M4 12v-3a3 3 0 0 1 3 -3h13m-3 -3l3 3l-3 3"></path>
                       <path d="M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3"></path>
                     </svg>`;
-                    break;
-                }
-              }, 1000);
-            } else {
-              mostrarAlerta("Active Dark Theme in Youtube page");
-            }
-          };
-          // Background transparent
-          reverse.style.flexDirection = "row";
-
-          const btnReset = document.querySelector("#reset"); // Reset button
-          if(btnReset) {
-            console.log('');
-            btnReset.addEventListener('click', function () {
-              if(document.querySelector("#cinematics > div") != undefined || videoFull != undefined){
-              document.body.style.setProperty("--yt-spec-text-primary","#ffffff");
-              // document.body.style.setProperty('--yt-spec-text-secondary', '#ffffff');
-              document.body.style.setProperty("--yt-spec-static-overlay-background-brand", "#ffffff");
-              document.body.style.setProperty("--yt-spec-static-overlay-background-brand", "red");
-              if(document.querySelector("#cinematics > div") != null) {
-                document.querySelector("#cinematics > div").style = "position: relative; inset: 0px; pointer-events: none; background: transparent";
+                  break;
               }
-              document.body.style.setProperty("--yt-spec-static-brand-red", "#ff0000");
-              document.body.style.setProperty("--yt-spec-static-brand-white", "gray");
-              document.querySelector("#ojosprotect").style.backgroundColor = "transparent";
-              document.body.style.setProperty("--ytd-searchbox-legacy-border-color", "#ffffff");
-              document.body.style.setProperty("--ytd-searchbox-legacy-border-shadow-color", "#ffffff");
-              document.querySelector("#logo-icon").style.color = "#ffffff";
-              document.body.style.setProperty("--yt-spec-general-background-a", "#000000");
-              document.querySelector("html[dark] [dark]").style.backgroundColor = "#000000";
-              document.querySelector("ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer").style = "";
-          
-        }
-      });
-    }
-
-          if (btnImagen) {
-            btnImagen.onclick = () => {
-              if (
-                document.querySelector("#cinematics > div") != undefined ||
-                videoFull != undefined
-              ) {
-                const parametrosURL = new URLSearchParams(
-                  window.location.search
-                );
-                let enlace = parametrosURL.get("v");
-
-                // Construir la URL de la imagen
-                const imageUrl = `https://i.ytimg.com/vi/${enlace}/maxresdefault.jpg`;
-
-                // Realizar la solicitud para obtener la imagen
-                fetch(imageUrl)
-                  .then((response) => {
-                    if (!response.ok) {
-                      throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.blob();
-                  })
-                  .then((blob) => {
-                    // Obtener el tamaño de la imagen en kilobytes
-                    const imageSizeKB = blob.size / 1024;
-
-                    // Verificar si el tamaño de la imagen es menor o igual a 20 KB
-                    if (imageSizeKB >= 20) {
-                      window.open(
-                        `https://i.ytimg.com/vi/${enlace}/maxresdefault.jpg`,
-                        "popUpWindow",
-                        "height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes"
-                      );
-                      // Crear una URL para la imagen
-                      const imageUrlObject = URL.createObjectURL(blob);
-
-                      // Crear un enlace para descargar la imagen
-                      const enlaceDescarga = document.createElement("a");
-                      enlaceDescarga.href = imageUrlObject;
-                      const titleVideo = document.querySelector(
-                        "h1.style-scope.ytd-watch-metadata"
-                      ).innerText;
-                      enlaceDescarga.download = `${titleVideo}_maxresdefault.jpg`;
-
-                      // Simular un clic en el enlace para iniciar la descarga
-                      enlaceDescarga.click();
-
-                      // Limpiar la URL del objeto después de la descarga
-                      URL.revokeObjectURL(imageUrlObject);
-                    } else {
-                      console.log(
-                        "La imagen excede los 20 KB. No se descargará."
-                      );
-                    }
-                  })
-                  .catch((error) => {
-                    console.error("Error al obtener la imagen:", error);
-                  });
-              } else {
-                mostrarAlerta("Active Dark Theme in Youtube page");
-              }
-            };
+            }, 1000);
+          } else {
+            mostrarAlerta("Active Dark Theme in Youtube page");
           }
+        };
+        // Background transparent
+        reverse.style.flexDirection = "row";
 
-
-          const colorTextPage = localStorage.getItem("colorTextPage");
-          document.body.style.setProperty(
-            "--yt-spec-text-primary",
-            colorTextPage
-          );
-          // Input color
-          InputColor.addEventListener("input", function () {
-            localStorage.setItem("colorTextPage", InputColor.value);
-            const colorTextPage = localStorage.getItem("colorTextPage");
-            // console.log(colorTextPage);
+        const btnReset = document.querySelector("#reset"); // Reset button
+        if (btnReset) {
+          console.log("");
+          btnReset.addEventListener("click", function () {
             if (
               document.querySelector("#cinematics > div") != undefined ||
               videoFull != undefined
             ) {
               document.body.style.setProperty(
                 "--yt-spec-text-primary",
-                colorTextPage
+                "#ffffff"
               );
-              //document.body.style.setProperty("--yt-spec-text-secondary", "#ffffff");
+              // document.body.style.setProperty('--yt-spec-text-secondary', '#ffffff');
               document.body.style.setProperty(
                 "--yt-spec-static-overlay-background-brand",
-                colorTextPage
+                "#ffffff"
               );
               document.body.style.setProperty(
-                "--yt-spec-static-brand-red",
-                colorTextPage
+                "--yt-spec-static-overlay-background-brand",
+                "red"
               );
-              //document.body.style.setProperty("--yt-spec-static-brand-white", colorTextPage);
-              document.querySelector("#logo-icon").style.color = colorTextPage;
-              // document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = "color: black; background-color: white; border: 2px solid black;";
+              if (document.querySelector("#cinematics > div") != null) {
+                document.querySelector("#cinematics > div").style =
+                  "position: relative; inset: 0px; pointer-events: none; background: transparent";
+              }
+              document.body.style.setProperty(
+                "--yt-spec-static-brand-red",
+                "#ff0000"
+              );
+              document.body.style.setProperty(
+                "--yt-spec-static-brand-white",
+                "gray"
+              );
+              document.querySelector("#ojosprotect").style.backgroundColor =
+                "transparent";
+              document.body.style.setProperty(
+                "--ytd-searchbox-legacy-border-color",
+                "#ffffff"
+              );
+              document.body.style.setProperty(
+                "--ytd-searchbox-legacy-border-shadow-color",
+                "#ffffff"
+              );
+              document.querySelector("#logo-icon").style.color = "#ffffff";
+              document.body.style.setProperty(
+                "--yt-spec-general-background-a",
+                "#000000"
+              );
+              document.querySelector(
+                "html[dark] [dark]"
+              ).style.backgroundColor = "#000000";
+              document.querySelector(
+                "ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer"
+              ).style = "";
+            }
+          });
+        }
+
+        if (btnImagen) {
+          btnImagen.onclick = () => {
+            if (
+              document.querySelector("#cinematics > div") != undefined ||
+              videoFull != undefined
+            ) {
+              const parametrosURL = new URLSearchParams(window.location.search);
+              let enlace = parametrosURL.get("v");
+
+              // Construir la URL de la imagen
+              const imageUrl = `https://i.ytimg.com/vi/${enlace}/maxresdefault.jpg`;
+
+              // Realizar la solicitud para obtener la imagen
+              fetch(imageUrl)
+                .then((response) => {
+                  if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                  }
+                  return response.blob();
+                })
+                .then((blob) => {
+                  // Obtener el tamaño de la imagen en kilobytes
+                  const imageSizeKB = blob.size / 1024;
+
+                  // Verificar si el tamaño de la imagen es menor o igual a 20 KB
+                  if (imageSizeKB >= 20) {
+                    window.open(
+                      `https://i.ytimg.com/vi/${enlace}/maxresdefault.jpg`,
+                      "popUpWindow",
+                      "height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes"
+                    );
+                    // Crear una URL para la imagen
+                    const imageUrlObject = URL.createObjectURL(blob);
+
+                    // Crear un enlace para descargar la imagen
+                    const enlaceDescarga = document.createElement("a");
+                    enlaceDescarga.href = imageUrlObject;
+                    const titleVideo = document.querySelector(
+                      "h1.style-scope.ytd-watch-metadata"
+                    ).innerText;
+                    enlaceDescarga.download = `${titleVideo}_maxresdefault.jpg`;
+
+                    // Simular un clic en el enlace para iniciar la descarga
+                    enlaceDescarga.click();
+
+                    // Limpiar la URL del objeto después de la descarga
+                    URL.revokeObjectURL(imageUrlObject);
+                  } else {
+                    console.log(
+                      "La imagen excede los 20 KB. No se descargará."
+                    );
+                  }
+                })
+                .catch((error) => {
+                  console.error("Error al obtener la imagen:", error);
+                });
             } else {
               mostrarAlerta("Active Dark Theme in Youtube page");
             }
-          });
-  
-    
+          };
+        }
 
-          const externalLink = document.querySelector(".external_link");
-          if (externalLink) {
-            externalLink.onclick = () => {
-              const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
-              let enlace;
-              enlace = parametrosURL.get("v");
-              window.open(
-                `https://www.y2mate.com/es/convert-youtube/${enlace}`,
-                "popUpWindow",
-                "height=800,width=1000,left=50%,top=100,resizable=no,scrollbars=yes,toolbar=no,menubar=yes,location=no,directories=yes, status=no"
-              );
-            };
-          }
-          const viewExternalLink = document.querySelector(
-            ".view_external_link"
-          );
-          if (viewExternalLink) {
-            viewExternalLink.onclick = () => {
-              document.querySelector("video").click();
-              const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
-              let enlace;
-              enlace = parametrosURL.get("v");
-              window.open(
-                `https://www.youtube.com/embed/${enlace}?rel=0&controls=2&color=white&iv_load_policy=3&showinfo=0&modestbranding=1&autoplay=1`
-              );
-            };
-          }
-          const viewPictureToPicture = document.querySelector(
-            ".video_picture_to_picture"
-          );
-          if (viewPictureToPicture) {
-            viewPictureToPicture.onclick = () => {
-              const video = document.querySelector("video");
-              // Verifica si el navegador admite Picture-in-Picture
-              if ("pictureInPictureEnabled" in document) {
-                // Verifica si el video aún no está en modo Picture-in-Picture
-                if (!document.pictureInPictureElement) {
-                  // Intenta activar el modo Picture-in-Picture
-                  video
-                    .requestPictureInPicture()
-                    .then(() => {
-                      // El video está ahora en modo Picture-in-Picture
-                    })
-                    .catch((error) => {
-                      console.error(
-                        "Error al activar el modo Picture-in-Picture:",
-                        error
-                      );
-                    });
-                } else {
-                  // video picture
-                }
-              } else {
-                alert(
-                  "Picture-in-Picture not supported"
-                );
-              }
-            };
-
-            // Filtro de pantalla
-            if (formularioButtons) {
-              formularioButtons.addEventListener("input", function () {
-                if (
-                  document.querySelector("#cinematics > div") != undefined ||
-                  videoFull != undefined
-                ) {
-                  document.querySelector("#ojosprotect").style.backgroundColor =
-                    formularioButtons.value;
-                }
-              });
-            }
-            clearInterval(renderizarContenido);
-          }
-
-          const screenShotVideo = document.querySelector(".screenshot_video");
-          if (screenShotVideo) {
-            screenShotVideo.onclick = () => {
-              const video = document.querySelector("video");
-              const canvas = document.createElement("canvas");
-              canvas.width = video.videoWidth;
-              canvas.height = video.videoHeight;
-              const context = canvas.getContext("2d");
-              context.drawImage(video, 0, 0, canvas.width, canvas.height);
-              const imagenURL = canvas.toDataURL("image/png");
-              const enlaceDescarga = document.createElement("a");
-              enlaceDescarga.href = imagenURL;
-              const titleVideo = document.querySelector(
-                "h1.style-scope.ytd-watch-metadata"
-              ).innerText;
-              enlaceDescarga.download = `${video.currentTime.toFixed(
-                0
-              )}s_${titleVideo}.png`;
-              enlaceDescarga.click();
-            };
+        const colorTextPage = localStorage.getItem("colorTextPage");
+        document.body.style.setProperty(
+          "--yt-spec-text-primary",
+          colorTextPage
+        );
+        // Input color
+        InputColor.addEventListener("input", function () {
+          localStorage.setItem("colorTextPage", InputColor.value);
+          const colorTextPage = localStorage.getItem("colorTextPage");
+          // console.log(colorTextPage);
+          if (
+            document.querySelector("#cinematics > div") != undefined ||
+            videoFull != undefined
+          ) {
+            document.body.style.setProperty(
+              "--yt-spec-text-primary",
+              colorTextPage
+            );
+            //document.body.style.setProperty("--yt-spec-text-secondary", "#ffffff");
+            document.body.style.setProperty(
+              "--yt-spec-static-overlay-background-brand",
+              colorTextPage
+            );
+            document.body.style.setProperty(
+              "--yt-spec-static-brand-red",
+              colorTextPage
+            );
+            //document.body.style.setProperty("--yt-spec-static-brand-white", colorTextPage);
+            document.querySelector("#logo-icon").style.color = colorTextPage;
+            // document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = "color: black; background-color: white; border: 2px solid black;";
           } else {
-            // Si result.GeneralIsActiveIconColor es falso, quitar contenido del DOM
-            const containerButtons =
-              document.querySelector(".containerButtons");
+            mostrarAlerta("Active Dark Theme in Youtube page");
+          }
+        });
 
-            if (containerButtons != undefined) {
-              containerButtons.innerHTML = "";
-              // También puedes ocultar o manipular otros elementos según tus necesidades
+        const externalLink = document.querySelector(".external_link");
+        if (externalLink) {
+          externalLink.onclick = () => {
+            const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
+            let enlace;
+            enlace = parametrosURL.get("v");
+            window.open(
+              `https://www.y2mate.com/es/convert-youtube/${enlace}`,
+              "popUpWindow",
+              "height=800,width=1000,left=50%,top=100,resizable=no,scrollbars=yes,toolbar=no,menubar=yes,location=no,directories=yes, status=no"
+            );
+          };
+        }
+        const viewExternalLink = document.querySelector(".view_external_link");
+        if (viewExternalLink) {
+          viewExternalLink.onclick = () => {
+            document.querySelector("video").click();
+            const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
+            let enlace;
+            enlace = parametrosURL.get("v");
+            window.open(
+              `https://www.youtube.com/embed/${enlace}?rel=0&controls=2&color=white&iv_load_policy=3&showinfo=0&modestbranding=1&autoplay=1`
+            );
+          };
+        }
+        const viewPictureToPicture = document.querySelector(
+          ".video_picture_to_picture"
+        );
+        if (viewPictureToPicture) {
+          viewPictureToPicture.onclick = () => {
+            const video = document.querySelector("video");
+            // Verifica si el navegador admite Picture-in-Picture
+            if ("pictureInPictureEnabled" in document) {
+              // Verifica si el video aún no está en modo Picture-in-Picture
+              if (!document.pictureInPictureElement) {
+                // Intenta activar el modo Picture-in-Picture
+                video
+                  .requestPictureInPicture()
+                  .then(() => {
+                    // El video está ahora en modo Picture-in-Picture
+                  })
+                  .catch((error) => {
+                    console.error(
+                      "Error al activar el modo Picture-in-Picture:",
+                      error
+                    );
+                  });
+              } else {
+                // video picture
+              }
+            } else {
+              alert("Picture-in-Picture not supported");
             }
+          };
+
+          // Filtro de pantalla
+          if (formularioButtons) {
+            formularioButtons.addEventListener("input", function () {
+              if (
+                document.querySelector("#cinematics > div") != undefined ||
+                videoFull != undefined
+              ) {
+                document.querySelector("#ojosprotect").style.backgroundColor =
+                  formularioButtons.value;
+              }
+            });
           }
           clearInterval(renderizarContenido);
         }
-     
+
+        const screenShotVideo = document.querySelector(".screenshot_video");
+        if (screenShotVideo) {
+          screenShotVideo.onclick = () => {
+            const video = document.querySelector("video");
+            const canvas = document.createElement("canvas");
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const context = canvas.getContext("2d");
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imagenURL = canvas.toDataURL("image/png");
+            const enlaceDescarga = document.createElement("a");
+            enlaceDescarga.href = imagenURL;
+            const titleVideo = document.querySelector(
+              "h1.style-scope.ytd-watch-metadata"
+            ).innerText;
+            enlaceDescarga.download = `${video.currentTime.toFixed(
+              0
+            )}s_${titleVideo}.png`;
+            enlaceDescarga.click();
+          };
+        } else {
+          // Si result.GeneralIsActiveIconColor es falso, quitar contenido del DOM
+          const containerButtons = document.querySelector(".containerButtons");
+
+          if (containerButtons != undefined) {
+            containerButtons.innerHTML = "";
+            // También puedes ocultar o manipular otros elementos según tus necesidades
+          }
+        }
+        clearInterval(renderizarContenido);
+      }
     }
     renderizarContenido();
- 
 
     // Función para link github project
     const existeFormButton = document.querySelector(
@@ -1297,10 +1316,17 @@
         document.querySelector(
           ".ytp-ad-text.ytp-ad-preview-text-modern" !== null
         ) ||
-        document.querySelector(".ytp-ad-preview-container" !== null)
-        || document.querySelector('.ytp-ad-preview-container.ytp-ad-preview-container-detached')
+        document.querySelector(".ytp-ad-text") ||
+        document.querySelector(".ytp-ad-preview-container" !== null) ||
+        document.querySelector(
+          ".ytp-ad-preview-container.ytp-ad-preview-container-detached"
+        )
       ) {
-        if(document.querySelector('.ytp-ad-preview-container.ytp-ad-preview-container-detached') != undefined) {
+        if (
+          document.querySelector(
+            ".ytp-ad-preview-container.ytp-ad-preview-container-detached"
+          ) != undefined
+        ) {
           document.querySelector(
             "#movie_player > div.html5-video-container > video"
           ).currentTime = 100000;
