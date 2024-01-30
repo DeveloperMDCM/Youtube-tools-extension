@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.0.1
+// @version      2.0.2
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -632,6 +632,12 @@
     </datalist>
     `;
 
+    const checkUpdates = `
+    <button title="Check new updates" type="button" class="checked_updates botones_div">  
+    <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" /><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" /></svg>
+  </button>
+    `
+
     // Menu Buttons
     const menuBotones = `
     <!DOCTYPE html>
@@ -752,6 +758,10 @@
             screenShot: {
               active: true,
               html: screenShot,
+            },
+            checkUpdates: {
+              active: true,
+              html: checkUpdates,
             },
           };
           for (const key in contentData) {
@@ -1027,11 +1037,12 @@
                     URL.revokeObjectURL(imageUrlObject);
                   } else {
                     console.log(
-                      "La imagen excede los 20 KB. No se descargará."
+                      "La imagen no excede los 20 KB. No se descargará."
                     );
                   }
                 })
                 .catch((error) => {
+                  alert('No found image')
                   console.error("Error al obtener la imagen:", error);
                 });
             } else {
@@ -1143,6 +1154,16 @@
             });
           }
           clearInterval(renderizarContenido);
+        }
+
+        const checked_updates = document.querySelector('.checked_updates');
+
+        if(checked_updates) {
+          checked_updates.onclick = () => {
+            window.open(
+              `https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js`
+            );
+          }
         }
 
         const screenShotVideo = document.querySelector(".screenshot_video");
