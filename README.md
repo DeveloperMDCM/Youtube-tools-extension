@@ -42,7 +42,8 @@
 - npm run buid
 - In Google Chrome go to extension activate developer mode and load the dist folder
 
-<img src="/images/how install.png" width="470">
+<img src="/images/how install.png" width="670">
+<img src="/images/multi.png" width="470">
 <img src="/images/ex2.png" width="470">
 <div align="center">
 <img src="/images/ex1.png" width="470">
