@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.0.2
+// @version      2.1
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -97,7 +97,10 @@
 // @downloadURL https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js
 // @updateURL https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.meta.js
 // ==/UserScript==
-// new update 18/01/2024
+
+
+
+// new update 31/01/2024 🟢
 (function () {
   // Youtube tools by: DeveloperMDCM
   // https://github.com/DeveloperMDCM/Youtube-tools-extension
@@ -111,8 +114,6 @@
 
   function cargarScript() {
     console.log("Scrip en ejecución by: DeveloperMDCM  MDCM");
-
-    // alert('Script by: DeveloperMDCM', cat)
     let ad = true;
 
     const stylesCss = `
@@ -121,6 +122,12 @@
     progress::-webkit-progress-bar {
       background-color: #ff0000;
       ;
+    }
+
+    .content_collapsible_colors {
+      display: none;
+      overflow: hidden;
+      background-color: #3f3f3f;
     }
   
     progress::-webkit-progress-value {
@@ -223,15 +230,35 @@
       width: 50px;
       height: 40px;
     }
-  
-    #color,
+    .content_collapsible_colors {
+      position: relative;
+      width: 400px;
+      margin: auto;
+      padding: 10px;
+      border-radius: 20px;
+    }
+    .content_collapsible_colors div{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .colors_buttons_collpases {
+      opacity: 0;
+      position: absolute;
+      height: 24px;
+      bottom: 0;
+      top: 0;
+      left: 10%;
+      margin-left: 2px;
+      width: 40px;
+    }
     #eyes {
       opacity: 0;
       position: absolute;
-      height: 90%;
+      height: 24px;
       bottom: 0;
       top: 0;
-      width: 17px;
+      width: 24px;
     }
   
     /* width */
@@ -453,6 +480,14 @@
     </style>
     `;
 
+
+    const button_colors_collapsible = `
+    <button type="button" title="settings colors" class="collapsible botones_div collapsible_colors">
+    <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19 3h-4a2 2 0 0 0 -2 2v12a4 4 0 0 0 8 0v-12a2 2 0 0 0 -2 -2" /><path d="M13 7.35l-2 -2a2 2 0 0 0 -2.828 0l-2.828 2.828a2 2 0 0 0 0 2.828l9 9" /><path d="M7.3 13h-2.3a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h12" /><path d="M17 17l0 .01" /></svg>
+    </button>
+   
+    `
+
     const thumbnailVideo = `
     <button title="Image video" class="botones_div" type="button" id="imagen">
 
@@ -608,29 +643,29 @@
 
     `;
 
-    const colorsTextPage = `
-    <button title="Text color" class="botones_div" type="button">
+    // const colorsTextPage = `
+    // <button title="Text color" class="botones_div" type="button">
 
-        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-palette" width="24"
-          height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-          stroke-linecap="round" stroke-linejoin="round">
-          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-          <path
-            d="M12 21a9 9 0 0 1 0 -18c4.97 0 9 3.582 9 8c0 1.06 -.474 2.078 -1.318 2.828c-.844 .75 -1.989 1.172 -3.182 1.172h-2.5a2 2 0 0 0 -1 3.75a1.3 1.3 0 0 1 -1 2.25">
-          </path>
-          <path d="M8.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
-          <path d="M12.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
-          <path d="M16.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
-        </svg>
-        <input id="color" list="presetColors1" type="color" value="#ffffff"></button></div>
-    <datalist id="presetColors1">
-      <option value="#ff00aa" />
-      <option value="#fbff00" />
-      <option value="#ff0000" />
-      <option value="#00ff00" />
-      <option value="#0000ff" />
-    </datalist>
-    `;
+    //     <svg  width="24"
+    //       height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+    //       stroke-linecap="round" stroke-linejoin="round">
+    //       <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+    //       <path
+    //         d="M12 21a9 9 0 0 1 0 -18c4.97 0 9 3.582 9 8c0 1.06 -.474 2.078 -1.318 2.828c-.844 .75 -1.989 1.172 -3.182 1.172h-2.5a2 2 0 0 0 -1 3.75a1.3 1.3 0 0 1 -1 2.25">
+    //       </path>
+    //       <path d="M8.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+    //       <path d="M12.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+    //       <path d="M16.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+    //     </svg>
+    //     <input id="color" list="presetColors1" type="color" value="#ffffff"></button></div>
+    // <datalist id="presetColors1">
+    //   <option value="#ff00aa" />
+    //   <option value="#fbff00" />
+    //   <option value="#ff0000" />
+    //   <option value="#00ff00" />
+    //   <option value="#0000ff" />
+    // </datalist>
+    // `;
 
     const checkUpdates = `
     <button title="Check new updates" type="button" class="checked_updates botones_div">  
@@ -656,9 +691,51 @@
     <div class="containerButtons">
     </div>
     <div>
-    </div>
+    </div> 
   </form>
 
+</div>
+<div class="content_collapsible_colors">
+<div style="display: flex;">
+  <h2 style=" margin-left: 2px;">Primary Color:</h2>
+  <button title="Text color" class="botones_div" type="button">
+    <input class="colors_buttons_collpase" id="color_primary" type="color" value="#ffffff"></button>
+</div>
+<div style="display: flex; margin-top: 5px;">
+  <h2>Progress bar Color:</h2>
+  <button title="Text color" class="botones_div" type="button">
+    <input class="colors_buttons_collpase" id="color_progress_bar"  type="color" value="#ffffff"></button>
+</div>
+<div style="display: flex; margin-top: 5px;">
+  <h2>Header color:</h2>
+  <button title="Text color" class="botones_div" type="button">
+    <input class="colors_buttons_collpase" id="color_header_background"  type="color" value="#ffffff"></button>
+</div>
+<div style="display: flex; margin-top: 5px;">
+  <h2>Secondary Color:</h2>
+  <button title="Text color" class="botones_div" type="button">
+    <input class="colors_buttons_collpase" id="color_secondary"  type="color" value="#ffffff"></button>
+</div>
+<div style="display: flex; margin-top: 5px;">
+  <h2>Icons color:</h2>
+  <button title="Text color" class="botones_div" type="button">
+    <input class="colors_buttons_collpase" id="color_icons_color"  type="color" value="#ffffff"></button>
+</div>
+<div style="display: flex; margin-top: 5px;">
+  <h2>Menu Color:</h2>
+  <button title="Text color" class="botones_div" type="button">
+    <input class="colors_buttons_collpase" id="color_menu"  type="color" value="#ffffff"></button>
+</div>
+<div style="display: flex; margin-top: 5px;">
+  <h2>Line color preview:</h2>
+  <button title="Text color" class="botones_div" type="button">
+    <input class="colors_buttons_collpase" id="color_line_preview"  type="color" value="#ffffff"></button>
+</div>
+<div style="display: flex; margin-top: 5px;">
+  <h2>Time color preview:</h2>
+  <button title="Text color" class="botones_div" type="button">
+    <input class="colors_buttons_collpase" id="color_time_preview"  type="color" value="#ffffff"></button>
+</div>
 </div>
 <form class="formulariodescarga" action="">
   <div class="containerall">
@@ -699,6 +776,153 @@
 
     let validoBotones = true;
 
+    function inicializarColores() {
+      let coloresGuardados = localStorage.getItem('colores');
+  
+      if (coloresGuardados) {
+          return JSON.parse(coloresGuardados);
+      } else {
+          // Si no hay colores guardados, establece colores predeterminados
+          return {
+              
+          };
+      }
+  }
+  function obtenerColorPorId(colorId) {
+    let colores = inicializarColores();
+    return colores[colorId];
+}
+
+
+  function guardarColores(colores) {
+    localStorage.setItem('colores', JSON.stringify(colores));
+}
+
+function applyStyles(isActive, color, styleProperty) {
+  const estilosGenerales = generarEstilosGenerales();
+  aplicarEstilos('estilos-combinados', estilosGenerales);
+  if (isActive) {
+    document.body.style.setProperty(styleProperty, color);
+  } else {
+    document.body.style.removeProperty(styleProperty);
+  }
+}
+
+function generarEstilosGenerales() {
+  return `
+  :root {
+    --icons-color: ${obtenerColorPorId('color_icons_color')};
+    --progress-bar-video: ${obtenerColorPorId('color_progress_bar')};
+    --header-background-color: ${obtenerColorPorId('color_header_background')};
+  }
+    .yt-spec-button-shape-next--mono.yt-spec-button-shape-next--tonal {
+      color:  var(--icons-color);
+      background-color: #7070718d;
+    }
+    #logo-icon {
+      color: var(--icons-color);
+    }
+    .ytp-swatch-background-color {
+      background-color: var(--progress-bar-video);
+    }
+    #background.ytd-masthead {
+      background-color: var(--header-background-color);
+    }
+  `;
+}
+
+function aplicarEstilos(clase, estilos) {
+  let estiloExistente = document.getElementById(clase) || document.createElement('style');
+  estiloExistente.id = clase;
+  estiloExistente.innerHTML = estilos;
+
+  if (!document.getElementById(clase)) {
+    document.head.appendChild(estiloExistente);
+  }
+  
+}
+
+function actualizarColor(event) {
+  const estilosGenerales = generarEstilosGenerales();
+  aplicarEstilos('estilos-combinados', estilosGenerales);
+  var colores = inicializarColores();
+  var inputId = event.target.id;
+  var nuevoColor = event.target.value;
+
+  // Actualizar el color correspondiente en el objeto de colores
+  colores[inputId] = nuevoColor;
+
+  // primary color
+
+  applyStyles(
+    true,
+    `${obtenerColorPorId('color_primary') ? obtenerColorPorId('color_primary') : ""}`,
+    "--yt-spec-text-primary"
+  );
+
+  // Secondary color
+  applyStyles(
+    true,
+    `${obtenerColorPorId('color_secondary') ? obtenerColorPorId('color_secondary') : ""}`,
+    "--yt-spec-text-secondary"
+  );
+  // Icons color
+  applyStyles(
+    true,
+    `${obtenerColorPorId('color_icons_color') ? obtenerColorPorId('color_icons_color') : ""}`,
+    "--yt-spec-wordmark-text"
+  );
+  applyStyles(
+    true,
+    `${obtenerColorPorId('color_icons_color') ? obtenerColorPorId('color_icons_color') : ""}`,
+    "--yt-spec-brand-icon-inactive"
+  );
+  // Menu settings color
+  applyStyles(
+    true,
+    `${obtenerColorPorId('color_menu') ? obtenerColorPorId('color_menu') : ""}`,
+    "--yt-spec-menu-background"
+  );
+  // Line color previw
+  applyStyles(
+    true,
+    `${obtenerColorPorId('color_line_preview') ? obtenerColorPorId('color_line_preview') : ""}`,
+    "--yt-spec-static-brand-red"
+  );
+  // Time color previw
+  applyStyles(
+    true,
+    `${obtenerColorPorId('color_time_preview') ? obtenerColorPorId('color_time_preview') : ""}`,
+    "--yt-spec-static-brand-white"
+  );
+  applyStyles(
+    true,
+    `${obtenerColorPorId('color_time_preview') ? obtenerColorPorId('color_time_preview') : ""}`,
+    "--yt-spec-static-brand-white"
+  );
+  // Progress bar color video
+  applyStyles(
+    true,
+    `${obtenerColorPorId('color_progress_bar') ? obtenerColorPorId('color_progress_bar') : ""}`,
+    "--progress-bar-video"
+  );
+
+  // Header color
+  applyStyles(
+    true,
+    `${obtenerColorPorId('color_background_color') ? obtenerColorPorId('color_background_color') : ""}`,
+    "--header-background-color"
+  );
+
+
+  // Guardar el objeto de colores actualizado en localStorage
+  guardarColores(colores);
+}
+
+
+
+  
+
     // TODO: Inicia y inserta los botones
     function renderizarContenido() {
       const addButton = document.querySelector(
@@ -715,14 +939,18 @@
 
           containerButtons.innerHTML = "";
           const contentData = {
+            button_colors_collapsible: {
+              active: true,
+              html: button_colors_collapsible,
+            },
             thumbnailVideo: {
               active: true,
               html: thumbnailVideo,
             },
-            colorTextPage: {
-              active: true,
-              html: colorsTextPage,
-            },
+            // colorTextPage: {
+            //   active: true,
+            //   html: colorsTextPage,
+            // },
             resetButton: {
               active: true,
               html: resetButton,
@@ -774,6 +1002,18 @@
         } else {
           console.error("Elemento .containerButtons no encontrado");
         }
+
+        // Collapsible colors content button 
+
+        const button_collapsible = document.querySelector('.collapsible_colors')
+        const content_collapsible_colors = document.querySelector('.content_collapsible_colors')
+        if(button_collapsible) {
+          button_collapsible.onclick = () => {
+            button_collapsible.style.color = content_collapsible_colors.style.display === "block" ? '#ff0000' : '';
+            content_collapsible_colors.style.display = content_collapsible_colors.style.display == "block" ? "none" : "block";
+          }
+        }
+
         // Formulario de botones para descargar
         const formulariodescarga = document.querySelector(
           ".formulariodescarga"
@@ -842,7 +1082,83 @@
         }
 
         const reverse = document.querySelector("#columns"); // Invertir contenido
-        const InputColor = document.querySelector("#color"); // Input color
+        
+        const color_primary = document.querySelector("#color_primary"); 
+        const color_progress_bar = document.querySelector("#color_progress_bar"); 
+        const color_header_background = document.querySelector("#color_header_background"); 
+        const color_secondary = document.querySelector("#color_secondary"); 
+        const color_icons_color = document.querySelector("#color_icons_color"); 
+        const color_menu = document.querySelector("#color_menu");
+        const color_line_preview = document.querySelector("#color_line_preview"); 
+        const color_time_preview = document.querySelector("#color_time_preview"); 
+
+        color_primary.value = obtenerColorPorId('color_primary') ? obtenerColorPorId('color_primary') : "#ffffff"; 
+        color_progress_bar.value =  obtenerColorPorId('color_progress_bar') ? obtenerColorPorId('color_progress_bar') : "#ffffff"  
+        color_header_background.value =  obtenerColorPorId('color_header_background') ? obtenerColorPorId('color_header_background') : "#ffffff"  
+        color_secondary.value =  obtenerColorPorId('color_secondary') ? obtenerColorPorId('color_secondary') : "#ffffff"  
+        color_icons_color.value =  obtenerColorPorId('color_icons_color') ? obtenerColorPorId('color_icons_color') : "#ffffff" ; 
+        color_menu.value =  obtenerColorPorId('color_menu') ? obtenerColorPorId('color_menu') : "#ffffff" ;
+        color_line_preview.value =  obtenerColorPorId('color_line_preview') ? obtenerColorPorId('color_line_preview') : "#ffffff" ; 
+        color_time_preview.value =  obtenerColorPorId('color_time_preview') ? obtenerColorPorId('color_time_preview') : "#ffffff"; 
+
+        applyStyles(
+          true,
+          `${obtenerColorPorId('color_primary') ? obtenerColorPorId('color_primary') : ""}`,
+          "--yt-spec-text-primary"
+        );
+      
+        // Secondary color
+        applyStyles(
+          true,
+          `${obtenerColorPorId('color_secondary') ? obtenerColorPorId('color_secondary') : ""}`,
+          "--yt-spec-text-secondary"
+        );
+        // Icons color
+        applyStyles(
+          true,
+          `${obtenerColorPorId('color_icons_color') ? obtenerColorPorId('color_icons_color') : ""}`,
+          "--yt-spec-wordmark-text"
+        );
+        applyStyles(
+          true,
+          `${obtenerColorPorId('color_icons_color') ? obtenerColorPorId('color_icons_color') : ""}`,
+          "--yt-spec-brand-icon-inactive"
+        );
+        // Menu settings color
+        applyStyles(
+          true,
+          `${obtenerColorPorId('color_menu') ? obtenerColorPorId('color_menu') : ""}`,
+          "--yt-spec-menu-background"
+        );
+        // Line color previw
+        applyStyles(
+          true,
+          `${obtenerColorPorId('color_line_preview') ? obtenerColorPorId('color_line_preview') : ""}`,
+          "--yt-spec-static-brand-red"
+        );
+        // Time color previw
+        applyStyles(
+          true,
+          `${obtenerColorPorId('color_time_preview') ? obtenerColorPorId('color_time_preview') : ""}`,
+          "--yt-spec-static-brand-white"
+        );
+        applyStyles(
+          true,
+          `${obtenerColorPorId('color_time_preview') ? obtenerColorPorId('color_time_preview') : ""}`,
+          "--yt-spec-static-brand-white"
+        );
+        applyStyles(
+          true,
+          `${obtenerColorPorId('color_progress_bar') ? obtenerColorPorId('color_progress_bar') : ""}`,
+          "--progress-bar-video"
+        );
+        applyStyles(
+          true,
+          `${obtenerColorPorId('color_header_background') ? obtenerColorPorId('color_header_background') : ""}`,
+          "--header-background-color"
+        );
+      
+      
         const btnImagen = document.querySelector("#imagen");
         // Download image video
         const formularioButtons = document.querySelector("#eyes"); // Filtro de pantalla
@@ -929,7 +1245,10 @@
         };
         // Background transparent
         reverse.style.flexDirection = "row";
-
+        const cinematica = document.querySelector("#cinematics > div");
+        if(cinematica != undefined) {
+          cinematica.style = "position: fixed; inset: 0px; pointer-events: none; transform: scale(1.5, 2)";
+        }
         const btnReset = document.querySelector("#reset"); // Reset button
         if (btnReset) {
           console.log("");
@@ -1050,41 +1369,17 @@
             }
           };
         }
-
-        const colorTextPage = localStorage.getItem("colorTextPage");
-        document.body.style.setProperty(
-          "--yt-spec-text-primary",
-          colorTextPage
-        );
+        
         // Input color
-        InputColor.addEventListener("input", function () {
-          localStorage.setItem("colorTextPage", InputColor.value);
-          const colorTextPage = localStorage.getItem("colorTextPage");
-          // console.log(colorTextPage);
-          if (
-            document.querySelector("#cinematics > div") != undefined ||
-            videoFull != undefined
-          ) {
-            document.body.style.setProperty(
-              "--yt-spec-text-primary",
-              colorTextPage
-            );
-            //document.body.style.setProperty("--yt-spec-text-secondary", "#ffffff");
-            document.body.style.setProperty(
-              "--yt-spec-static-overlay-background-brand",
-              colorTextPage
-            );
-            document.body.style.setProperty(
-              "--yt-spec-static-brand-red",
-              colorTextPage
-            );
-            //document.body.style.setProperty("--yt-spec-static-brand-white", colorTextPage);
-            document.querySelector("#logo-icon").style.color = colorTextPage;
-            // document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-button-shape > button").style = "color: black; background-color: white; border: 2px solid black;";
-          } else {
-            mostrarAlerta("Active Dark Theme in Youtube page");
-          }
-        });
+        if(color_primary) {color_primary.addEventListener("input",actualizarColor) }
+        if(color_progress_bar) {color_progress_bar.addEventListener("input",actualizarColor) }
+        if(color_header_background) {color_header_background.addEventListener("input",actualizarColor) }
+        if(color_secondary) {color_secondary.addEventListener("input",actualizarColor) }
+        if(color_icons_color) {color_icons_color.addEventListener("input",actualizarColor) }
+        if(color_menu) {color_menu.addEventListener("input",actualizarColor) }
+        if(color_line_preview) {color_line_preview.addEventListener("input",actualizarColor) }
+        if(color_time_preview) {color_time_preview.addEventListener("input",actualizarColor) }
+
 
         const externalLink = document.querySelector(".external_link");
         if (externalLink) {
@@ -1267,15 +1562,15 @@
           const datosShort = await respuesta.json();
           const { dislikes } = datosShort;
           // alert(dislikes, 'Video')
-          document.querySelector(
-            "#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > dislike-button-view-model > toggle-button-view-model > button"
-          ).style = "width: 90px";
-          // document.querySelector('#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > dislike-button-view-model > toggle-button-view-model > button > yt-touch-feedback-shape > div').insertAdjacentHTML("beforebegin", `${FormatiarNumero(dislikes, 0)}`);
-          document.querySelector(
-            "#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > dislike-button-view-model > toggle-button-view-model > button"
-          ).innerHTML = `
-          <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 13v-8a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v7a1 1 0 0 0 1 1h3a4 4 0 0 1 4 4v1a2 2 0 0 0 4 0v-5h3a2 2 0 0 0 2 -2l-1 -5a2 3 0 0 0 -2 -2h-7a3 3 0 0 0 -3 3" /></svg>
-          ${FormatiarNumero(dislikes, 0)}`;
+          const dislikes_content = document.querySelector("#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > dislike-button-view-model > toggle-button-view-model > button-view-model > button")
+          if(dislikes_content !== undefined){
+            dislikes_content.style = 'width: 90px';
+
+              // document.querySelector('#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > dislike-button-view-model > toggle-button-view-model > button > yt-touch-feedback-shape > div').insertAdjacentHTML("beforebegin", `${FormatiarNumero(dislikes, 0)}`);
+              dislikes_content.innerHTML = `
+              <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 13v-8a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v7a1 1 0 0 0 1 1h3a4 4 0 0 1 4 4v1a2 2 0 0 0 4 0v-5h3a2 2 0 0 0 2 -2l-1 -5a2 3 0 0 0 -2 -2h-7a3 3 0 0 0 -3 3" /></svg>
+              ${FormatiarNumero(dislikes, 0)}`;
+            }
         } catch (error) {
           console.log(error);
         }
@@ -1298,7 +1593,7 @@
           const respuesta = await fetch(urlShorts);
           const datosShort = await respuesta.json();
           const { dislikes } = datosShort;
-          for (var i = 0; i < validoVentanaShort.length; i++) {
+          for (let i = 0; i < validoVentanaShort.length; i++) {
             validoVentanaShort[i].textContent = `${FormatiarNumero(
               dislikes,
               0
@@ -1352,7 +1647,10 @@
             "#movie_player > div.html5-video-container > video"
           ).currentTime = 100000;
         }
-        document.querySelector(".ytp-ad-skip-button-modern.ytp-button").click();
+        const button =  document.querySelector(".ytp-ad-skip-button-modern.ytp-button");
+        if(button !== undefined) {
+          document.querySelector(".ytp-ad-skip-button-modern.ytp-button").click();
+        }
         document.querySelector(".video-ads.ytp-ad-module").click();
       }
       const buttonSkip = document.querySelector(
