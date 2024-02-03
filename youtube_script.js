@@ -643,30 +643,6 @@
 
     `;
 
-    // const colorsTextPage = `
-    // <button title="Text color" class="botones_div" type="button">
-
-    //     <svg  width="24"
-    //       height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-    //       stroke-linecap="round" stroke-linejoin="round">
-    //       <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-    //       <path
-    //         d="M12 21a9 9 0 0 1 0 -18c4.97 0 9 3.582 9 8c0 1.06 -.474 2.078 -1.318 2.828c-.844 .75 -1.989 1.172 -3.182 1.172h-2.5a2 2 0 0 0 -1 3.75a1.3 1.3 0 0 1 -1 2.25">
-    //       </path>
-    //       <path d="M8.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
-    //       <path d="M12.5 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
-    //       <path d="M16.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
-    //     </svg>
-    //     <input id="color" list="presetColors1" type="color" value="#ffffff"></button></div>
-    // <datalist id="presetColors1">
-    //   <option value="#ff00aa" />
-    //   <option value="#fbff00" />
-    //   <option value="#ff0000" />
-    //   <option value="#00ff00" />
-    //   <option value="#0000ff" />
-    // </datalist>
-    // `;
-
     const checkUpdates = `
     <button title="Check new updates" type="button" class="checked_updates botones_div">  
     <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" /><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" /></svg>
@@ -827,6 +803,12 @@ function generarEstilosGenerales() {
     }
     #background.ytd-masthead {
       background-color: var(--header-background-color);
+    }
+    .yt-spec-button-shape-next--overlay.yt-spec-button-shape-next--text {
+      color: var(--icons-color);
+    }
+    .ytd-topbar-menu-button-renderer #button.ytd-topbar-menu-button-renderer {
+      color: var(--icons-color);
     }
   `;
 }
