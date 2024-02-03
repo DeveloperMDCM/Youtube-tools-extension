@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.1
+// @version      2.1.1
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -100,7 +100,7 @@
 
 
 
-// new update 31/01/2024 🟢
+// new update 3/02/2024 🟢
 (function () {
   // Youtube tools by: DeveloperMDCM
   // https://github.com/DeveloperMDCM/Youtube-tools-extension
@@ -758,7 +758,7 @@
       if (coloresGuardados) {
           return JSON.parse(coloresGuardados);
       } else {
-          // Si no hay colores guardados, establece colores predeterminados
+          // Color default empty string
           return {
               
           };
@@ -809,6 +809,15 @@ function generarEstilosGenerales() {
     }
     .ytd-topbar-menu-button-renderer #button.ytd-topbar-menu-button-renderer {
       color: var(--icons-color);
+    }
+    .yt-spec-icon-badge-shape--style-overlay .yt-spec-icon-badge-shape__icon {
+      color: var(--icons-color);
+    }
+    .ytp-svg-fill {
+      fill: var(--icons-color);
+    }
+    #ytp-id-30,#ytp-id-17,#ytp-id-19,#ytp-id-20{
+      fill: var(--icons-color);
     }
   `;
 }
