@@ -170,6 +170,8 @@
     <style>
     .mdcm:hover {
       cursor: pointer;
+      background-color: #6b6b6b;
+
     }
   
     .hidden {
@@ -178,6 +180,13 @@
   
     .mdcm {
       font-size: 10px;
+      background-color: #595959;
+      border: none;
+      color: #fbf4f4 !important;
+      padding: 3px 0;
+      margin-left: 10px;
+      width: 70px;
+      border-radius: 10px;
     }
   
     .btn_download {
@@ -236,6 +245,9 @@
       margin: auto;
       padding: 10px;
       border-radius: 20px;
+    }
+    .content_collapsible_colors h2 {
+      color: #fff !important;
     }
     .content_collapsible_colors div{
       display: flex;
@@ -911,7 +923,25 @@ function actualizarColor(event) {
 }
 
 
+    // Función para link github project
+    const existeFormButton = document.querySelector(
+      "#below > ytd-watch-metadata > div.container > form"
+    );
 
+    function MDCM() {
+      if (!existeFormButton) {
+        const mdcm = document.querySelector("#MDCM");
+        const sms = document.querySelector("#below > ytd-watch-metadata");
+        if (!mdcm) {
+          if (sms != undefined) {
+            const mdcm = document.createElement("P");
+            mdcm.innerHTML =
+              '<a id="MDCM" target="_blank" style="margin: 10px 0; font-size: 14px; color: #24ff; text-decoration: none; display: flex; align-items: center; justify-content: center; font-style: italic;font-weight: 700;" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">Link GitHub Repository<h4></h4</a>';
+            sms.appendChild(mdcm);
+          }
+        }
+      }
+    }
   
 
     // TODO: Inicia y inserta los botones
@@ -1059,7 +1089,7 @@ function actualizarColor(event) {
             formulariodescarga.reset();
           };
         }
-
+        MDCM()
         if (btn2mp3) {
           btn2mp3.onclick = () => {
             formulariodescargaaudio.classList.remove("ocultarframe");
@@ -1486,25 +1516,7 @@ function actualizarColor(event) {
     }
     renderizarContenido();
 
-    // Función para link github project
-    const existeFormButton = document.querySelector(
-      "#below > ytd-watch-metadata > div.container > form"
-    );
 
-    function MDCM() {
-      if (!existeFormButton) {
-        const mdcm = document.querySelector("#MDCM");
-        const sms = document.querySelector("#below > ytd-watch-metadata");
-        if (!mdcm) {
-          if (sms != undefined) {
-            const mdcm = document.createElement("P");
-            mdcm.innerHTML =
-              '<a id="MDCM" target="_blank" style="margin: 10px 0; font-size: 14px; color: #24ff; text-decoration: none; display: flex; align-items: center; justify-content: center; font-style: italic;font-weight: 700;" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">Link GitHub Repository<h4></h4</a>';
-            sms.appendChild(mdcm);
-          }
-        }
-      }
-    }
     // Función para adaptar dislikes
     // Función para formatear los dislikes
     function FormatiarNumero(num, digits) {
@@ -1724,7 +1736,7 @@ function actualizarColor(event) {
       }
       const currUrl = window.location.href;
       if (currUrl != prevUrl) {
-        MDCM();
+        
         setTimeout(() => {
           shortDislike();
         }, 1000);
@@ -1765,10 +1777,7 @@ function actualizarColor(event) {
     for (let i = 0; i < texto.length; i++) {
       const botonTraducir = document.createElement("BUTTON");
       botonTraducir.classList.add("mdcm");
-      botonTraducir.textContent = "Traducir";
-      botonTraducir.style.backgroundColor = "white";
-      botonTraducir.style.color = "black";
-      botonTraducir.style.borderRadius = "5px";
+      botonTraducir.textContent = "Translate";
       botonTraducir.setAttribute("id", `btn${i}`);
       texto[i].insertAdjacentElement("afterend", botonTraducir);
       const mdcm = document.querySelectorAll(`.mdcm`);
