@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.1.1
+// @version      2.1.2
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -100,7 +100,7 @@
 
 
 
-// new update 3/02/2024 🟢
+// new update 04/02/2024 🟢
 (function () {
   // Youtube tools by: DeveloperMDCM
   // https://github.com/DeveloperMDCM/Youtube-tools-extension
@@ -772,7 +772,7 @@
       } else {
           // Color default empty string
           return {
-              
+              "color_progress_bar": "#ff0000",
           };
       }
   }
@@ -796,42 +796,74 @@ function applyStyles(isActive, color, styleProperty) {
   }
 }
 
+// Función para verificar si una propiedad específica existe en el objeto colores almacenado en localStorage
+function propiedadExiste(propiedad) {
+  // Obtener el objeto almacenado en localStorage
+  var colores = localStorage.getItem('colores');
+
+  // Verificar si colores es null o no
+  if (colores !== null) {
+      // Convertir la cadena JSON en un objeto JavaScript
+      var coloresObj = JSON.parse(colores);
+      
+      // Verificar si la propiedad específica existe en el objeto
+      return coloresObj.hasOwnProperty(propiedad);
+  } else {
+      return false;
+  }
+}
+let styles_colors = '';
 function generarEstilosGenerales() {
-  return `
+  styles_colors = `
   :root {
     --icons-color: ${obtenerColorPorId('color_icons_color')};
     --progress-bar-video: ${obtenerColorPorId('color_progress_bar')};
     --header-background-color: ${obtenerColorPorId('color_header_background')};
   }
-    .yt-spec-button-shape-next--mono.yt-spec-button-shape-next--tonal {
-      color:  var(--icons-color);
-      background-color: #7070718d;
+  .yt-spec-button-shape-next--mono.yt-spec-button-shape-next--tonal {
+    color:  var(--icons-color);
+    background-color: #7070718d;
+  }`;
+  
+    // Styles conditionals
+    if (propiedadExiste('color_icons_color')) {
+      styles_colors += `
+      #logo-icon {
+        color: var(--icons-color);
+      }
+      .yt-spec-button-shape-next--overlay.yt-spec-button-shape-next--text {
+        color: var(--icons-color);
+      }
+      .ytd-topbar-menu-button-renderer #button.ytd-topbar-menu-button-renderer {
+        color: var(--icons-color);
+      }
+      .yt-spec-icon-badge-shape--style-overlay .yt-spec-icon-badge-shape__icon {
+        color: var(--icons-color);
+      }
+      .ytp-svg-fill {
+        fill: var(--icons-color);
+      }
+      #ytp-id-30,#ytp-id-17,#ytp-id-19,#ytp-id-20{
+        fill: var(--icons-color);
+      }
+      `
     }
-    #logo-icon {
-      color: var(--icons-color);
+    if(propiedadExiste('color_progress_bar')) {
+      styles_colors += `
+      .ytp-swatch-background-color {
+        background-color: var(--progress-bar-video);
+      }
+      `
     }
-    .ytp-swatch-background-color {
-      background-color: var(--progress-bar-video);
+
+    if(propiedadExiste('color_header_background')) {
+      styles_colors += `
+      #background.ytd-masthead {
+        background-color: var(--header-background-color);
+      }
+      `
     }
-    #background.ytd-masthead {
-      background-color: var(--header-background-color);
-    }
-    .yt-spec-button-shape-next--overlay.yt-spec-button-shape-next--text {
-      color: var(--icons-color);
-    }
-    .ytd-topbar-menu-button-renderer #button.ytd-topbar-menu-button-renderer {
-      color: var(--icons-color);
-    }
-    .yt-spec-icon-badge-shape--style-overlay .yt-spec-icon-badge-shape__icon {
-      color: var(--icons-color);
-    }
-    .ytp-svg-fill {
-      fill: var(--icons-color);
-    }
-    #ytp-id-30,#ytp-id-17,#ytp-id-19,#ytp-id-20{
-      fill: var(--icons-color);
-    }
-  `;
+    return styles_colors
 }
 
 function aplicarEstilos(clase, estilos) {
@@ -859,61 +891,61 @@ function actualizarColor(event) {
 
   applyStyles(
     true,
-    `${obtenerColorPorId('color_primary') ? obtenerColorPorId('color_primary') : ""}`,
+    `${obtenerColorPorId('color_primary')}`,
     "--yt-spec-text-primary"
   );
 
   // Secondary color
   applyStyles(
     true,
-    `${obtenerColorPorId('color_secondary') ? obtenerColorPorId('color_secondary') : ""}`,
+    `${obtenerColorPorId('color_secondary')}`,
     "--yt-spec-text-secondary"
   );
   // Icons color
   applyStyles(
     true,
-    `${obtenerColorPorId('color_icons_color') ? obtenerColorPorId('color_icons_color') : ""}`,
+    `${obtenerColorPorId('color_icons_color')}`,
     "--yt-spec-wordmark-text"
   );
   applyStyles(
     true,
-    `${obtenerColorPorId('color_icons_color') ? obtenerColorPorId('color_icons_color') : ""}`,
+    `${obtenerColorPorId('color_icons_color')}`,
     "--yt-spec-brand-icon-inactive"
   );
   // Menu settings color
   applyStyles(
     true,
-    `${obtenerColorPorId('color_menu') ? obtenerColorPorId('color_menu') : ""}`,
+    `${obtenerColorPorId('color_menu')}`,
     "--yt-spec-menu-background"
   );
   // Line color previw
   applyStyles(
     true,
-    `${obtenerColorPorId('color_line_preview') ? obtenerColorPorId('color_line_preview') : ""}`,
+    `${obtenerColorPorId('color_line_preview')}`,
     "--yt-spec-static-brand-red"
   );
   // Time color previw
   applyStyles(
     true,
-    `${obtenerColorPorId('color_time_preview') ? obtenerColorPorId('color_time_preview') : ""}`,
+    `${obtenerColorPorId('color_time_preview')}`,
     "--yt-spec-static-brand-white"
   );
   applyStyles(
     true,
-    `${obtenerColorPorId('color_time_preview') ? obtenerColorPorId('color_time_preview') : ""}`,
+    `${obtenerColorPorId('color_time_preview')}`,
     "--yt-spec-static-brand-white"
   );
   // Progress bar color video
   applyStyles(
     true,
-    `${obtenerColorPorId('color_progress_bar') ? obtenerColorPorId('color_progress_bar') : ""}`,
+    `${obtenerColorPorId('color_progress_bar')}`,
     "--progress-bar-video"
   );
 
   // Header color
   applyStyles(
     true,
-    `${obtenerColorPorId('color_background_color') ? obtenerColorPorId('color_background_color') : ""}`,
+    `${obtenerColorPorId('color_header_background')}`,
     "--header-background-color"
   );
 
@@ -968,10 +1000,6 @@ function actualizarColor(event) {
               active: true,
               html: thumbnailVideo,
             },
-            // colorTextPage: {
-            //   active: true,
-            //   html: colorsTextPage,
-            // },
             resetButton: {
               active: true,
               html: resetButton,
@@ -1123,59 +1151,54 @@ function actualizarColor(event) {
         color_time_preview.value =  obtenerColorPorId('color_time_preview') ? obtenerColorPorId('color_time_preview') : "#ffffff"; 
 
         applyStyles(
-          true,
-          `${obtenerColorPorId('color_primary') ? obtenerColorPorId('color_primary') : ""}`,
+          propiedadExiste('color_primary') ,
+          `${obtenerColorPorId('color_primary')}`,
           "--yt-spec-text-primary"
         );
       
         // Secondary color
         applyStyles(
-          true,
-          `${obtenerColorPorId('color_secondary') ? obtenerColorPorId('color_secondary') : ""}`,
+          propiedadExiste('color_secondary') ,
+          `${obtenerColorPorId('color_secondary')}`,
           "--yt-spec-text-secondary"
         );
         // Icons color
         applyStyles(
-          true,
-          `${obtenerColorPorId('color_icons_color') ? obtenerColorPorId('color_icons_color') : ""}`,
+          propiedadExiste('color_icons_color') ,
+          `${obtenerColorPorId('color_icons_color')}`,
           "--yt-spec-wordmark-text"
         );
         applyStyles(
-          true,
-          `${obtenerColorPorId('color_icons_color') ? obtenerColorPorId('color_icons_color') : ""}`,
+          propiedadExiste('color_icons_color'),
+          `${obtenerColorPorId('color_icons_color')}`,
           "--yt-spec-brand-icon-inactive"
         );
         // Menu settings color
         applyStyles(
-          true,
-          `${obtenerColorPorId('color_menu') ? obtenerColorPorId('color_menu') : ""}`,
+          propiedadExiste('color_menu'),
+          `${obtenerColorPorId('color_menu')}`,
           "--yt-spec-menu-background"
         );
         // Line color previw
         applyStyles(
-          true,
-          `${obtenerColorPorId('color_line_preview') ? obtenerColorPorId('color_line_preview') : ""}`,
+          propiedadExiste('color_line_preview'),
+          `${obtenerColorPorId('color_line_preview')}`,
           "--yt-spec-static-brand-red"
         );
         // Time color previw
         applyStyles(
-          true,
-          `${obtenerColorPorId('color_time_preview') ? obtenerColorPorId('color_time_preview') : ""}`,
+          propiedadExiste('color_time_preview'),
+          `${obtenerColorPorId('color_time_preview')}`,
           "--yt-spec-static-brand-white"
         );
         applyStyles(
-          true,
-          `${obtenerColorPorId('color_time_preview') ? obtenerColorPorId('color_time_preview') : ""}`,
-          "--yt-spec-static-brand-white"
-        );
-        applyStyles(
-          true,
-          `${obtenerColorPorId('color_progress_bar') ? obtenerColorPorId('color_progress_bar') : ""}`,
+          propiedadExiste('color_progress_bar') ,
+          `${obtenerColorPorId('color_progress_bar')}`,
           "--progress-bar-video"
         );
         applyStyles(
-          true,
-          `${obtenerColorPorId('color_header_background') ? obtenerColorPorId('color_header_background') : ""}`,
+          propiedadExiste('color_header_background'),
+          `${obtenerColorPorId('color_header_background')}`,
           "--header-background-color"
         );
       
@@ -1272,58 +1295,12 @@ function actualizarColor(event) {
         }
         const btnReset = document.querySelector("#reset"); // Reset button
         if (btnReset) {
-          console.log("");
           btnReset.addEventListener("click", function () {
-            if (
-              document.querySelector("#cinematics > div") != undefined ||
-              videoFull != undefined
-            ) {
-              document.body.style.setProperty(
-                "--yt-spec-text-primary",
-                "#ffffff"
-              );
-              // document.body.style.setProperty('--yt-spec-text-secondary', '#ffffff');
-              document.body.style.setProperty(
-                "--yt-spec-static-overlay-background-brand",
-                "#ffffff"
-              );
-              document.body.style.setProperty(
-                "--yt-spec-static-overlay-background-brand",
-                "red"
-              );
-              if (document.querySelector("#cinematics > div") != null) {
-                document.querySelector("#cinematics > div").style =
-                  "position: relative; inset: 0px; pointer-events: none; background: transparent";
-              }
-              document.body.style.setProperty(
-                "--yt-spec-static-brand-red",
-                "#ff0000"
-              );
-              document.body.style.setProperty(
-                "--yt-spec-static-brand-white",
-                "gray"
-              );
+            const colores = localStorage.getItem("colores");
+            if(colores) {
+              localStorage.removeItem("colores");
               document.querySelector("#ojosprotect").style.backgroundColor =
                 "transparent";
-              document.body.style.setProperty(
-                "--ytd-searchbox-legacy-border-color",
-                "#ffffff"
-              );
-              document.body.style.setProperty(
-                "--ytd-searchbox-legacy-border-shadow-color",
-                "#ffffff"
-              );
-              document.querySelector("#logo-icon").style.color = "#ffffff";
-              document.body.style.setProperty(
-                "--yt-spec-general-background-a",
-                "#000000"
-              );
-              document.querySelector(
-                "html[dark] [dark]"
-              ).style.backgroundColor = "#000000";
-              document.querySelector(
-                "ytd-playlist-panel-renderer[modern-panels]:not([within-miniplayer]) #container.ytd-playlist-panel-renderer"
-              ).style = "";
             }
           });
         }
