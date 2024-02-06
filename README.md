@@ -15,7 +15,6 @@
 - Skip ad video.
 - Picture to Picture.
 - Loop/repeat video.
-- Dislikes in shorts.
 - Download audio MP3.
 - Download video MP4 to 8k / up High cuality.
 - Dislikes in video.
@@ -33,7 +32,7 @@
 
 </details>
 
-### Add extra options to the YouTube page script o extensión
+### Add extra options to the YouTube page script or extensión
 
 ## how to install
 - Node js >= 18
