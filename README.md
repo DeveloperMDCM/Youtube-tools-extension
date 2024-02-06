@@ -7,7 +7,7 @@
 # Youtube-tools-extension v1.0 Beta for Google Chrome 
 # General Settings and Themes works 🟢
 
-[Script for GreasyFork](https://greasyfork.org/es/scripts/460680-youtube-tools-all-in-one-local-download-mp3-mp4-higt-quality-return-dislikes-and-more])
+[Script in GreasyFork](https://greasyfork.org/es/scripts/460680-youtube-tools-all-in-one-local-download-mp3-mp4-higt-quality-return-dislikes-and-more])
 
 <details>
 <summary>Feactures:</summary>
