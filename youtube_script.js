@@ -95,26 +95,36 @@
 // @license MIT
 // @namespace https://github.com/DeveloperMDCM/
 // @downloadURL https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js
-// @updateURL https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.meta.js
+// @updateURL https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js
 // ==/UserScript==
 
-
-
-// new update 04/02/2024 🟢
-// Comming soon new update_at 16/02/2024
+// new update 14/02/2024 🟢
 (function () {
   // Youtube tools by: DeveloperMDCM
   // https://github.com/DeveloperMDCM/Youtube-tools-extension
 
-  "use strict";
+  'use strict';
 
   function paramsVideoURL() {
     const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
-    return parametrosURL.get("v");
+    return parametrosURL.get('v');
   }
 
   function cargarScript() {
-    console.log("Scrip en ejecución by: DeveloperMDCM  MDCM");
+    const HEADER_STYLE =
+      'color: #F00; font-size: 24px; font-family: sans-serif;';
+    const MESSAGE_STYLE =
+      'color: #00aaff; font-size: 16px; font-family: sans-serif;';
+    const CODE_STYLE = 'font-size: 14px; font-family: monospace;';
+
+    console.log(
+      '%cYoutube Tools Extension\n' +
+        '%cRun %c(v2.1.3)\n' +
+        'By: DeveloperMDCM.',
+      HEADER_STYLE,
+      CODE_STYLE,
+      MESSAGE_STYLE
+    );
     let ad = true;
 
     const stylesCss = `
@@ -493,13 +503,12 @@
     </style>
     `;
 
-
     const button_colors_collapsible = `
     <button type="button" title="settings colors" class="collapsible botones_div collapsible_colors">
     <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19 3h-4a2 2 0 0 0 -2 2v12a4 4 0 0 0 8 0v-12a2 2 0 0 0 -2 -2" /><path d="M13 7.35l-2 -2a2 2 0 0 0 -2.828 0l-2.828 2.828a2 2 0 0 0 0 2.828l9 9" /><path d="M7.3 13h-2.3a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h12" /><path d="M17 17l0 .01" /></svg>
     </button>
    
-    `
+    `;
 
     const thumbnailVideo = `
     <button title="Image video" class="botones_div" type="button" id="imagen">
@@ -660,7 +669,7 @@
     <button title="Check new updates" type="button" class="checked_updates botones_div">  
     <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" /><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" /></svg>
   </button>
-    `
+    `;
 
     // Menu Buttons
     const menuBotones = `
@@ -766,56 +775,53 @@
     let validoBotones = true;
 
     function inicializarColores() {
-      let coloresGuardados = localStorage.getItem('colores');
-  
+      const coloresGuardados = localStorage.getItem('colores');
       if (coloresGuardados) {
-          return JSON.parse(coloresGuardados);
+        return JSON.parse(coloresGuardados);
       } else {
-          // Color default empty string
-          return {
-              "color_progress_bar": "#ff0000",
-          };
+        // Color default empty string
+        return {
+          color_progress_bar: '#ff0000',
+        };
       }
-  }
-  function obtenerColorPorId(colorId) {
-    let colores = inicializarColores();
-    return colores[colorId];
-}
+    }
 
+    function obtenerColorPorId(colorId) {
+      const colores = inicializarColores();
+      return colores[colorId];
+    }
 
-  function guardarColores(colores) {
-    localStorage.setItem('colores', JSON.stringify(colores));
-}
+    function guardarColores(colores) {
+      localStorage.setItem('colores', JSON.stringify(colores));
+    }
 
-function applyStyles(isActive, color, styleProperty) {
-  const estilosGenerales = generarEstilosGenerales();
-  aplicarEstilos('estilos-combinados', estilosGenerales);
-  if (isActive) {
-    document.body.style.setProperty(styleProperty, color);
-  } else {
-    document.body.style.removeProperty(styleProperty);
-  }
-}
+    function applyStyles(isActive, color, styleProperty) {
+      aplicarEstilos('estilos-combinados', generarEstilosGenerales());
+      if (isActive) {
+        document.body.style.setProperty(styleProperty, color);
+      } else {
+        document.body.style.removeProperty(styleProperty);
+      }
+    }
 
-// Función para verificar si una propiedad específica existe en el objeto colores almacenado en localStorage
-function propiedadExiste(propiedad) {
-  // Obtener el objeto almacenado en localStorage
-  var colores = localStorage.getItem('colores');
+    // Función para verificar si una propiedad específica existe en el objeto colores almacenado en localStorage
+    function propiedadExiste(propiedad) {
+      // Obtener el objeto almacenado en localStorage
+      let colores = localStorage.getItem('colores');
 
-  // Verificar si colores es null o no
-  if (colores !== null) {
-      // Convertir la cadena JSON en un objeto JavaScript
-      var coloresObj = JSON.parse(colores);
-      
-      // Verificar si la propiedad específica existe en el objeto
-      return coloresObj.hasOwnProperty(propiedad);
-  } else {
-      return false;
-  }
-}
-let styles_colors = '';
-function generarEstilosGenerales() {
-  styles_colors = `
+      // Verificar si colores es null o no
+      if (colores !== null) {
+        // Convertir la cadena JSON en un objeto JavaScript
+        let coloresObj = JSON.parse(colores);
+        // Verificar si la propiedad específica existe en el objeto
+        return Object.prototype.hasOwnProperty.call(coloresObj, propiedad);
+      } else {
+        return false;
+      }
+    }
+    let styles_colors = '';
+    function generarEstilosGenerales() {
+      styles_colors = `
   :root {
     --icons-color: ${obtenerColorPorId('color_icons_color')};
     --progress-bar-video: ${obtenerColorPorId('color_progress_bar')};
@@ -824,11 +830,19 @@ function generarEstilosGenerales() {
   .yt-spec-button-shape-next--mono.yt-spec-button-shape-next--tonal {
     color:  var(--icons-color);
     background-color: #7070718d;
-  }`;
+  }
   
-    // Styles conditionals
-    if (propiedadExiste('color_icons_color')) {
-      styles_colors += `
+  #main {
+    display: none;
+  }
+  `;
+
+
+  
+
+      // Styles conditionals
+      if (propiedadExiste('color_icons_color')) {
+        styles_colors += `
       #logo-icon {
         color: var(--icons-color);
       }
@@ -847,127 +861,123 @@ function generarEstilosGenerales() {
       #ytp-id-30,#ytp-id-17,#ytp-id-19,#ytp-id-20{
         fill: var(--icons-color);
       }
-      `
-    }
-    if(propiedadExiste('color_progress_bar')) {
-      styles_colors += `
+      `;
+      }
+      if (propiedadExiste('color_progress_bar')) {
+        styles_colors += `
       .ytp-swatch-background-color {
         background-color: var(--progress-bar-video);
       }
-      `
-    }
+      `;
+      }
 
-    if(propiedadExiste('color_header_background')) {
-      styles_colors += `
+      if (propiedadExiste('color_header_background')) {
+        styles_colors += `
       #background.ytd-masthead {
         background-color: var(--header-background-color);
       }
-      `
+      `;
+      }
+      return styles_colors;
     }
-    return styles_colors
-}
 
-function aplicarEstilos(clase, estilos) {
-  let estiloExistente = document.getElementById(clase) || document.createElement('style');
-  estiloExistente.id = clase;
-  estiloExistente.innerHTML = estilos;
+    function aplicarEstilos(clase, estilos) {
+      let estiloExistente =
+        document.getElementById(clase) || document.createElement('style');
+      estiloExistente.id = clase;
+      estiloExistente.innerHTML = estilos;
 
-  if (!document.getElementById(clase)) {
-    document.head.appendChild(estiloExistente);
-  }
-  
-}
+      if (!document.getElementById(clase)) {
+        document.head.appendChild(estiloExistente);
+      }
+    }
 
-function actualizarColor(event) {
-  const estilosGenerales = generarEstilosGenerales();
-  aplicarEstilos('estilos-combinados', estilosGenerales);
-  var colores = inicializarColores();
-  var inputId = event.target.id;
-  var nuevoColor = event.target.value;
+    function actualizarColor(event) {
+      aplicarEstilos('estilos-combinados', generarEstilosGenerales());
+      let colores = inicializarColores();
+      let inputId = event.target.id;
+      let nuevoColor = event.target.value;
+      // Actualizar el color correspondiente en el objeto de colores
+      colores[inputId] = nuevoColor;
 
-  // Actualizar el color correspondiente en el objeto de colores
-  colores[inputId] = nuevoColor;
+      // primary color
 
-  // primary color
+      applyStyles(
+        obtenerColorPorId('color_primary'),
+        `${obtenerColorPorId('color_primary')}`,
+        '--yt-spec-text-primary'
+      );
 
-  applyStyles(
-    true,
-    `${obtenerColorPorId('color_primary')}`,
-    "--yt-spec-text-primary"
-  );
+      // Secondary color
+      applyStyles(
+        obtenerColorPorId('color_secondary'),
+        `${obtenerColorPorId('color_secondary')}`,
+        '--yt-spec-text-secondary'
+      );
+      // Icons color
+      applyStyles(
+         obtenerColorPorId('color_icons_color'),
+        `${obtenerColorPorId('color_icons_color')}`,
+        '--yt-spec-wordmark-text'
+      );
+      applyStyles(
+         obtenerColorPorId('color_icons_color'),
+        `${obtenerColorPorId('color_icons_color')}`,
+        '--yt-spec-brand-icon-inactive'
+      );
+      // Menu settings color
+      applyStyles(
+         obtenerColorPorId('color_menu'),
+        `${obtenerColorPorId('color_menu')}`,
+        '--yt-spec-menu-background'
+      );
+      // Line color previw
+      applyStyles(
+         obtenerColorPorId('color_line_preview'),
+        `${obtenerColorPorId('color_line_preview')}`,
+        '--yt-spec-static-brand-red'
+      );
+      // Time color previw
+      applyStyles(
+         obtenerColorPorId('color_time_preview'),
+        `${obtenerColorPorId('color_time_preview')}`,
+        '--yt-spec-static-brand-white'
+      );
+      applyStyles(
+         obtenerColorPorId('color_time_preview'),
+        `${obtenerColorPorId('color_time_preview')}`,
+        '--yt-spec-static-brand-white'
+      );
+      // Progress bar color video
+      applyStyles(
+         obtenerColorPorId('color_progress_bar'),
+        `${obtenerColorPorId('color_progress_bar')}`,
+        '--progress-bar-video'
+      );
 
-  // Secondary color
-  applyStyles(
-    true,
-    `${obtenerColorPorId('color_secondary')}`,
-    "--yt-spec-text-secondary"
-  );
-  // Icons color
-  applyStyles(
-    true,
-    `${obtenerColorPorId('color_icons_color')}`,
-    "--yt-spec-wordmark-text"
-  );
-  applyStyles(
-    true,
-    `${obtenerColorPorId('color_icons_color')}`,
-    "--yt-spec-brand-icon-inactive"
-  );
-  // Menu settings color
-  applyStyles(
-    true,
-    `${obtenerColorPorId('color_menu')}`,
-    "--yt-spec-menu-background"
-  );
-  // Line color previw
-  applyStyles(
-    true,
-    `${obtenerColorPorId('color_line_preview')}`,
-    "--yt-spec-static-brand-red"
-  );
-  // Time color previw
-  applyStyles(
-    true,
-    `${obtenerColorPorId('color_time_preview')}`,
-    "--yt-spec-static-brand-white"
-  );
-  applyStyles(
-    true,
-    `${obtenerColorPorId('color_time_preview')}`,
-    "--yt-spec-static-brand-white"
-  );
-  // Progress bar color video
-  applyStyles(
-    true,
-    `${obtenerColorPorId('color_progress_bar')}`,
-    "--progress-bar-video"
-  );
+      // Header color
+      applyStyles(
+        obtenerColorPorId('color_header_background'),
+        `${obtenerColorPorId('color_header_background')}`,
+        '--header-background-color'
+      );
 
-  // Header color
-  applyStyles(
-    true,
-    `${obtenerColorPorId('color_header_background')}`,
-    "--header-background-color"
-  );
-
-
-  // Guardar el objeto de colores actualizado en localStorage
-  guardarColores(colores);
-}
-
+      // Guardar el objeto de colores actualizado en localStorage
+      guardarColores(colores);
+    }
 
     // Función para link github project
     const existeFormButton = document.querySelector(
-      "#below > ytd-watch-metadata > div.container > form"
+      '#below > ytd-watch-metadata > div.container > form'
     );
 
     function MDCM() {
       if (!existeFormButton) {
-        const mdcm = document.querySelector("#MDCM");
-        const sms = document.querySelector("#below > ytd-watch-metadata");
+        const mdcm = document.querySelector('#MDCM');
+        const sms = document.querySelector('#below > ytd-watch-metadata');
         if (!mdcm) {
           if (sms != undefined) {
-            const mdcm = document.createElement("P");
+            const mdcm = document.createElement('P');
             mdcm.innerHTML =
               '<a id="MDCM" target="_blank" style="margin: 10px 0; font-size: 14px; color: #24ff; text-decoration: none; display: flex; align-items: center; justify-content: center; font-style: italic;font-weight: 700;" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">Link GitHub Repository<h4></h4</a>';
             sms.appendChild(mdcm);
@@ -975,23 +985,22 @@ function actualizarColor(event) {
         }
       }
     }
-  
 
     // TODO: Inicia y inserta los botones
     function renderizarContenido() {
       const addButton = document.querySelector(
-        ".style-scope .ytd-watch-metadata"
+        '.style-scope .ytd-watch-metadata'
       );
       if (addButton != undefined && validoBotones) {
         validoBotones = false;
-        addButton.insertAdjacentHTML("beforebegin", menuBotones);
+        addButton.insertAdjacentHTML('beforebegin', menuBotones);
         // document.querySelector("video").style.borderRadius = "30px";
-        const containerButtons = document.querySelector(".containerButtons");
+        const containerButtons = document.querySelector('.containerButtons');
         // Agregar cada contenido al contenedor si está activo
         if (containerButtons) {
-          addButton.insertAdjacentHTML("beforebegin", menuBotones);
+          addButton.insertAdjacentHTML('beforebegin', menuBotones);
 
-          containerButtons.innerHTML = "";
+          containerButtons.innerHTML = '';
           const contentData = {
             button_colors_collapsible: {
               active: true,
@@ -1050,176 +1059,211 @@ function actualizarColor(event) {
 
           // Resto del código para formularios y eventos...
         } else {
-          console.error("Elemento .containerButtons no encontrado");
+          console.error('Elemento .containerButtons no encontrado');
         }
 
-        // Collapsible colors content button 
+        // Collapsible colors content button
 
-        const button_collapsible = document.querySelector('.collapsible_colors')
-        const content_collapsible_colors = document.querySelector('.content_collapsible_colors')
-        if(button_collapsible) {
+        const button_collapsible = document.querySelector(
+          '.collapsible_colors'
+        );
+        const content_collapsible_colors = document.querySelector(
+          '.content_collapsible_colors'
+        );
+        if (button_collapsible) {
           button_collapsible.onclick = () => {
-            button_collapsible.style.color = content_collapsible_colors.style.display === "block" ? '#ff0000' : '';
-            content_collapsible_colors.style.display = content_collapsible_colors.style.display == "block" ? "none" : "block";
-          }
+            button_collapsible.style.color =
+              content_collapsible_colors.style.display === 'block'
+                ? '#ff0000'
+                : '';
+            content_collapsible_colors.style.display =
+              content_collapsible_colors.style.display == 'block'
+                ? 'none'
+                : 'block';
+          };
         }
 
         // Formulario de botones para descargar
         const formulariodescarga = document.querySelector(
-          ".formulariodescarga"
+          '.formulariodescarga'
         );
         const formulariodescargaaudio = document.querySelector(
-          ".formulariodescargaaudio"
+          '.formulariodescargaaudio'
         );
-        const framedescarga = document.querySelector("#descargando");
-        const framedescargamp3 = document.querySelector("#descargandomp3");
+        const framedescarga = document.querySelector('#descargando');
+        const framedescargamp3 = document.querySelector('#descargandomp3');
         if (formulariodescarga && formulariodescargaaudio) {
-          formulariodescarga.addEventListener("click", (e) => {
+          formulariodescarga.addEventListener('click', (e) => {
             e.preventDefault();
           });
-          formulariodescargaaudio.addEventListener("click", (e) => {
+          formulariodescargaaudio.addEventListener('click', (e) => {
             e.preventDefault();
           });
         }
-        const btn1mp4 = document.querySelector(".btn1");
-        const btn2mp3 = document.querySelector(".btn2");
-        const btn3cancel = document.querySelector(".btn3");
-        const selectcalidades = document.querySelector(".selectcalidades");
+        const btn1mp4 = document.querySelector('.btn1');
+        const btn2mp3 = document.querySelector('.btn2');
+        const btn3cancel = document.querySelector('.btn3');
+        const selectcalidades = document.querySelector('.selectcalidades');
         const selectcalidadesaudio = document.querySelector(
-          ".selectcalidadesaudio"
+          '.selectcalidadesaudio'
         );
 
-        selectcalidades.addEventListener("change", (e) => {
+        selectcalidades.addEventListener('change', (e) => {
           framedescarga.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=0af`;
-          framedescarga.classList.remove("ocultarframe");
+          framedescarga.classList.remove('ocultarframe');
         });
 
-        selectcalidadesaudio.addEventListener("change", (e) => {
+        selectcalidadesaudio.addEventListener('change', (e) => {
           framedescargamp3.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=049c16`;
           // console.log(e.target.value)
-          framedescargamp3.classList.remove("ocultarframeaudio");
+          framedescargamp3.classList.remove('ocultarframeaudio');
         });
 
         if (btn3cancel) {
           btn3cancel.onclick = () => {
-            formulariodescarga.style.display = "none";
-            formulariodescargaaudio.style.display = "none";
+            formulariodescarga.style.display = 'none';
+            formulariodescargaaudio.style.display = 'none';
           };
         }
 
         if (btn1mp4) {
           btn1mp4.onclick = () => {
-            selectcalidades.classList.remove("ocultarframe");
-            framedescarga.classList.add("ocultarframe");
-            formulariodescarga.classList.remove("ocultarframe");
-            formulariodescarga.style.display = "";
-            selectcalidadesaudio.classList.add("ocultarframeaudio");
-            formulariodescargaaudio.classList.add("ocultarframe");
+            selectcalidades.classList.remove('ocultarframe');
+            framedescarga.classList.add('ocultarframe');
+            formulariodescarga.classList.remove('ocultarframe');
+            formulariodescarga.style.display = '';
+            selectcalidadesaudio.classList.add('ocultarframeaudio');
+            formulariodescargaaudio.classList.add('ocultarframe');
             formulariodescarga.reset();
           };
         }
-        MDCM()
+        MDCM();
         if (btn2mp3) {
           btn2mp3.onclick = () => {
-            formulariodescargaaudio.classList.remove("ocultarframe");
-            formulariodescarga.classList.add("ocultarframe");
-            framedescargamp3.classList.remove("ocultarframeaudio");
-            formulariodescargaaudio.style.display = "";
-            selectcalidadesaudio.classList.remove("ocultarframeaudio");
-            framedescargamp3.classList.add("ocultarframeaudio");
+            formulariodescargaaudio.classList.remove('ocultarframe');
+            formulariodescarga.classList.add('ocultarframe');
+            framedescargamp3.classList.remove('ocultarframeaudio');
+            formulariodescargaaudio.style.display = '';
+            selectcalidadesaudio.classList.remove('ocultarframeaudio');
+            framedescargamp3.classList.add('ocultarframeaudio');
             formulariodescargaaudio.reset();
           };
         }
 
-        const reverse = document.querySelector("#columns"); // Invertir contenido
-        
-        const color_primary = document.querySelector("#color_primary"); 
-        const color_progress_bar = document.querySelector("#color_progress_bar"); 
-        const color_header_background = document.querySelector("#color_header_background"); 
-        const color_secondary = document.querySelector("#color_secondary"); 
-        const color_icons_color = document.querySelector("#color_icons_color"); 
-        const color_menu = document.querySelector("#color_menu");
-        const color_line_preview = document.querySelector("#color_line_preview"); 
-        const color_time_preview = document.querySelector("#color_time_preview"); 
+        const reverse = document.querySelector('#columns'); // Invertir contenido
 
-        color_primary.value = obtenerColorPorId('color_primary') ? obtenerColorPorId('color_primary') : "#ffffff"; 
-        color_progress_bar.value =  obtenerColorPorId('color_progress_bar') ? obtenerColorPorId('color_progress_bar') : "#ffffff"  
-        color_header_background.value =  obtenerColorPorId('color_header_background') ? obtenerColorPorId('color_header_background') : "#ffffff"  
-        color_secondary.value =  obtenerColorPorId('color_secondary') ? obtenerColorPorId('color_secondary') : "#ffffff"  
-        color_icons_color.value =  obtenerColorPorId('color_icons_color') ? obtenerColorPorId('color_icons_color') : "#ffffff" ; 
-        color_menu.value =  obtenerColorPorId('color_menu') ? obtenerColorPorId('color_menu') : "#ffffff" ;
-        color_line_preview.value =  obtenerColorPorId('color_line_preview') ? obtenerColorPorId('color_line_preview') : "#ffffff" ; 
-        color_time_preview.value =  obtenerColorPorId('color_time_preview') ? obtenerColorPorId('color_time_preview') : "#ffffff"; 
+        const color_primary = document.querySelector('#color_primary');
+        const color_progress_bar = document.querySelector(
+          '#color_progress_bar'
+        );
+        const color_header_background = document.querySelector(
+          '#color_header_background'
+        );
+        const color_secondary = document.querySelector('#color_secondary');
+        const color_icons_color = document.querySelector('#color_icons_color');
+        const color_menu = document.querySelector('#color_menu');
+        const color_line_preview = document.querySelector(
+          '#color_line_preview'
+        );
+        const color_time_preview = document.querySelector(
+          '#color_time_preview'
+        );
+
+        color_primary.value = obtenerColorPorId('color_primary')
+          ? obtenerColorPorId('color_primary')
+          : '#ffffff';
+        color_progress_bar.value = obtenerColorPorId('color_progress_bar')
+          ? obtenerColorPorId('color_progress_bar')
+          : '#ffffff';
+        color_header_background.value = obtenerColorPorId(
+          'color_header_background'
+        )
+          ? obtenerColorPorId('color_header_background')
+          : '#ffffff';
+        color_secondary.value = obtenerColorPorId('color_secondary')
+          ? obtenerColorPorId('color_secondary')
+          : '#ffffff';
+        color_icons_color.value = obtenerColorPorId('color_icons_color')
+          ? obtenerColorPorId('color_icons_color')
+          : '#ffffff';
+        color_menu.value = obtenerColorPorId('color_menu')
+          ? obtenerColorPorId('color_menu')
+          : '#ffffff';
+        color_line_preview.value = obtenerColorPorId('color_line_preview')
+          ? obtenerColorPorId('color_line_preview')
+          : '#ffffff';
+        color_time_preview.value = obtenerColorPorId('color_time_preview')
+          ? obtenerColorPorId('color_time_preview')
+          : '#ffffff';
 
         applyStyles(
-          propiedadExiste('color_primary') ,
+          propiedadExiste('color_primary'),
           `${obtenerColorPorId('color_primary')}`,
-          "--yt-spec-text-primary"
+          '--yt-spec-text-primary'
         );
-      
+
         // Secondary color
         applyStyles(
-          propiedadExiste('color_secondary') ,
+          propiedadExiste('color_secondary'),
           `${obtenerColorPorId('color_secondary')}`,
-          "--yt-spec-text-secondary"
+          '--yt-spec-text-secondary'
         );
         // Icons color
         applyStyles(
-          propiedadExiste('color_icons_color') ,
+          propiedadExiste('color_icons_color'),
           `${obtenerColorPorId('color_icons_color')}`,
-          "--yt-spec-wordmark-text"
+          '--yt-spec-wordmark-text'
         );
         applyStyles(
           propiedadExiste('color_icons_color'),
           `${obtenerColorPorId('color_icons_color')}`,
-          "--yt-spec-brand-icon-inactive"
+          '--yt-spec-brand-icon-inactive'
         );
         // Menu settings color
         applyStyles(
           propiedadExiste('color_menu'),
           `${obtenerColorPorId('color_menu')}`,
-          "--yt-spec-menu-background"
+          '--yt-spec-menu-background'
         );
         // Line color previw
         applyStyles(
           propiedadExiste('color_line_preview'),
           `${obtenerColorPorId('color_line_preview')}`,
-          "--yt-spec-static-brand-red"
+          '--yt-spec-static-brand-red'
         );
         // Time color previw
         applyStyles(
           propiedadExiste('color_time_preview'),
           `${obtenerColorPorId('color_time_preview')}`,
-          "--yt-spec-static-brand-white"
+          '--yt-spec-static-brand-white'
         );
         applyStyles(
-          propiedadExiste('color_progress_bar') ,
+          propiedadExiste('color_progress_bar'),
           `${obtenerColorPorId('color_progress_bar')}`,
-          "--progress-bar-video"
+          '--progress-bar-video'
         );
         applyStyles(
           propiedadExiste('color_header_background'),
           `${obtenerColorPorId('color_header_background')}`,
-          "--header-background-color"
+          '--header-background-color'
         );
-      
-      
-        const btnImagen = document.querySelector("#imagen");
+
+        const btnImagen = document.querySelector('#imagen');
         // Download image video
-        const formularioButtons = document.querySelector("#eyes"); // Filtro de pantalla
+        const formularioButtons = document.querySelector('#eyes'); // Filtro de pantalla
         // const btnFondo = document.querySelector("#fondo"); // Fondo cinematica completa
-        const invertirVista = document.querySelector("#invertir"); // Intercambiar vista
+        const invertirVista = document.querySelector('#invertir'); // Intercambiar vista
 
         const buttonsVideo = document.querySelector(
-          "#top-row.ytd-watch-metadata"
+          '#top-row.ytd-watch-metadata'
         ); // Botones para video
 
-        reverse.style.flexDirection = "row";
+        reverse.style.flexDirection = 'row';
         buttonsVideo.style =
-          "display: flex;flex-direction: column;justify-content: center;align-items: center ;";
-        document.querySelector("#title > h1").style =
-          "text-align: center; color: red;";
-        document.querySelector("#owner").style.justifyContent = "center";
+          'display: flex;flex-direction: column;justify-content: center;align-items: center ;';
+        document.querySelector('#title > h1').style =
+          'text-align: center; color: red;';
+        document.querySelector('#owner').style.justifyContent = 'center';
         //document.querySelector("#search-icon-legacy.ytd-searchbox").style.backgroundColor = "gray";
 
         let countViewRow = 0; // Count
@@ -1228,10 +1272,10 @@ function actualizarColor(event) {
             countViewRow += 1;
             switch (countViewRow) {
               case 1:
-                reverse.style.flexDirection = "row-reverse";
+                reverse.style.flexDirection = 'row-reverse';
                 break;
               case 2:
-                reverse.style.flexDirection = "row";
+                reverse.style.flexDirection = 'row';
                 countViewRow = 0;
                 break;
             }
@@ -1241,14 +1285,14 @@ function actualizarColor(event) {
         // valido modo oscuro y venta de video
         // Repeat video button
         let countRepeat = 0; // count
-        const repeat = document.querySelector("#repeatvideo"); // Repeat button
-        const imarepeat = document.querySelector(".icon-tabler-repeat"); // img repeat
+        const repeat = document.querySelector('#repeatvideo'); // Repeat button
+        const imarepeat = document.querySelector('.icon-tabler-repeat'); // img repeat
         const videoFull = document.querySelector(
-          "#movie_player > div.html5-video-container > video"
+          '#movie_player > div.html5-video-container > video'
         );
         repeat.onclick = () => {
           if (
-            document.querySelector("#cinematics > div") != undefined ||
+            document.querySelector('#cinematics > div') != undefined ||
             videoFull != undefined
           ) {
             countRepeat += 1;
@@ -1257,9 +1301,9 @@ function actualizarColor(event) {
                 case 1:
                   document
                     .querySelector(
-                      "#movie_player > div.html5-video-container > video"
+                      '#movie_player > div.html5-video-container > video'
                     )
-                    .setAttribute("loop", "true");
+                    .setAttribute('loop', 'true');
                   imarepeat.innerHTML = `  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-repeat-off" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                       <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                       <path d="M4 12v-3c0 -1.336 .873 -2.468 2.08 -2.856m3.92 -.144h10m-3 -3l3 3l-3 3"></path>
@@ -1271,9 +1315,9 @@ function actualizarColor(event) {
                   countRepeat = 0;
                   document
                     .querySelector(
-                      "#movie_player > div.html5-video-container > video"
+                      '#movie_player > div.html5-video-container > video'
                     )
-                    .removeAttribute("loop");
+                    .removeAttribute('loop');
                   imarepeat.innerHTML = ` <svg  xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-repeat" width="24"
                       height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                       stroke-linecap="round" stroke-linejoin="round">
@@ -1285,23 +1329,24 @@ function actualizarColor(event) {
               }
             }, 1000);
           } else {
-            mostrarAlerta("Active Dark Theme in Youtube page");
+            mostrarAlerta('Active Dark Theme in Youtube page');
           }
         };
         // Background transparent
-        reverse.style.flexDirection = "row";
-        const cinematica = document.querySelector("#cinematics > div");
-        if(cinematica != undefined) {
-          cinematica.style = "position: fixed; inset: 0px; pointer-events: none; transform: scale(1.5, 2)";
+        reverse.style.flexDirection = 'row';
+        const cinematica = document.querySelector('#cinematics > div');
+        if (cinematica != undefined) {
+          cinematica.style =
+            'position: fixed; inset: 0px; pointer-events: none; transform: scale(1.5, 2)';
         }
-        const btnReset = document.querySelector("#reset"); // Reset button
+        const btnReset = document.querySelector('#reset'); // Reset button
         if (btnReset) {
-          btnReset.addEventListener("click", function () {
-            const colores = localStorage.getItem("colores");
-            if(colores) {
-              localStorage.removeItem("colores");
-              document.querySelector("#ojosprotect").style.backgroundColor =
-                "transparent";
+          btnReset.addEventListener('click', function () {
+            const colores = localStorage.getItem('colores');
+            if (colores) {
+              localStorage.removeItem('colores');
+              document.querySelector('#ojosprotect').style.backgroundColor =
+                'transparent';
             }
           });
         }
@@ -1309,11 +1354,11 @@ function actualizarColor(event) {
         if (btnImagen) {
           btnImagen.onclick = () => {
             if (
-              document.querySelector("#cinematics > div") != undefined ||
+              document.querySelector('#cinematics > div') != undefined ||
               videoFull != undefined
             ) {
               const parametrosURL = new URLSearchParams(window.location.search);
-              let enlace = parametrosURL.get("v");
+              let enlace = parametrosURL.get('v');
 
               // Construir la URL de la imagen
               const imageUrl = `https://i.ytimg.com/vi/${enlace}/maxresdefault.jpg`;
@@ -1334,17 +1379,17 @@ function actualizarColor(event) {
                   if (imageSizeKB >= 20) {
                     window.open(
                       `https://i.ytimg.com/vi/${enlace}/maxresdefault.jpg`,
-                      "popUpWindow",
-                      "height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes"
+                      'popUpWindow',
+                      'height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes'
                     );
                     // Crear una URL para la imagen
                     const imageUrlObject = URL.createObjectURL(blob);
 
                     // Crear un enlace para descargar la imagen
-                    const enlaceDescarga = document.createElement("a");
+                    const enlaceDescarga = document.createElement('a');
                     enlaceDescarga.href = imageUrlObject;
                     const titleVideo = document.querySelector(
-                      "h1.style-scope.ytd-watch-metadata"
+                      'h1.style-scope.ytd-watch-metadata'
                     ).innerText;
                     enlaceDescarga.download = `${titleVideo}_maxresdefault.jpg`;
 
@@ -1355,64 +1400,79 @@ function actualizarColor(event) {
                     URL.revokeObjectURL(imageUrlObject);
                   } else {
                     console.log(
-                      "La imagen no excede los 20 KB. No se descargará."
+                      'La imagen no excede los 20 KB. No se descargará.'
                     );
                   }
                 })
                 .catch((error) => {
-                  alert('No found image')
-                  console.error("Error al obtener la imagen:", error);
+                  alert('No found image');
+                  console.error('Error al obtener la imagen:', error);
                 });
             } else {
-              mostrarAlerta("Active Dark Theme in Youtube page");
+              mostrarAlerta('Active Dark Theme in Youtube page');
             }
           };
         }
-        
+
         // Input color
-        if(color_primary) {color_primary.addEventListener("input",actualizarColor) }
-        if(color_progress_bar) {color_progress_bar.addEventListener("input",actualizarColor) }
-        if(color_header_background) {color_header_background.addEventListener("input",actualizarColor) }
-        if(color_secondary) {color_secondary.addEventListener("input",actualizarColor) }
-        if(color_icons_color) {color_icons_color.addEventListener("input",actualizarColor) }
-        if(color_menu) {color_menu.addEventListener("input",actualizarColor) }
-        if(color_line_preview) {color_line_preview.addEventListener("input",actualizarColor) }
-        if(color_time_preview) {color_time_preview.addEventListener("input",actualizarColor) }
+        if (color_primary) {
+          color_primary.addEventListener('input', actualizarColor);
+        }
+        if (color_progress_bar) {
+          color_progress_bar.addEventListener('input', actualizarColor);
+        }
+        if (color_header_background) {
+          color_header_background.addEventListener('input', actualizarColor);
+        }
+        if (color_secondary) {
+          color_secondary.addEventListener('input', actualizarColor);
+        }
+        if (color_icons_color) {
+          color_icons_color.addEventListener('input', actualizarColor);
+        }
+        if (color_menu) {
+          color_menu.addEventListener('input', actualizarColor);
+        }
+        if (color_line_preview) {
+          color_line_preview.addEventListener('input', actualizarColor);
+        }
+        if (color_time_preview) {
+          color_time_preview.addEventListener('input', actualizarColor);
+        }
 
-
-        const externalLink = document.querySelector(".external_link");
+        const externalLink = document.querySelector('.external_link');
         if (externalLink) {
           externalLink.onclick = () => {
             const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
             let enlace;
-            enlace = parametrosURL.get("v");
+            enlace = parametrosURL.get('v');
             window.open(
               `https://www.y2mate.com/es/convert-youtube/${enlace}`,
-              "popUpWindow",
-              "height=800,width=1000,left=50%,top=100,resizable=no,scrollbars=yes,toolbar=no,menubar=yes,location=no,directories=yes, status=no"
+              'popUpWindow',
+              'height=800,width=1000,left=50%,top=100,resizable=no,scrollbars=yes,toolbar=no,menubar=yes,location=no,directories=yes, status=no'
             );
           };
         }
-        const viewExternalLink = document.querySelector(".view_external_link");
+        const viewExternalLink = document.querySelector('.view_external_link');
         if (viewExternalLink) {
           viewExternalLink.onclick = () => {
-            document.querySelector("video").click();
+            document.querySelector('video').click();
             const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
             let enlace;
-            enlace = parametrosURL.get("v");
+            enlace = parametrosURL.get('v');
             window.open(
               `https://www.youtube.com/embed/${enlace}?rel=0&controls=2&color=white&iv_load_policy=3&showinfo=0&modestbranding=1&autoplay=1`
             );
           };
         }
         const viewPictureToPicture = document.querySelector(
-          ".video_picture_to_picture"
+          '.video_picture_to_picture'
         );
         if (viewPictureToPicture) {
           viewPictureToPicture.onclick = () => {
-            const video = document.querySelector("video");
+            const video = document.querySelector('video');
             // Verifica si el navegador admite Picture-in-Picture
-            if ("pictureInPictureEnabled" in document) {
+            if ('pictureInPictureEnabled' in document) {
               // Verifica si el video aún no está en modo Picture-in-Picture
               if (!document.pictureInPictureElement) {
                 // Intenta activar el modo Picture-in-Picture
@@ -1422,8 +1482,9 @@ function actualizarColor(event) {
                     // El video está ahora en modo Picture-in-Picture
                   })
                   .catch((error) => {
+                    alert('not supported in it browser Use: Chrome ');
                     console.error(
-                      "Error al activar el modo Picture-in-Picture:",
+                      'Error al activar el modo Picture-in-Picture:',
                       error
                     );
                   });
@@ -1431,18 +1492,18 @@ function actualizarColor(event) {
                 // video picture
               }
             } else {
-              alert("Picture-in-Picture not supported");
+              alert('Picture-in-Picture not supported');
             }
           };
 
           // Filtro de pantalla
           if (formularioButtons) {
-            formularioButtons.addEventListener("input", function () {
+            formularioButtons.addEventListener('input', function () {
               if (
-                document.querySelector("#cinematics > div") != undefined ||
+                document.querySelector('#cinematics > div') != undefined ||
                 videoFull != undefined
               ) {
-                document.querySelector("#ojosprotect").style.backgroundColor =
+                document.querySelector('#ojosprotect').style.backgroundColor =
                   formularioButtons.value;
               }
             });
@@ -1452,28 +1513,28 @@ function actualizarColor(event) {
 
         const checked_updates = document.querySelector('.checked_updates');
 
-        if(checked_updates) {
+        if (checked_updates) {
           checked_updates.onclick = () => {
             window.open(
               `https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js`
             );
-          }
+          };
         }
 
-        const screenShotVideo = document.querySelector(".screenshot_video");
+        const screenShotVideo = document.querySelector('.screenshot_video');
         if (screenShotVideo) {
           screenShotVideo.onclick = () => {
-            const video = document.querySelector("video");
-            const canvas = document.createElement("canvas");
+            const video = document.querySelector('video');
+            const canvas = document.createElement('canvas');
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
-            const context = canvas.getContext("2d");
+            const context = canvas.getContext('2d');
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const imagenURL = canvas.toDataURL("image/png");
-            const enlaceDescarga = document.createElement("a");
+            const imagenURL = canvas.toDataURL('image/png');
+            const enlaceDescarga = document.createElement('a');
             enlaceDescarga.href = imagenURL;
             const titleVideo = document.querySelector(
-              "h1.style-scope.ytd-watch-metadata"
+              'h1.style-scope.ytd-watch-metadata'
             ).innerText;
             enlaceDescarga.download = `${video.currentTime.toFixed(
               0
@@ -1482,10 +1543,10 @@ function actualizarColor(event) {
           };
         } else {
           // Si result.GeneralIsActiveIconColor es falso, quitar contenido del DOM
-          const containerButtons = document.querySelector(".containerButtons");
+          const containerButtons = document.querySelector('.containerButtons');
 
           if (containerButtons != undefined) {
-            containerButtons.innerHTML = "";
+            containerButtons.innerHTML = '';
             // También puedes ocultar o manipular otros elementos según tus necesidades
           }
         }
@@ -1494,22 +1555,21 @@ function actualizarColor(event) {
     }
     renderizarContenido();
 
-
     // Función para adaptar dislikes
     // Función para formatear los dislikes
     function FormatiarNumero(num, digits) {
       const lookup = [
         {
           value: 1,
-          symbol: "",
+          symbol: '',
         },
         {
           value: 1e3,
-          symbol: " K",
+          symbol: ' K',
         },
         {
           value: 1e6,
-          symbol: " M",
+          symbol: ' M',
         },
       ];
       const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
@@ -1520,8 +1580,8 @@ function actualizarColor(event) {
           return num >= item.value;
         });
       return item
-        ? (num / item.value).toFixed(digits).replace(rx, "$1") + item.symbol
-        : "0";
+        ? (num / item.value).toFixed(digits).replace(rx, '$1') + item.symbol
+        : '0';
     }
 
     let validoUrl = document.location.href;
@@ -1530,11 +1590,11 @@ function actualizarColor(event) {
       validoUrl = document.location.href;
 
       const validoVentana = document.querySelector(
-        "#below > ytd-watch-metadata > div.container > form > div.containerButtons"
+        '#below > ytd-watch-metadata > div.container > form > div.containerButtons'
       );
       if (
         validoVentana != undefined &&
-        document.location.href.split("?v=")[0].includes("youtube.com/watch")
+        document.location.href.split('?v=')[0].includes('youtube.com/watch')
       ) {
         validoUrl = paramsVideoURL();
         const urlShorts = `https://returnyoutubedislikeapi.com/Votes?videoId=${validoUrl}`;
@@ -1543,15 +1603,17 @@ function actualizarColor(event) {
           const datosShort = await respuesta.json();
           const { dislikes } = datosShort;
           // alert(dislikes, 'Video')
-          const dislikes_content = document.querySelector("#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > dislike-button-view-model > toggle-button-view-model > button-view-model > button")
-          if(dislikes_content !== undefined){
+          const dislikes_content = document.querySelector(
+            '#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > dislike-button-view-model > toggle-button-view-model > button-view-model > button'
+          );
+          if (dislikes_content !== undefined) {
             dislikes_content.style = 'width: 90px';
 
-              // document.querySelector('#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > dislike-button-view-model > toggle-button-view-model > button > yt-touch-feedback-shape > div').insertAdjacentHTML("beforebegin", `${FormatiarNumero(dislikes, 0)}`);
-              dislikes_content.innerHTML = `
+            // document.querySelector('#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > dislike-button-view-model > toggle-button-view-model > button > yt-touch-feedback-shape > div').insertAdjacentHTML("beforebegin", `${FormatiarNumero(dislikes, 0)}`);
+            dislikes_content.innerHTML = `
               <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 13v-8a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v7a1 1 0 0 0 1 1h3a4 4 0 0 1 4 4v1a2 2 0 0 0 4 0v-5h3a2 2 0 0 0 2 -2l-1 -5a2 3 0 0 0 -2 -2h-7a3 3 0 0 0 -3 3" /></svg>
               ${FormatiarNumero(dislikes, 0)}`;
-            }
+          }
         } catch (error) {
           console.log(error);
         }
@@ -1562,13 +1624,13 @@ function actualizarColor(event) {
     async function shortDislike() {
       validoUrl = document.location.href;
       const validoVentanaShort = document.querySelectorAll(
-        "#dislike-button > yt-button-shape > label > div > span"
+        '#dislike-button > yt-button-shape > label > div > span'
       );
       if (
         validoVentanaShort != undefined &&
-        document.location.href.split("/")[3] === "shorts"
+        document.location.href.split('/')[3] === 'shorts'
       ) {
-        validoUrl = document.location.href.split("/")[4];
+        validoUrl = document.location.href.split('/')[4];
         const urlShorts = `https://returnyoutubedislikeapi.com/Votes?videoId=${validoUrl}`;
         try {
           const respuesta = await fetch(urlShorts);
@@ -1588,14 +1650,14 @@ function actualizarColor(event) {
 
     // Mostrar alerta de activar modo oscuro
     function mostrarAlerta(mensaje) {
-      alert("Active Dark Theme in Youtube page");
+      alert('Active Dark Theme in Youtube page');
       const addButton = document.querySelector(
-        "#below > ytd-watch-metadata > div.container > form"
+        '#below > ytd-watch-metadata > div.container > form'
       );
-      const existeAlerta = document.querySelector(".alerta");
+      const existeAlerta = document.querySelector('.alerta');
       if (!existeAlerta) {
         if (addButton != undefined) {
-          const modeDark = document.createElement("P");
+          const modeDark = document.createElement('P');
           modeDark.innerHTML = `<h1 class="alerta" style="color: red; background-color: white; border: 2px solid white; text-aling: center; display: flex;  align-items: center; justify-content: center;">${mensaje}</h1>`;
           addButton.appendChild(modeDark);
           setTimeout(() => {
@@ -1608,82 +1670,86 @@ function actualizarColor(event) {
     function eliminarAnuancios() {
       // Skip ads video / saltar publicidad
       if (
-        document.querySelector(".ytp-ad-skip-button-modern.ytp-button") !==
+        document.querySelector('.ytp-ad-skip-button-modern.ytp-button') !==
           null ||
         document.querySelector(
-          ".ytp-ad-text.ytp-ad-preview-text-modern" !== null
+          '.ytp-ad-text.ytp-ad-preview-text-modern' !== null
         ) ||
-        document.querySelector(".ytp-ad-text") ||
-        document.querySelector(".ytp-ad-preview-container" !== null) ||
+        document.querySelector('.ytp-ad-text') ||
+        document.querySelector('.ytp-ad-preview-container' !== null) ||
         document.querySelector(
-          ".ytp-ad-preview-container.ytp-ad-preview-container-detached"
+          '.ytp-ad-preview-container.ytp-ad-preview-container-detached'
         )
       ) {
         if (
           document.querySelector(
-            ".ytp-ad-preview-container.ytp-ad-preview-container-detached"
+            '.ytp-ad-preview-container.ytp-ad-preview-container-detached'
           ) != undefined
         ) {
           document.querySelector(
-            "#movie_player > div.html5-video-container > video"
+            '#movie_player > div.html5-video-container > video'
           ).currentTime = 100000;
         }
-        const button =  document.querySelector(".ytp-ad-skip-button-modern.ytp-button");
-        if(button !== undefined) {
-          document.querySelector(".ytp-ad-skip-button-modern.ytp-button").click();
+        const button = document.querySelector(
+          '.ytp-ad-skip-button-modern.ytp-button'
+        );
+        if (button !== undefined) {
+          document
+            .querySelector('.ytp-ad-skip-button-modern.ytp-button')
+            .click();
         }
-        document.querySelector(".video-ads.ytp-ad-module").click();
+        document.querySelector('.video-ads.ytp-ad-module').click();
       }
       const buttonSkip = document.querySelector(
-        ".ytp-ad-skip-button.ytp-button"
+        '.ytp-ad-skip-button.ytp-button'
       );
       const validar = undefined;
       let bannerAds = document.querySelector(
-        ".ytd-banner-promo-renderer-background"
+        '.ytd-banner-promo-renderer-background'
       );
-      let bannerProm = document.querySelector("#simple-ad-badge");
-      let ytpminiplayerscrim = document.querySelector("ytp-miniplayer-scrim");
+      let bannerProm = document.querySelector('#simple-ad-badge');
+      let ytpminiplayerscrim = document.querySelector('ytp-miniplayer-scrim');
       let cross = document.getElementsByClassName(
-        "ytp-ad-overlay-close-container"
+        'ytp-ad-overlay-close-container'
       )[0];
-      let skip = document.getElementsByClassName("ytp-ad-skip-button")[0];
+      let skip = document.getElementsByClassName('ytp-ad-skip-button')[0];
       let ad1 = document.querySelector(
-        "#contents > ytd-promoted-sparkles-web-renderer"
+        '#contents > ytd-promoted-sparkles-web-renderer'
       );
       let ad2 = document.querySelector(
-        "#player-ads > ytd-player-legacy-desktop-watch-ads-renderer"
+        '#player-ads > ytd-player-legacy-desktop-watch-ads-renderer'
       );
-      let ad3 = document.querySelector("#action-companion-click-target");
+      let ad3 = document.querySelector('#action-companion-click-target');
       let ad4 = document.querySelector(
-        "#player-overlay\\:0 > div.ytp-ad-player-overlay-flyout-cta.ytp-ad-player-overlay-flyout-cta-rounded"
+        '#player-overlay\\:0 > div.ytp-ad-player-overlay-flyout-cta.ytp-ad-player-overlay-flyout-cta-rounded'
       );
       let ad5 = document.querySelector(
-        "#invideo-overlay\\:0 > div > div.ytp-ad-image-overlay"
+        '#invideo-overlay\\:0 > div > div.ytp-ad-image-overlay'
       );
-      let ad6 = document.querySelector("#root");
+      let ad6 = document.querySelector('#root');
       let ad7 = document.querySelector(
-        "#rendering-content > ytd-video-masthead-ad-v3-renderer"
+        '#rendering-content > ytd-video-masthead-ad-v3-renderer'
       );
       let ad8 = document.querySelector(
-        "#player-ads > ytd-player-legacy-desktop-watch-ads-renderer"
+        '#player-ads > ytd-player-legacy-desktop-watch-ads-renderer'
       );
-      let ad9 = document.querySelector(".ytp-ad-text-overlay");
-      const adVideo = document.querySelectorAll(".ad-showing")[0];
+      let ad9 = document.querySelector('.ytp-ad-text-overlay');
+      const adVideo = document.querySelectorAll('.ad-showing')[0];
       const adTimeVideo = document.querySelector(
-        ".ytp-ad-text.ytp-ad-preview-text"
+        '.ytp-ad-text.ytp-ad-preview-text'
       );
-      const video = document.querySelector("video");
+      const video = document.querySelector('video');
       if (adVideo != validar && video != validar && adTimeVideo != validar) {
         video.currentTime = video.duration;
       }
-      if (ytpminiplayerscrim != validar) alert("eliminado");
+      if (ytpminiplayerscrim != validar) alert('eliminado');
       if (ad1 != validar) ad1.remove();
       if (ad2 != validar) ad2.remove();
       if (ad3 != validar) ad3.remove();
       if (ad4 != validar) ad4.remove();
       if (ad5 != validar) ad5.remove();
       if (ad6 != validar && ad) {
-        ad6.style.display = "none";
+        ad6.style.display = 'none';
         ad = false;
       }
       if (ad7 != validar) ad7.remove();
@@ -1704,7 +1770,7 @@ function actualizarColor(event) {
       // URL changed / Cambio
       const currUrl2 = window.location.href;
       const video = document.querySelector(
-        "#below > ytd-watch-metadata > div.container > form > div.containerButtons"
+        '#below > ytd-watch-metadata > div.container > form > div.containerButtons'
       );
 
       if (currUrl2 != prevUrl && video != undefined) {
@@ -1714,29 +1780,28 @@ function actualizarColor(event) {
       }
       const currUrl = window.location.href;
       if (currUrl != prevUrl) {
-        
         setTimeout(() => {
           shortDislike();
         }, 1000);
         const formulariodescarga = document.querySelector(
-          ".formulariodescarga"
+          '.formulariodescarga'
         );
         const formulariodescargaaudio = document.querySelector(
-          ".formulariodescargaaudio"
+          '.formulariodescargaaudio'
         );
         setTimeout(() => {
           if (formulariodescarga != undefined) {
-            formulariodescarga.classList.add("ocultarframe");
-            formulariodescargaaudio.classList.add("ocultarframe");
+            formulariodescarga.classList.add('ocultarframe');
+            formulariodescargaaudio.classList.add('ocultarframe');
           }
         }, 500);
         prevUrl = currUrl;
       }
 
       const ventanaShortComentarios = document.querySelector(
-        "body > ytd-app > ytd-popup-container > tp-yt-paper-dialog > ytd-engagement-panel-section-list-renderer"
+        'body > ytd-app > ytd-popup-container > tp-yt-paper-dialog > ytd-engagement-panel-section-list-renderer'
       );
-      const historias = document.querySelectorAll("#shorts-inner-container");
+      const historias = document.querySelectorAll('#shorts-inner-container');
       if (ventanaShortComentarios && historias) {
         limpiarHTML();
       }
@@ -1750,23 +1815,23 @@ function actualizarColor(event) {
   let urlLista; // Url lista
   //TODO: Traducir comentarios
   async function traductor() {
-    const texto = document.querySelectorAll("#content-text");
+    const texto = document.querySelectorAll('#content-text');
     let o = `?client=dict-chrome-ex&sl=auto&tl=${navigator.language}&q=`;
     for (let i = 0; i < texto.length; i++) {
-      const botonTraducir = document.createElement("BUTTON");
-      botonTraducir.classList.add("mdcm");
-      botonTraducir.textContent = "Translate";
-      botonTraducir.setAttribute("id", `btn${i}`);
-      texto[i].insertAdjacentElement("afterend", botonTraducir);
+      const botonTraducir = document.createElement('BUTTON');
+      botonTraducir.classList.add('mdcm');
+      botonTraducir.textContent = 'Translate';
+      botonTraducir.setAttribute('id', `btn${i}`);
+      texto[i].insertAdjacentElement('afterend', botonTraducir);
       const mdcm = document.querySelectorAll(`.mdcm`);
       mdcm[i].onclick = function () {
         traducido = o;
         urlLista = traducido + texto[i].textContent;
-        fetch("https://translate.googleapis.com/translate_a/t" + urlLista) //API
+        fetch('https://translate.googleapis.com/translate_a/t' + urlLista) //API
           .then((response) => response.json())
           .then((datos) => {
             texto[i].textContent = datos[0][0];
-            mdcm[i].textContent = "Translated";
+            mdcm[i].textContent = 'Translated';
           });
       };
     }
@@ -1774,7 +1839,7 @@ function actualizarColor(event) {
 
   // Limpiar botones de comentarios
   function limpiarHTML() {
-    const buttons = document.querySelectorAll(".mdcm");
+    const buttons = document.querySelectorAll('.mdcm');
     [].forEach.call(buttons, function (buttons) {
       buttons.remove();
     });
@@ -1783,7 +1848,7 @@ function actualizarColor(event) {
 
   // TODO: mostrar boton de traducir en comentarios cuando sean visibles
   window.onscroll = () => {
-    const divEl = document.querySelector("#content-text");
+    const divEl = document.querySelector('#content-text');
     if (divEl != undefined) {
       limpiarHTML();
     }
