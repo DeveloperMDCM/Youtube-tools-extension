@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.1.3
+// @version      2.1.4
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -786,6 +786,8 @@
       }
     }
 
+    
+
     function obtenerColorPorId(colorId) {
       const colores = inicializarColores();
       return colores[colorId];
@@ -795,6 +797,8 @@
       localStorage.setItem('colores', JSON.stringify(colores));
     }
 
+     
+   
     function applyStyles(isActive, color, styleProperty) {
       aplicarEstilos('estilos-combinados', generarEstilosGenerales());
       if (isActive) {
@@ -1836,24 +1840,51 @@
       };
     }
   }
+  // Download avatar profile image 
+  function getAvatarImage() {
+    const avatar = document.querySelectorAll('img#img.style-scope.yt-img-shadow');
+    for (let i = 0; i < avatar.length; i++) {
+      avatar[i].onclick = function () {
+        window.open(
+          `${avatar[i].src.split('=')[0]}`,
+          'popUpWindow',
+          'height=800,width=1000'
+        );
+      };
+    }
+  }
+ 
 
   // Limpiar botones de comentarios
-  function limpiarHTML() {
-    const buttons = document.querySelectorAll('.mdcm');
+  function limpiarHTML(element) {
+    const buttons = document.querySelectorAll(`${element}`);
     [].forEach.call(buttons, function (buttons) {
       buttons.remove();
     });
     traductor();
   }
+  // Limpiar botones de Avatars
+  function limpiarHTMLAvatar(element) {
+    const buttons = document.querySelectorAll(`${element}`);
+    [].forEach.call(buttons, function (buttons) {
+      buttons.remove();
+    });
+    getAvatarImage();
+    // traductor();
+  }
 
   // TODO: mostrar boton de traducir en comentarios cuando sean visibles
   window.onscroll = () => {
     const divEl = document.querySelector('#content-text');
+    const divEl2 = document.querySelector('yt-img-shadow');
     if (divEl != undefined) {
-      limpiarHTML();
+      limpiarHTML('.mdcm')
+    }
+    if (divEl2 != undefined) {  // limpiarHTML('.mdcm');
+      limpiarHTMLAvatar('.yt-image-avatar-download');
     }
   };
   setTimeout(() => {
     cargarScript();
-  }, 2000);
+  }, 3000);
 })();
