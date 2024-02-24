@@ -14,6 +14,7 @@
    
 - Skip ad video.
 - Picture to Picture.
+- Download image profile/avatar
 - Loop/repeat video.
 - Download audio MP3.
 - Download video MP4 to 8k / up High cuality.
