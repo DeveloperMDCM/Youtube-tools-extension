@@ -35,12 +35,8 @@
 
 ### Add extra options to the YouTube page script or extensión
 
-## how to install
+##
 - Node js >= 18
-- git clone https://github.com/DeveloperMDCM/Youtube-tools-extension.git
-- npm i
-- npm run buid
-- In Google Chrome go to extension activate developer mode and load the dist folder
 ## Installation:
     
     1) Git clone or download file and unzip on a folder 
