@@ -64,7 +64,7 @@
 // @description:ug      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:vi      Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.1.5
+// @version      2.1.6
 // @description        Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @description:zh-TW  無需第三方服務即可下載 YouTube 視頻等。
 // @description:zh-HK  無需第三方服務即可下載 YouTube 視頻等
@@ -96,7 +96,7 @@
 // @namespace https://github.com/DeveloperMDCM/
 // ==/UserScript==
 
-// new update 25/02/2024 🟢
+// new update 23/03/2024 🟢
 (function () {
   // Youtube tools by: DeveloperMDCM
   // https://github.com/DeveloperMDCM/Youtube-tools-extension
@@ -118,7 +118,7 @@
 
   console.log(
     '%cYoutube Tools Extension\n' +
-      '%cRun %c(v2.1.3)\n' +
+      '%cRun %c(v2.1.6)\n' +
       'By: DeveloperMDCM.',
     HEADER_STYLE,
     CODE_STYLE,
@@ -693,6 +693,7 @@
 
 </div>
 <div class="content_collapsible_colors">
+<button id="close_menu_colors" title="close" style="color: white; background-color: red; padding: 5px 4px; border-radius: 10px; margin: auto; text-align: center; display: flex;" type="button">X</button>
 <div style="display: flex;">
   <h2 style=" margin-left: 2px;">Primary Color:</h2>
   <button title="Text color" class="botones_div" type="button">
@@ -1054,20 +1055,27 @@
         const button_collapsible = document.querySelector(
           '.collapsible_colors'
         );
+        const close_menu_colors = document.querySelector(
+          '#close_menu_colors'
+        );
         const content_collapsible_colors = document.querySelector(
           '.content_collapsible_colors'
         );
-        if (button_collapsible) {
-          button_collapsible.onclick = () => {
-            button_collapsible.style.color =
-              content_collapsible_colors.style.display === 'block'
-                ? '#ff0000'
-                : '';
-            content_collapsible_colors.style.display =
-              content_collapsible_colors.style.display == 'block'
-                ? 'none'
-                : 'block';
-          };
+        if (button_collapsible || close_menu_colors) {
+          const close = (item) => {
+            item.onclick = () => {
+              button_collapsible.style.color =
+                content_collapsible_colors.style.display === 'block'
+                  ? '#ff0000'
+                  : '';
+              content_collapsible_colors.style.display =
+                content_collapsible_colors.style.display == 'block'
+                  ? 'none'
+                  : 'block';
+            };
+          }
+          close(button_collapsible)
+          close(close_menu_colors)
         }
 
         // Formulario de botones para descargar
