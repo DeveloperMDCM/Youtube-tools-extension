@@ -69,9 +69,8 @@
 // @description:vi    Công cụ Youtube Tất cả trong một cục bộ Tải xuống mp4, MP3 CHẤT LƯỢNG CAO mà không cần dịch vụ bên ngoài tự động lặp lại video, bỏ qua quảng cáo, trả lại lượt không thích và hơn thế nữa
 // @description:en    Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.1.8
+// @version      2.1.9
 // @author       MDCM
-// @homepage     https://github.com/DeveloperMDCM/
 // @match        https://*.youtube.com/*
 // @exclude      *://music.youtube.com/*
 // @exclude      *://*.music.youtube.com/*
