@@ -1,73 +1,74 @@
 // ==UserScript==
-// @name         Youtube Tools All in one local download mp3 mp4 HIGT QUALITY return dislikes and more
-// @name:zh-TW   Youtube 工具 多合一本地下載 MP4、MP3 高品質，無需外部服務等。
-// @name:zh-HK   Youtube 工具 多合一本地下載 MP4、MP3 高品質，無需外部服務等。
-// @name:zh-CN   Youtube 工具 多合一本地下載 MP4、MP3 高品質，無需外部服務等。
-// @name:ja      Youtube ツール オールインワンのローカル ダウンロード MP4、MP3 外部サービスなしで高品質など
-// @name:kr      Youtube 도구 올인원 로컬 다운로드 외부 서비스 없이 MP4, MP3 고품질 다운로드 등
-// @name:ar      Youtube Tools All in one local Download MP4, MP3 HIGT QUALITY without external service and more.
-// @name:bg      Youtube-Tools Alles in einem lokalen Download von MP4, MP3 in HOHER QUALITÄT ohne externen Service und mehr
-// @name:cs      Nástroje YouTube Vše v jednom místní Stahujte MP4, MP3 VYSOKÉ KVALITY bez externích služeb a další
-// @name:da      Youtube-værktøjer Alt i én lokal Download MP4, MP3 HØJ KVALITET uden ekstern service og mere
-// @name:de      Youtube-Tools Alles in einem lokalen Download von MP4, MP3 in HOHER QUALITÄT ohne externen Service und mehr
-// @name:tel     Youtube టూల్స్ అన్నీ ఒకే లోకల్ డౌన్‌లోడ్ MP4, MP3 బాహ్య సేవ లేకుండా అధిక నాణ్యత మరియు మరిన్ని
-// @name:es      Youtube Custom Todo en uno Descarga local MP4, MP3 DE ALTA CALIDAD sin servicio externo y más.
-// @name:en      Youtube Tools All in one local download mp3 mp4 HIGT QUALITY return dislikes and more
-// @name:fr      Outils Youtube Tout-en-un local Téléchargez MP4, MP3 DE HAUTE QUALITÉ sans service externe et plus encore.
-// @name:fr-CA   Outils Youtube Tout-en-un local Téléchargez MP4, MP3 DE HAUTE QUALITÉ sans service externe et plus encore.
-// @name:he      כלים של YouTube הכל במקום אחד מקומי הורדה MP4, MP3 באיכות גבוהה ללא שירות חיצוני ועוד.
-// @name:hu      Youtube Eszközök Minden egy helyen Letöltés MP4, MP3 KIVÁLÓ MINŐSÉG külső szolgáltatás nélkül és még sok más.
-// @name:id      Alat Youtube Semua dalam satu lokal Unduh MP4, MP3 KUALITAS TINGGI tanpa layanan eksternal dan banyak lagi.
-// @name:it      Strumenti Youtube Tutto in uno Scarica locale MP4, MP3 ALTA QUALITÀ senza servizio esterno e altro ancora.
-// @name:ko      Youtube 도구 올인원 로컬 외부 서비스 없이 MP4, MP3 고품질을 다운로드하세요.
-// @name:nb      Youtube-verktøy Alt i ett lokalt Last ned MP4, MP3 HØY KVALITET uten ekstern service og mer.
-// @name:nl      Youtube Tools Alles in één lokaal Download MP4, MP3 HOGE KWALITEIT zonder externe service en meer.
-// @name:pl      Narzędzia YouTube Wszystko w jednym lokalnym. Pobierz MP4, MP3 WYSOKIEJ JAKOŚCI bez usługi zewnętrznej i nie tylko.
-// @name:pt-BR   Ferramentas do Youtube Tudo em um local Baixe MP4, MP3 DE ALTA QUALIDADE sem serviço externo e muito mais.
-// @name:ro      YInstrumente Youtube Toate într-un singur local Descărcați MP4, MP3 DE ÎNALTĂ CALITATE fără servicii externe și multe altele.
-// @name:ru      Инструменты Youtube Все в одном локальном формате. Загрузите MP4, MP3 ВЫСОКОГО КАЧЕСТВА без внешних услуг и многое другое.
-// @name:sk      Nástroje YouTube Všetko v jednom miestne Stiahnite si MP4, MP3 VYSOKEJ KVALITY bez externej služby a ďalšie.
-// @name:sr      Иоутубе алати Све у једном локалном Преузми МП4, МП3 ВИСОК КВАЛИТЕТ без екстерних услуга и још много тога.
-// @name:sv      Youtube-verktyg Allt i ett lokalt Ladda ner MP4, MP3 HÖG KVALITET utan extern service och mer.
-// @name:th      เครื่องมือ Youtube ทั้งหมดในที่เดียว ดาวน์โหลด MP4, MP3 คุณภาพสูง โดยไม่ต้องใช้บริการภายนอกและอีกมากมาย
-// @name:tr      Youtube Araçları Hepsi bir arada yerel Harici hizmet olmadan MP4, MP3 YÜKSEK KALİTE indirin ve daha fazlasını yapın.
-// @name:uk      Інструменти Youtube Все в одному локальному завантаженні MP4, MP3 ВИСОКА ЯКІСТЬ без зовнішніх служб тощо.
-// @name:ug      Youtube قوراللىرى ھەممىسى بىر يەرلىك چۈشۈرۈش MP4 ، MP3 HIGH QUALITY سىرتقى مۇلازىمەت ۋە باشقىلار.
-// @name:vi      Công cụ Youtube Tất cả trong một cục bộ Tải xuống MP4, MP3 CHẤT LƯỢNG CAO mà không cần dịch vụ bên ngoài và hơn thế nữa.
-// @description:zh-TW Youtube 工具 多合一本地下載 mp4、MP3 高品質無需外部服務 自動重複影片、跳過廣告、返回不喜歡的內容等
-// @description:zh-HK Youtube 工具 多合一本地下載 mp4、MP3 高品質無需外部服務 自動重複影片、跳過廣告、返回不喜歡的內容等
-// @description:zh-CN Youtube 工具 多合一本地下載 mp4、MP3 高品質無需外部服務 自動重複影片、跳過廣告、返回不喜歡的內容等
-// @description:ja    Youtube ツール オールインワン ローカル ダウンロード mp4、MP3 高品質、外部サービスなしでビデオを自動リピート、広告をスキップ、嫌いなものを返すなど
-// @description:kr    Youtube 도구 올인원 로컬 다운로드 mp4, MP3 고품질 외부 서비스 없이 자동 반복 비디오, 광고 건너뛰기, 싫어요 반환 등
-// @description:ar    Herramientas de YouTube Todo en uno Descarga local mp4, MP3 DE ALTA CALIDAD sin servicio externo, repetición automática de videos, omisión de anuncios, devolución de no me gusta y más
-// @description:bg    Инструменти за Youtube Всичко в едно локално изтегляне mp4, MP3 ВИСОКО КАЧЕСТВО без външна услуга автоматично повтаряне на видео, пропускане на реклами, връщане на нехаресвания и други
-// @description:cs    Nástroje YouTube Vše v jednom místní Stahování mp4, MP3 VYSOKÉ KVALITY bez externí služby automatické opakování videa, přeskakování reklam, vracení záporů a další
-// @description:da    Youtube-værktøjer Alt i ét lokalt Download mp4, MP3 HØJ KVALITET uden ekstern service automatisk gentagelse af video, spring over annoncer, returner dislikes og mere
-// @description:de    YouTube-Tools Alles in einem lokalen Laden Sie MP4, MP3 in HOHER QUALITÄT ohne externen Dienst herunter. Automatische Wiederholung von Videos, Überspringen von Anzeigen, Zurückgeben von Abneigungen und mehr
-// @description:tel   Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
-// @description:es    Youtube tools todo en uno personlizada youtube a tu estilo y descarga MP4 y MP3 en la más alta calidad posible, dislikes en videos y más
-// @description:fr    Outils Youtube Tout-en-un local Téléchargez des mp4, des MP3 de HAUTE QUALITÉ sans service externe, répétez automatiquement la vidéo, ignorez les publicités, renvoyez les dislikes et plus encore
-// @description:fr-CA Outils Youtube Tout-en-un local Téléchargez des mp4, des MP3 de HAUTE QUALITÉ sans service externe, répétez automatiquement la vidéo, ignorez les publicités, renvoyez les dislikes et plus encore
-// @description:he    כלים של YouTube הכל במקום אחד מקומי הורד mp4, MP3 באיכות גבוהה ללא שירות חיצוני וידאו חוזר אוטומטי, דילוג על מודעות, החזר לא אהבתי ועוד
-// @description:hu    Youtube Eszközök Minden egyben helyi Letöltés mp4, MP3 KIVÁLÓ MINŐSÉG külső szolgáltatás nélkül videó automatikus ismétlése, hirdetések átugrása, nemtetszések visszaadása stb.
-// @description:id    Alat Youtube Semua dalam satu lokal Unduh mp4, MP3 KUALITAS TINGGI tanpa layanan eksternal ulang video otomatis, lewati iklan, kembalikan tidak suka, dan banyak lagi
-// @description:it    Strumenti Youtube Tutto in uno locale Scarica mp4, MP3 ALTA QUALITÀ senza servizio esterno ripetizione automatica video, salta annunci, restituisci Non mi piace e altro ancora.
-// @description:ko    Youtube 도구 올인원 로컬 다운로드 mp4, MP3 고품질 외부 서비스 없이 자동 반복 비디오, 광고 건너뛰기, 싫어요 반환 등
-// @description:nb    YoYoutube-verktøy Alt i ett lokalt Last ned mp4, MP3 HØY KVALITET uten ekstern tjeneste automatisk repeter video, hopp over annonser, returner misliker og mer
-// @description:nl    YouTube-tools Alles in één lokaal Download mp4, MP3 HOGE KWALITEIT zonder externe service video automatisch herhalen, advertenties overslaan, niet-leuks retourneren en meer
-// @description:pl    Narzędzia Youtube Wszystko w jednym miejscu Pobierz mp4, MP3 WYSOKA JAKOŚĆ bez usługi zewnętrznej, automatyczne powtarzanie wideo, pomijanie reklam, zwracanie głosów „nie podoba mi się” i nie tylko
-// @description:pt-BR Ferramentas do YouTube Tudo em um só local Baixe mp4, MP3 DE ALTA QUALIDADE sem serviço externo, repita automaticamente o vídeo, pule anúncios, retorne dislikes e muito mais
-// @description:ro    Instrumente Youtube Toate într-un singur local Descărcați mp4, MP3 DE ÎNALTĂ CALITATE fără un serviciu extern de repetare automată a videoclipurilor, omiteți anunțurile, returnați ne-a plăcut și multe altele
-// @description:ru    Инструменты Youtube Все в одном, локально. Загрузите mp4, MP3 ВЫСОКОЕ КАЧЕСТВО без внешнего сервиса. Автоматический повтор видео, пропуск рекламы, возврат лайков и многое другое.
-// @description:sk    Nástroje YouTube Všetko v jednom miestnom Sťahujte mp4, MP3 VYSOKÁ KVALITA bez externej služby automatické opakovanie videa, preskakovanie reklám, vracanie záporných hodnotení a ďalšie
-// @description:sr    Иоутубе алати Све у једном локалном Преузми мп4, МП3 ВИСОК КВАЛИТЕТ без екстерне услуге, аутоматско понављање видеа, прескакање огласа, враћање несвиђања и још много тога
-// @description:sv    Youtube-verktyg Allt i ett lokalt Ladda ner mp4, MP3 HÖG KVALITET utan extern tjänst automatisk repetera video, hoppa över annonser, returnera ogillar och mer
-// @description:th    เครื่องมือ Youtube ทั้งหมดในที่เดียว ดาวน์โหลด mp4, MP3 คุณภาพสูงโดยไม่ต้องใช้บริการภายนอก วิดีโอเล่นซ้ำอัตโนมัติ ข้ามโฆษณา ส่งคืนสิ่งที่ไม่ชอบ และอื่นๆ
-// @description:tr    Youtube Araçları Hepsi bir arada yerel Harici hizmet olmadan mp4, MP3 YÜKSEK KALİTELİ indirin, otomatik video tekrarı, reklamları atlayın, beğenmemelere geri dönün ve daha fazlası
-// @description:uk    Інструменти Youtube Все в одному локальному завантаженні mp4, MP3 ВИСОКА ЯКІСТЬ без зовнішньої служби автоматичний повтор відео, пропуск реклами, повернення не подобається та багато іншого
-// @description:ug    Youtube قورالىنىڭ ھەممىسى بىر يەرلىك چۈشۈرۈشتە mp4, MP3 HIGH QUALITY سىرتقى مۇلازىمەت ئاپتوماتىك سىن تەكرارلاش ، ئېلاندىن ئاتلاش ، ياقتۇرماسلىقنى قايتۇرۇش قاتارلىقلار.
-// @description:vi    Công cụ Youtube Tất cả trong một cục bộ Tải xuống mp4, MP3 CHẤT LƯỢNG CAO mà không cần dịch vụ bên ngoài tự động lặp lại video, bỏ qua quảng cáo, trả lại lượt không thích và hơn thế nữa
-// @description:en    Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY without external service auto repeat video, skip ads, return dislikes and more
+// @name Youtube Tools All in one local download mp3 mp4 HIGT QUALITY return dislikes and more
+// @name:zh-TW  Youtube 工具 多合一本地下載 MP4、MP3 
+// @name:zh-HK  Youtube 工具 多合一本地下載 MP4、MP3 
+// @name:zh-CN  Youtube 工具 多合一本地下載 MP4、MP3
+// @name:ja Youtube ツール オールインワンのローカル ダウンロード MP4、MP3
+// @name:kr Youtube 도구 올인원 로컬 다운로드 외부 서비스 없이 MP4, MP3
+// @name:ar Youtube Tools All in one local download mp3 mp4 HIGT QUALITY return dislikes and more
+// @name:bg Youtube-Tools Alles in einem lokalen Download von MP4, MP3.
+// @name:cs Nástroje YouTube Vše v jednom místní Stahujte MP4, MP3 
+// @name:da Youtube-værktøjer Alt i én lokal Download MP4, MP3 
+// @name:de Youtube-Tools Alles in einem lokalen Download von MP4, MP3 
+// @name:tel Youtube టూల్స్ అన్నీ ఒకే లోకల్ డౌన్‌లోడ్ MP4, Mp3
+// @name:es Youtube Custom Todo en uno Descarga local MP4, MP3.
+// @name:en Youtube Tools All in one local download mp3 mp4.
+// @name:fr Outils Youtube Tout-en-un local Téléchargez MP4, MP3.
+// @name:fr-CA Outils Youtube Tout-en-un local Téléchargez MP4, MP3.
+// @name:he כלים של YouTube הכל במקום אחד מקומי הורדה MP4, MP3 באיכות גבוהה ללא שירות חיצוני ועוד.
+// @name:hu Youtube Eszközök Minden egy helyen Letöltés MP4, MP3.
+// @name:id Alat Youtube Semua dalam satu lokal Unduh MP4, MP3.
+// @name:it Strumenti Youtube Tutto in uno Scarica locale MP4, MP3.
+// @name:ko Youtube 도구 올인원 로컬 외부 서비스 없이 MP4, MP3
+// @name:nb Youtube-verktøy Alt i ett lokalt Last ned MP4, MP3
+// @name:nl Youtube Tools Alles in één lokaal Download MP4, MP3
+// @name:pl Narzędzia YouTube Wszystko w jednym lokalnym. Pobierz MP4, MP3
+// @name:pt-BR Ferramentas do Youtube Tudo em um local Baixe MP4, MP3 DE ALTA QUALIDAD.
+// @name:ro YInstrumente Youtube Toate într-un singur local Descărcați MP4, MP3.
+// @name:ru Инструменты Youtube Все в одном локальном формате. Загрузите MP4, MP3.
+// @name:sk Nástroje YouTube Všetko v jednom miestne Stiahnite si MP4, MP3
+// @name:sr Иоутубе алати Све у једном локалном Преузми МП4, МП3
+// @name:sv Youtube-verktyg Allt i ett lokalt Ladda ner MP4, MP3 
+// @name:th เครื่องมือ Youtube ทั้งหมดในที่เดียว ดาวน์โหลด MP4, MP3
+// @name:tr Youtube Araçları Hepsi bir arada yerel Harici hizmet olmadan MP4, MP3
+// @name:uk Інструменти Youtube Все в одному локальному завантаженні MP4, MP3 
+// @name:ug Youtube قوراللىرى ھەممىسى بىر يەرلىك چۈشۈرۈش MP4,mp3
+// @name:vi Công cụ Youtube Tất cả trong một cục bộ Tải xuống MP4, MP3
+// @description:zh-TW Youtube 工具 多合一本地下載 mp4、MP3 
+// @description:zh-HK Youtube 工具 多合一本地下載 mp4、MP3 
+// @description:zh-CN Youtube 工具 多合一本地下載 mp4、MP3 
+// @description:ja    Youtube ツール オールインワン ローカル ダウンロード mp4、MP3 、
+// @description:kr    Youtube 도구 올인원 로컬 다운로드 mp4, MP3 
+// @description:ar    Herramientas de YouTube Todo en uno Descarga local mp4, MP3
+// @description:bg    Инструменти за Youtube Всичко в едно локално изтегляне mp4, 
+// @description:cs    Nástroje YouTube Vše v jednom místní Stahování mp4, MP3 
+// @description:da    Youtube-værktøjer Alt i ét lokalt Download mp4, MP3 
+// @description:de    YouTube-Tools Alles in einem lokalen Laden Sie MP4, MP3
+// @description:tel   Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY,
+// @description:es Youtube tools todo en uno personlizada youtube a tu estilo y descarga MP4 y MP3
+// @description:fr Outils Youtube Tout-en-un local Téléchargez des mp4, des MP3
+// @description:fr-CA Outils Youtube Tout-en-un local Téléchargez des mp4, des MP3
+// @description:he  כלים של YouTube הכל במקום אחד מקומי הורד mp4, MP3
+// @description:hu  Youtube Eszközök Minden egyben helyi Letöltés mp4, MP3
+// @description:id  Alat Youtube Semua dalam satu lokal Unduh mp4, MP3
+// @description:it Strumenti Youtube Tutto in uno locale Scarica mp4, MP3
+// @description:ko  Youtube 도구 올인원 로컬 다운로드 mp4, MP3
+// @description:nb  YoYoutube-verktøy Alt i ett lokalt Last ned mp4, MP3
+// @description:nl    YouTube-tools Alles in één lokaal Download mp4, MP3
+// @description:pl    Narzędzia Youtube Wszystko w jednym miejscu Pobierz mp4, MP3
+// @description:pt-BR Ferramentas do YouTube Tudo em um só local Baixe mp4, MP3
+// @description:ro    Instrumente Youtube Toate într-un singur local Descărcați mp4, MP3 
+// @description:ru    Инструменты Youtube Все в одном, локально. Загрузите mp4, MP3
+// @description:sk    Nástroje YouTube Všetko v jednom miestnom Sťahujte mp4, MP3
+// @description:sr    Иоутубе алати Све у једном локалном Преузми мп4, МП3 
+// @description:sv    Youtube-verktyg Allt i ett lokalt Ladda ner mp4, MP3
+// @description:th เครื่องมือ Youtube ทั้งหมดในที่เดียว ดาวน์โหลด mp4, MP3 
+// @description:tr Youtube Araçları Hepsi bir arada yerel Harici hizmet olmadan mp4, MP3
+// @description:uk Інструменти Youtube Все в одному локальному завантаженні mp4, MP3  
+// @description:ug Youtube قورالىنىڭ ھەممىسى بىر يەرلىك چۈشۈرۈشتە mp4, MP3 HIGH QUAقنى قا
+// @description:vi Công cụ Youtube Tất cả trong một cục bộ Tải xuống mp4, MP3
+// @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
+// @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
 // @version      2.1.9
 // @author       MDCM
