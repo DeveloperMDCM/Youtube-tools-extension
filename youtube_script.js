@@ -823,12 +823,12 @@
     --icons-color: ${obtenerColorPorId('color_icons_color')};
     --progress-bar-video: ${obtenerColorPorId('color_progress_bar')};
     --header-background-color: ${obtenerColorPorId('color_header_background')};
-    #contents {
-      position: sticky;
-      max-height: 700px !important;
-      overflow: hidden;
-      overflow-y: auto;
-    }
+    // #contents {
+    //   position: sticky;
+    //   max-height: 700px !important;
+    //   overflow: hidden;
+    //   overflow-y: auto;
+    // }
   }
   .yt-spec-button-shape-next--mono.yt-spec-button-shape-next--tonal {
     color:  var(--icons-color);
