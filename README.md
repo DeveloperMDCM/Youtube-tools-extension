@@ -10,43 +10,43 @@
 [Install Script in GreasyFork for Tampermonkey](https://greasyfork.org/es/scripts/460680-youtube-tools-all-in-one-local-download-mp3-mp4-higt-quality-return-dislikes-and-more])
 
 <details>
-<summary>Feactures:</summary>
+<summary>Features:</summary>
    
 - Skip ad video.
-- Picture to Picture.
-- Download image profile/avatar
-- Loop/repeat video.
-- Download audio MP3.
-- Download video MP4 to 8k / up High cuality.
-- Dislikes in video.
-- Dislikes in shorts.
-- Rating/Starts video.
-- Change colors text.
-- Download thumbnail.
-- Screenshot video.
-- Translation of comments in video and shorts
-- Filter screen
-- Mirror mode
-- Adapt background color according to video
-- Reset settings
-- Shorts to classic mode
+- Picture-in-Picture mode.
+- Download profile picture/avatar.
+- Loop/repeat video playback.
+- Download audio as MP3.
+- Download video in MP4 up to 8K with high quality.
+- Display dislikes on videos.
+- Display dislikes on shorts.
+- Rate video with stars.
+- Customize text color.
+- Download thumbnail image.
+- Capture video screenshot.
+- Translate comments in videos and shorts.
+- Filter screen display.
+- Mirror mode enabled.
+- Adapt background color to match video.
+- Reset all settings.
+- Switch shorts to classic mode.
 
 </details>
 
-### Add extra options to the YouTube page script or extensión
+### Add extra options to the YouTube page script or extension
 
 ##
 - Node js >= 18
 ## Installation:
     
-    1) Git clone or download file and unzip on a folder 
-    2) npm install 
-    3) npm run buld / or load the dist folder en chrome://extensions/
-    2) Go to the extensions tab on google chrome (chrome://extensions/)
-    3) Enable "Developer mode" on the top right of the tab
-    4) Press on "Load unpacked" new feature that appeared on top left corner
-    5) Browse the path you downloaded the extension and choose select
-    6) Enjoy :)
+    1) Clone the Git repository or download the file and extract it to a folder.
+    2) Run `npm install` to set up the dependencies.
+    3) Build the extension by running `npm run build`, or load the `dist` folder in `chrome://extensions/`.
+    4) Open the Extensions tab in Google Chrome (`chrome://extensions/`).
+    5) Enable "Developer mode" in the top-right corner of the tab.
+    6) Click on "Load unpacked" in the top-left corner.
+    7) Browse to the folder where you extracted the extension and select it.
+    8) Enjoy :)
 <img src="/images/how install.png" width="670">
 <img src="/images/multi.png" width="470">
 <img src="/images/ex2.png" width="470">
