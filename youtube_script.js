@@ -70,7 +70,7 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.1.9
+// @version      2.2
 // @author       MDCM
 // @match        https://*.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -91,7 +91,7 @@
 // @namespace https://github.com/DeveloperMDCM/
 // ==/UserScript==
 
-// comming soon new update 05/05/2024 🟢
+// comming soon new update 13/06/2024 🟢
 (function () {
   // Youtube tools by: DeveloperMDCM
   // https://github.com/DeveloperMDCM/Youtube-tools-extension
@@ -113,7 +113,7 @@
 
   console.log(
     '%cYoutube Tools Extension\n' +
-      '%cRun %c(v2.1.6)\n' +
+      '%cRun %c(v2.2)\n' +
       'By: DeveloperMDCM.',
     HEADER_STYLE,
     CODE_STYLE,
