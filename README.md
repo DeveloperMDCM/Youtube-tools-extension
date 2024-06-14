@@ -33,9 +33,11 @@
 
 </details>
 
-### Add extra options to the YouTube page script or extension
-
+### Note:
+    - If you have an error when downloading MP3 and MP4, install this extension for Chrome/Brave and activate it
+    - https://chrome.google.com/webstore/detail/lfhmikememgdcahcdlaciloancbhjino 
 ##
+### Add extra options to the YouTube page script or extension
 - Node js >= 18
 ## Installation:
     
