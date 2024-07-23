@@ -701,6 +701,11 @@
      <h1 style="color: red;">Menu options</h1><button id="close_menu_colors" title="close" type="button">X</button>
       </div>
 <div style="display: flex;">
+  <h2 style=" margin-left: 2px;">Background Color:</h2>
+  <button title="Text color" class="botones_div" type="button">
+    <input class="colors_buttons_collpase" id="color_bg" type="color" value="#000000"></button>
+</div>
+<div style="display: flex;">
   <h2 style=" margin-left: 2px;">Primary Color:</h2>
   <button title="Text color" class="botones_div" type="button">
     <input class="colors_buttons_collpase" id="color_primary" type="color" value="#ffffff"></button>
@@ -909,6 +914,13 @@
       // Actualizar el color correspondiente en el objeto de colores
       colores[inputId] = nuevoColor;
 
+      // color_bg
+
+      applyStyles(
+        propiedadExiste('color_bg'),
+        `${obtenerColorPorId('color_bg')}`,
+        '--yt-spec-base-background'
+      );
       // primary color
 
       applyStyles(
@@ -1158,6 +1170,7 @@
 
         const reverse = document.querySelector('#columns'); // Invertir contenido
 
+        const color_bg = document.querySelector('#color_bg');
         const color_primary = document.querySelector('#color_primary');
         const color_progress_bar = document.querySelector(
           '#color_progress_bar'
@@ -1175,6 +1188,9 @@
           '#color_time_preview'
         );
 
+        color_bg.value = obtenerColorPorId('color_bg') ?
+          obtenerColorPorId('color_bg') :
+          '#000000';
         color_primary.value = obtenerColorPorId('color_primary') ?
           obtenerColorPorId('color_primary') :
           '#ffffff';
@@ -1202,6 +1218,11 @@
           obtenerColorPorId('color_time_preview') :
           '#ffffff';
 
+        applyStyles(
+          propiedadExiste('color_bg'),
+          `${obtenerColorPorId('color_bg')}`,
+          '--yt-spec-base-background'
+        );
         applyStyles(
           propiedadExiste('color_primary'),
           `${obtenerColorPorId('color_primary')}`,
@@ -1422,6 +1443,9 @@
         }
 
         // Input color
+        if (color_bg) {
+          color_bg.addEventListener('input', actualizarColor);
+        }
         if (color_primary) {
           color_primary.addEventListener('input', actualizarColor);
         }
