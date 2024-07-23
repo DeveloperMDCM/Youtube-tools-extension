@@ -1,15 +1,15 @@
 // ==UserScript==
 // @name Youtube Tools All in one local download mp3 mp4 HIGT QUALITY return dislikes and more
-// @name:zh-TW  Youtube 工具 多合一本地下載 MP4、MP3 
-// @name:zh-HK  Youtube 工具 多合一本地下載 MP4、MP3 
+// @name:zh-TW  Youtube 工具 多合一本地下載 MP4、MP3
+// @name:zh-HK  Youtube 工具 多合一本地下載 MP4、MP3
 // @name:zh-CN  Youtube 工具 多合一本地下載 MP4、MP3
 // @name:ja Youtube ツール オールインワンのローカル ダウンロード MP4、MP3
 // @name:kr Youtube 도구 올인원 로컬 다운로드 외부 서비스 없이 MP4, MP3
 // @name:ar Youtube Tools All in one local download mp3 mp4 HIGT QUALITY return dislikes and more
 // @name:bg Youtube-Tools Alles in einem lokalen Download von MP4, MP3.
-// @name:cs Nástroje YouTube Vše v jednom místní Stahujte MP4, MP3 
-// @name:da Youtube-værktøjer Alt i én lokal Download MP4, MP3 
-// @name:de Youtube-Tools Alles in einem lokalen Download von MP4, MP3 
+// @name:cs Nástroje YouTube Vše v jednom místní Stahujte MP4, MP3
+// @name:da Youtube-værktøjer Alt i én lokal Download MP4, MP3
+// @name:de Youtube-Tools Alles in einem lokalen Download von MP4, MP3
 // @name:tel Youtube టూల్స్ అన్నీ ఒకే లోకల్ డౌన్‌లోడ్ MP4, Mp3
 // @name:es Youtube Custom Todo en uno Descarga local MP4, MP3.
 // @name:en Youtube Tools All in one local download mp3 mp4.
@@ -28,21 +28,21 @@
 // @name:ru Инструменты Youtube Все в одном локальном формате. Загрузите MP4, MP3.
 // @name:sk Nástroje YouTube Všetko v jednom miestne Stiahnite si MP4, MP3
 // @name:sr Иоутубе алати Све у једном локалном Преузми МП4, МП3
-// @name:sv Youtube-verktyg Allt i ett lokalt Ladda ner MP4, MP3 
+// @name:sv Youtube-verktyg Allt i ett lokalt Ladda ner MP4, MP3
 // @name:th เครื่องมือ Youtube ทั้งหมดในที่เดียว ดาวน์โหลด MP4, MP3
 // @name:tr Youtube Araçları Hepsi bir arada yerel Harici hizmet olmadan MP4, MP3
-// @name:uk Інструменти Youtube Все в одному локальному завантаженні MP4, MP3 
+// @name:uk Інструменти Youtube Все в одному локальному завантаженні MP4, MP3
 // @name:ug Youtube قوراللىرى ھەممىسى بىر يەرلىك چۈشۈرۈش MP4,mp3
 // @name:vi Công cụ Youtube Tất cả trong một cục bộ Tải xuống MP4, MP3
-// @description:zh-TW Youtube 工具 多合一本地下載 mp4、MP3 
-// @description:zh-HK Youtube 工具 多合一本地下載 mp4、MP3 
-// @description:zh-CN Youtube 工具 多合一本地下載 mp4、MP3 
+// @description:zh-TW Youtube 工具 多合一本地下載 mp4、MP3
+// @description:zh-HK Youtube 工具 多合一本地下載 mp4、MP3
+// @description:zh-CN Youtube 工具 多合一本地下載 mp4、MP3
 // @description:ja    Youtube ツール オールインワン ローカル ダウンロード mp4、MP3 、
-// @description:kr    Youtube 도구 올인원 로컬 다운로드 mp4, MP3 
+// @description:kr    Youtube 도구 올인원 로컬 다운로드 mp4, MP3
 // @description:ar    Herramientas de YouTube Todo en uno Descarga local mp4, MP3
-// @description:bg    Инструменти за Youtube Всичко в едно локално изтегляне mp4, 
-// @description:cs    Nástroje YouTube Vše v jednom místní Stahování mp4, MP3 
-// @description:da    Youtube-værktøjer Alt i ét lokalt Download mp4, MP3 
+// @description:bg    Инструменти за Youtube Всичко в едно локално изтегляне mp4,
+// @description:cs    Nástroje YouTube Vše v jednom místní Stahování mp4, MP3
+// @description:da    Youtube-værktøjer Alt i ét lokalt Download mp4, MP3
 // @description:de    YouTube-Tools Alles in einem lokalen Laden Sie MP4, MP3
 // @description:tel   Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY,
 // @description:es Youtube tools todo en uno personlizada youtube a tu estilo y descarga MP4 y MP3
@@ -57,14 +57,14 @@
 // @description:nl    YouTube-tools Alles in één lokaal Download mp4, MP3
 // @description:pl    Narzędzia Youtube Wszystko w jednym miejscu Pobierz mp4, MP3
 // @description:pt-BR Ferramentas do YouTube Tudo em um só local Baixe mp4, MP3
-// @description:ro    Instrumente Youtube Toate într-un singur local Descărcați mp4, MP3 
+// @description:ro    Instrumente Youtube Toate într-un singur local Descărcați mp4, MP3
 // @description:ru    Инструменты Youtube Все в одном, локально. Загрузите mp4, MP3
 // @description:sk    Nástroje YouTube Všetko v jednom miestnom Sťahujte mp4, MP3
-// @description:sr    Иоутубе алати Све у једном локалном Преузми мп4, МП3 
+// @description:sr    Иоутубе алати Све у једном локалном Преузми мп4, МП3
 // @description:sv    Youtube-verktyg Allt i ett lokalt Ladda ner mp4, MP3
-// @description:th เครื่องมือ Youtube ทั้งหมดในที่เดียว ดาวน์โหลด mp4, MP3 
+// @description:th เครื่องมือ Youtube ทั้งหมดในที่เดียว ดาวน์โหลด mp4, MP3
 // @description:tr Youtube Araçları Hepsi bir arada yerel Harici hizmet olmadan mp4, MP3
-// @description:uk Інструменти Youtube Все в одному локальному завантаженні mp4, MP3  
+// @description:uk Інструменти Youtube Все в одному локальному завантаженні mp4, MP3
 // @description:ug Youtube قورالىنىڭ ھەممىسى بىر يەرلىك چۈشۈرۈشتە mp4, MP3 HIGH QUAقنى قا
 // @description:vi Công cụ Youtube Tất cả trong một cục bộ Tải xuống mp4, MP3
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
@@ -106,19 +106,17 @@
   function cargarScript() {
     console.log('Scrip en ejecución by: DeveloperMDCM  MDCM');
     const HEADER_STYLE =
-    'color: #F00; font-size: 24px; font-family: sans-serif;';
-  const MESSAGE_STYLE =
-    'color: #00aaff; font-size: 16px; font-family: sans-serif;';
-  const CODE_STYLE = 'font-size: 14px; font-family: monospace;';
+      'color: #F00; font-size: 24px; font-family: sans-serif;';
+    const MESSAGE_STYLE =
+      'color: #00aaff; font-size: 16px; font-family: sans-serif;';
+    const CODE_STYLE = 'font-size: 14px; font-family: monospace;';
 
-  console.log(
-    '%cYoutube Tools Extension\n' +
-      '%cRun %c(v2.2)\n' +
-      'By: DeveloperMDCM.',
-    HEADER_STYLE,
-    CODE_STYLE,
-    MESSAGE_STYLE
-  );
+    console.log(
+      '%cYoutube Tools Extension\n' + '%cRun %c(v2.2.0)\n' + 'By: DeveloperMDCM.',
+      HEADER_STYLE,
+      CODE_STYLE,
+      MESSAGE_STYLE
+    );
     let ad = true;
 
     const stylesCss = `
@@ -246,7 +244,7 @@
     }
     .content_collapsible_colors {
       position: relative;
-      width: 400px;
+      width: 300px;
       margin: auto;
       padding: 10px;
       border-radius: 20px;
@@ -494,6 +492,17 @@
       color: #999999;
     }
 
+    #close_menu_colors {
+      color: white; 
+      background-color: red; 
+      padding: 5px 4px; 
+      border-radius: 10px; 
+      display: flex;
+      justify-content: center;
+      margin: 10px 0;
+      width: 30px;
+    }
+
     </style>
     `;
 
@@ -564,7 +573,7 @@
 </div>
     `;
     const resetButton = `
-    <button title="reset" class="botones_div" type="button" id="reset">
+    <button title="reset" class="botones_div" type="button" id="reset_button">
     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-power" width="24"
       height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
       stroke-linecap="round" stroke-linejoin="round">
@@ -688,7 +697,9 @@
 
 </div>
 <div class="content_collapsible_colors">
-<button id="close_menu_colors" title="close" style="color: white; background-color: red; padding: 5px 4px; border-radius: 10px; margin: auto; text-align: center; display: flex;" type="button">X</button>
+<div>
+     <h1 style="color: red;">Menu options</h1><button id="close_menu_colors" title="close" type="button">X</button>
+      </div>
 <div style="display: flex;">
   <h2 style=" margin-left: 2px;">Primary Color:</h2>
   <button title="Text color" class="botones_div" type="button">
@@ -781,6 +792,7 @@
         };
       }
     }
+
     function obtenerColorPorId(colorId) {
       let colores = inicializarColores();
       return colores[colorId];
@@ -804,25 +816,22 @@
     function propiedadExiste(propiedad) {
       // Obtener el objeto almacenado en localStorage
       var colores = localStorage.getItem('colores');
-
-      // Verificar si colores es null o no
       if (colores !== null) {
-        // Convertir la cadena JSON en un objeto JavaScript
         var coloresObj = JSON.parse(colores);
-
-        // Verificar si la propiedad específica existe en el objeto
         return coloresObj.hasOwnProperty(propiedad);
       } else {
         return false;
       }
     }
     let styles_colors = '';
+
     function generarEstilosGenerales() {
       styles_colors = `
   :root {
     --icons-color: ${obtenerColorPorId('color_icons_color')};
     --progress-bar-video: ${obtenerColorPorId('color_progress_bar')};
     --header-background-color: ${obtenerColorPorId('color_header_background')};
+    --time-duraction-color: ${obtenerColorPorId('color_time_preview')};
   }
   .yt-spec-button-shape-next--mono.yt-spec-button-shape-next--tonal {
     color:  var(--icons-color);
@@ -850,6 +859,8 @@
       #ytp-id-30,#ytp-id-17,#ytp-id-19,#ytp-id-20{
         fill: var(--icons-color);
       }
+     
+        
       `;
       }
       if (propiedadExiste('color_progress_bar')) {
@@ -865,6 +876,13 @@
       #background.ytd-masthead {
         background-color: var(--header-background-color);
       }
+      `;
+      }
+      if (propiedadExiste('color_time_preview')) {
+        styles_colors += `
+         .badge-shape-wiz--default.badge-shape-wiz--overlay {
+        color: var(--time-duraction-color);
+        }
       `;
       }
       return styles_colors;
@@ -980,7 +998,7 @@
         // document.querySelector("video").style.borderRadius = "30px";
         const containerButtons = document.querySelector('.containerButtons');
         // Agregar cada contenido al contenedor si está activo
-        if (containerButtons) {
+        if (containerButtons != undefined) {
           addButton.insertAdjacentHTML('beforebegin', menuBotones);
 
           containerButtons.innerHTML = '';
@@ -1050,9 +1068,7 @@
         const button_collapsible = document.querySelector(
           '.collapsible_colors'
         );
-        const close_menu_colors = document.querySelector(
-          '#close_menu_colors'
-        );
+        const close_menu_colors = document.querySelector('#close_menu_colors');
         const content_collapsible_colors = document.querySelector(
           '.content_collapsible_colors'
         );
@@ -1060,17 +1076,17 @@
           const close = (item) => {
             item.onclick = () => {
               button_collapsible.style.color =
-                content_collapsible_colors.style.display === 'block'
-                  ? '#ff0000'
-                  : '';
+                content_collapsible_colors.style.display === 'block' ?
+                  '#ff0000' :
+                  '';
               content_collapsible_colors.style.display =
-                content_collapsible_colors.style.display == 'block'
-                  ? 'none'
-                  : 'block';
+                content_collapsible_colors.style.display == 'block' ?
+                  'none' :
+                  'block';
             };
-          }
-          close(button_collapsible)
-          close(close_menu_colors)
+          };
+          close(button_collapsible);
+          close(close_menu_colors);
         }
 
         // Formulario de botones para descargar
@@ -1109,14 +1125,14 @@
           framedescargamp3.classList.remove('ocultarframeaudio');
         });
 
-        if (btn3cancel) {
+        if (btn3cancel != undefined) {
           btn3cancel.onclick = () => {
             formulariodescarga.style.display = 'none';
             formulariodescargaaudio.style.display = 'none';
           };
         }
 
-        if (btn1mp4) {
+        if (btn1mp4 != undefined) {
           btn1mp4.onclick = () => {
             selectcalidades.classList.remove('ocultarframe');
             framedescarga.classList.add('ocultarframe');
@@ -1128,7 +1144,7 @@
           };
         }
         MDCM();
-        if (btn2mp3) {
+        if (btn2mp3 != undefined) {
           btn2mp3.onclick = () => {
             formulariodescargaaudio.classList.remove('ocultarframe');
             formulariodescarga.classList.add('ocultarframe');
@@ -1159,32 +1175,32 @@
           '#color_time_preview'
         );
 
-        color_primary.value = obtenerColorPorId('color_primary')
-          ? obtenerColorPorId('color_primary')
-          : '#ffffff';
-        color_progress_bar.value = obtenerColorPorId('color_progress_bar')
-          ? obtenerColorPorId('color_progress_bar')
-          : '#ffffff';
+        color_primary.value = obtenerColorPorId('color_primary') ?
+          obtenerColorPorId('color_primary') :
+          '#ffffff';
+        color_progress_bar.value = obtenerColorPorId('color_progress_bar') ?
+          obtenerColorPorId('color_progress_bar') :
+          '#ffffff';
         color_header_background.value = obtenerColorPorId(
           'color_header_background'
-        )
-          ? obtenerColorPorId('color_header_background')
-          : '#ffffff';
-        color_secondary.value = obtenerColorPorId('color_secondary')
-          ? obtenerColorPorId('color_secondary')
-          : '#ffffff';
-        color_icons_color.value = obtenerColorPorId('color_icons_color')
-          ? obtenerColorPorId('color_icons_color')
-          : '#ffffff';
-        color_menu.value = obtenerColorPorId('color_menu')
-          ? obtenerColorPorId('color_menu')
-          : '#ffffff';
-        color_line_preview.value = obtenerColorPorId('color_line_preview')
-          ? obtenerColorPorId('color_line_preview')
-          : '#ffffff';
-        color_time_preview.value = obtenerColorPorId('color_time_preview')
-          ? obtenerColorPorId('color_time_preview')
-          : '#ffffff';
+        ) ?
+          obtenerColorPorId('color_header_background') :
+          '#ffffff';
+        color_secondary.value = obtenerColorPorId('color_secondary') ?
+          obtenerColorPorId('color_secondary') :
+          '#ffffff';
+        color_icons_color.value = obtenerColorPorId('color_icons_color') ?
+          obtenerColorPorId('color_icons_color') :
+          '#ffffff';
+        color_menu.value = obtenerColorPorId('color_menu') ?
+          obtenerColorPorId('color_menu') :
+          '#ffffff';
+        color_line_preview.value = obtenerColorPorId('color_line_preview') ?
+          obtenerColorPorId('color_line_preview') :
+          '#ffffff';
+        color_time_preview.value = obtenerColorPorId('color_time_preview') ?
+          obtenerColorPorId('color_time_preview') :
+          '#ffffff';
 
         applyStyles(
           propiedadExiste('color_primary'),
@@ -1257,7 +1273,7 @@
         //document.querySelector("#search-icon-legacy.ytd-searchbox").style.backgroundColor = "gray";
 
         let countViewRow = 0; // Count
-        if (invertirVista) {
+        if (invertirVista != undefined) {
           invertirVista.onclick = () => {
             countViewRow += 1;
             switch (countViewRow) {
@@ -1319,7 +1335,7 @@
               }
             }, 1000);
           } else {
-            mostrarAlerta('Active Dark Theme in Youtube page');
+            mostrarAlerta('Active Dark Theme in Youtube page or Reload Pafe if exits error');
           }
         };
         // Background transparent
@@ -1329,19 +1345,20 @@
           cinematica.style =
             'position: fixed; inset: 0px; pointer-events: none; transform: scale(1.5, 2)';
         }
-        const btnReset = document.querySelector('#reset'); // Reset button
-        if (btnReset) {
+        const btnReset = document.querySelector('#reset_button'); // Reset button
+        if (btnReset != undefined) {
           btnReset.addEventListener('click', function () {
-            const colores = localStorage.getItem('colores');
-            if (colores) {
+            if (localStorage.getItem('colores') != null ) {
               localStorage.removeItem('colores');
-              document.querySelector('#ojosprotect').style.backgroundColor =
-                'transparent';
+              document.querySelector('#ojosprotect').style.backgroundColor ='transparent';
+              setTimeout(() => {
+                location.reload();
+              },400)
             }
           });
         }
 
-        if (btnImagen) {
+        if (btnImagen != undefined) {
           btnImagen.onclick = () => {
             if (
               document.querySelector('#cinematics > div') != undefined ||
@@ -1431,7 +1448,7 @@
         }
 
         const externalLink = document.querySelector('.external_link');
-        if (externalLink) {
+        if (externalLink != undefined) {
           externalLink.onclick = () => {
             const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
             let enlace;
@@ -1444,7 +1461,7 @@
           };
         }
         const viewExternalLink = document.querySelector('.view_external_link');
-        if (viewExternalLink) {
+        if (viewExternalLink != undefined) {
           viewExternalLink.onclick = () => {
             document.querySelector('video').click();
             const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
@@ -1458,7 +1475,7 @@
         const viewPictureToPicture = document.querySelector(
           '.video_picture_to_picture'
         );
-        if (viewPictureToPicture) {
+        if (viewPictureToPicture != undefined) {
           viewPictureToPicture.onclick = () => {
             const video = document.querySelector('video');
             // Verifica si el navegador admite Picture-in-Picture
@@ -1486,7 +1503,7 @@
           };
 
           // Filtro de pantalla
-          if (formularioButtons) {
+          if (formularioButtons != undefined) {
             formularioButtons.addEventListener('input', function () {
               if (
                 document.querySelector('#cinematics > div') != undefined ||
@@ -1502,7 +1519,7 @@
 
         const checked_updates = document.querySelector('.checked_updates');
 
-        if (checked_updates) {
+        if (checked_updates != undefined) {
           checked_updates.onclick = () => {
             window.open(
               `https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js`
@@ -1511,7 +1528,7 @@
         }
 
         const screenShotVideo = document.querySelector('.screenshot_video');
-        if (screenShotVideo) {
+        if (screenShotVideo != undefined) {
           screenShotVideo.onclick = () => {
             const video = document.querySelector('video');
             const canvas = document.createElement('canvas');
@@ -1547,19 +1564,18 @@
     // Función para adaptar dislikes
     // Función para formatear los dislikes
     function FormatiarNumero(num, digits) {
-      const lookup = [
-        {
-          value: 1,
-          symbol: '',
-        },
-        {
-          value: 1e3,
-          symbol: ' K',
-        },
-        {
-          value: 1e6,
-          symbol: ' M',
-        },
+      const lookup = [{
+        value: 1,
+        symbol: '',
+      },
+      {
+        value: 1e3,
+        symbol: ' K',
+      },
+      {
+        value: 1e6,
+        symbol: ' M',
+      },
       ];
       const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
       const item = lookup
@@ -1568,9 +1584,9 @@
         .find((item) => {
           return num >= item.value;
         });
-      return item
-        ? (num / item.value).toFixed(digits).replace(rx, '$1') + item.symbol
-        : '0';
+      return item ?
+        (num / item.value).toFixed(digits).replace(rx, '$1') + item.symbol :
+        '0';
     }
 
     let validoUrl = document.location.href;
@@ -1590,7 +1606,9 @@
         try {
           const respuesta = await fetch(urlShorts);
           const datosShort = await respuesta.json();
-          const { dislikes } = datosShort;
+          const {
+            dislikes
+          } = datosShort;
           // alert(dislikes, 'Video')
           const dislikes_content = document.querySelector(
             '#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > dislike-button-view-model > toggle-button-view-model > button-view-model > button'
@@ -1624,7 +1642,9 @@
         try {
           const respuesta = await fetch(urlShorts);
           const datosShort = await respuesta.json();
-          const { dislikes } = datosShort;
+          const {
+            dislikes
+          } = datosShort;
           for (let i = 0; i < validoVentanaShort.length; i++) {
             validoVentanaShort[i].textContent = `${FormatiarNumero(
               dislikes,
@@ -1660,7 +1680,7 @@
       // Skip ads video / saltar publicidad
       if (
         document.querySelector('.ytp-ad-skip-button-modern.ytp-button') !==
-          null ||
+        null ||
         document.querySelector(
           '.ytp-ad-text.ytp-ad-preview-text-modern' !== null
         ) ||
