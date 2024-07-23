@@ -70,7 +70,7 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.2
+// @version      2.2.1
 // @author       MDCM
 // @match        https://*.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -91,7 +91,8 @@
 // @namespace https://github.com/DeveloperMDCM/
 // ==/UserScript==
 
-// comming soon new update 13/06/2024 🟢
+// update 23/07/2024 🟢
+// I am updating the script for PC and mobile, new update very soon
 (function () {
   // Youtube tools by: DeveloperMDCM
   // https://github.com/DeveloperMDCM/Youtube-tools-extension
@@ -1171,6 +1172,13 @@
         const reverse = document.querySelector('#columns'); // Invertir contenido
 
         const color_bg = document.querySelector('#color_bg');
+         const alertShown = localStorage.getItem('alertShown');
+         if (!alertShown) {
+          color_bg.addEventListener('change', () => {
+              alert('El color ha cambiado');
+              localStorage.setItem('alertShown', 'true');
+          });
+      }
         const color_primary = document.querySelector('#color_primary');
         const color_progress_bar = document.querySelector(
           '#color_progress_bar'
@@ -1442,7 +1450,7 @@
           };
         }
 
-        // Input color
+        // Input colors
         if (color_bg) {
           color_bg.addEventListener('input', actualizarColor);
         }
