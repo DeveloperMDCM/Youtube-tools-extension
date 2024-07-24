@@ -12,6 +12,7 @@
 <details>
 <summary>Features:</summary>
    
+- Change background color.
 - Skip ad video.
 - Picture-in-Picture mode.
 - Download profile picture/avatar.
