@@ -70,7 +70,7 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.2.2
+// @version      2.2.3
 // @author       MDCM
 // @match        https://*.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -1008,17 +1008,26 @@
 
     // TODO: Inicia y inserta los botones
     function renderizarContenido() {
-      const addButton = document.querySelector(
-        '.style-scope .ytd-watch-metadata'
-      );
+      const addButton = document.querySelector('.style-scope .ytd-watch-metadata');
+      const addButton2 = document.querySelector('#contents');
+
       if (addButton != undefined && validoBotones) {
         validoBotones = false;
-        addButton.insertAdjacentHTML('beforebegin', menuBotones);
+        const isVisible = !!(addButton.offsetWidth || addButton.offsetHeight || addButton.getClientRects().length);
+        if (isVisible) {
+          addButton.insertAdjacentHTML('beforebegin', menuBotones);
+        } else if (addButton2 != undefined) {
+          addButton2.insertAdjacentHTML('beforebegin', menuBotones);
+        }
         // document.querySelector("video").style.borderRadius = "30px";
         const containerButtons = document.querySelector('.containerButtons');
-        // Agregar cada contenido al contenedor si está activo
+      
         if (containerButtons != undefined) {
-          addButton.insertAdjacentHTML('beforebegin', menuBotones);
+          if (isVisible) {
+            addButton.insertAdjacentHTML('beforebegin', menuBotones);
+          } else if (addButton2 != undefined) {
+            addButton2.insertAdjacentHTML('beforebegin', menuBotones);
+          }
 
           containerButtons.innerHTML = '';
           const contentData = {
@@ -1076,8 +1085,6 @@
               containerButtons.innerHTML += contentData[key].html;
             }
           }
-
-          // Resto del código para formularios y eventos...
         } else {
           console.error('Elemento .containerButtons no encontrado');
         }
@@ -1180,10 +1187,17 @@
         const background_image = document.querySelector('#background_image');
         const color_bg = document.querySelector('#color_bg');
          const alertShown = localStorage.getItem('alertShown');
+         const alertShownBg = localStorage.getItem('alertShownBg');
          if (!alertShown) {
           color_bg.addEventListener('change', () => {
-              alert('El color ha cambiado');
-              localStorage.setItem('alertShown', 'true');
+              alert('disable cinematic mode in the video');
+              localStorage.setItem('alertShown', true);
+          });
+        }
+         if (!alertShownBg) {
+          background_image.addEventListener('input', () => {
+              alert('disable cinematic mode in the video');
+              localStorage.setItem('alertShownBg', true);
           });
       }
         const color_primary = document.querySelector('#color_primary');
