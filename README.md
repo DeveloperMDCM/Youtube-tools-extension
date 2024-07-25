@@ -5,13 +5,13 @@
    
 # Youtube-tools-extension
 # Youtube-tools-extension v1.0 Beta for Google Chrome 
-# General Settings and Themes works 🟢
+# General Settings and Themes works in Extension install 🟢
 
 [Install Script in GreasyFork for Tampermonkey](https://greasyfork.org/es/scripts/460680-youtube-tools-all-in-one-local-download-mp3-mp4-higt-quality-return-dislikes-and-more])
 
 <details>
 <summary>Features:</summary>
-   
+- Change background image.
 - Change background color.
 - Skip ad video.
 - Picture-in-Picture mode.

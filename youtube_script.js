@@ -70,7 +70,7 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.2.1
+// @version      2.2.2
 // @author       MDCM
 // @match        https://*.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -697,10 +697,16 @@
   </form>
 
 </div>
-<div class="content_collapsible_colors">
+<div class="content_collapsible_colors" style="margin-top: 10px">
 <div>
      <h1 style="color: red;">Menu options</h1><button id="close_menu_colors" title="close" type="button">X</button>
       </div>
+<div style="display: flex; justify-content: between">
+  <label  style=" margin-left: 2px;"  for="background_image">
+    <h2>Background image:</h2>
+  </label>
+    <input style="width: 132px; margin: 5px 0;" class="colors_buttons_collpase" type="file" id="background_image" name="avatar" accept="image/png, image/jpeg" />
+</div>
 <div style="display: flex;">
   <h2 style=" margin-left: 2px;">Background Color:</h2>
   <button title="Text color" class="botones_div" type="button">
@@ -1171,6 +1177,7 @@
 
         const reverse = document.querySelector('#columns'); // Invertir contenido
 
+        const background_image = document.querySelector('#background_image');
         const color_bg = document.querySelector('#color_bg');
          const alertShown = localStorage.getItem('alertShown');
          if (!alertShown) {
@@ -1449,7 +1456,28 @@
             }
           };
         }
+        // for background image file photo higt quality
+        const fileInput = document.getElementById("background_image");
+        const backgroundDiv = document.querySelector("ytd-app");
+       
+        const storedImage = localStorage.getItem("backgroundImage");
+        if (storedImage) {
+            backgroundDiv.style = `background-size: contain; background-repeat: repeat; background-image: url(${storedImage}) !important`;
+        }
 
+        fileInput.addEventListener("change", event => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageUrl = e.target.result;
+                    localStorage.setItem("backgroundImage", imageUrl);
+                    backgroundDiv.style.backgroundImage = `url(${imageUrl})`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
         // Input colors
         if (color_bg) {
           color_bg.addEventListener('input', actualizarColor);
@@ -1925,5 +1953,5 @@
   };
   setTimeout(() => {
     cargarScript();
-  }, 3000);
+  }, 5000);
 })();
