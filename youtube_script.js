@@ -70,7 +70,7 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.2.3
+// @version      2.2.4
 // @author       MDCM
 // @match        https://*.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -91,7 +91,7 @@
 // @namespace https://github.com/DeveloperMDCM/
 // ==/UserScript==
 
-// update 23/07/2024 🟢
+// update 08/08/2024 🟢 FIXED
 // I am updating the script for PC and mobile, new update very soon
 (function () {
   // Youtube tools by: DeveloperMDCM
@@ -113,7 +113,9 @@
     const CODE_STYLE = 'font-size: 14px; font-family: monospace;';
 
     console.log(
-      '%cYoutube Tools Extension\n' + '%cRun %c(v2.2.0)\n' + 'By: DeveloperMDCM.',
+      '%cYoutube Tools Extension\n' +
+        '%cRun %c(v2.2.0)\n' +
+        'By: DeveloperMDCM.',
       HEADER_STYLE,
       CODE_STYLE,
       MESSAGE_STYLE
@@ -791,14 +793,19 @@
     `;
 
     let validoBotones = true;
-
+    const policy = trustedTypes.createPolicy('default', {
+      createHTML: (input) => input,
+    });
+    function insertHTML(targetElement, htmlContent) {
+      const trustedHTML = policy.createHTML(htmlContent);
+      targetElement.insertAdjacentHTML('beforebegin', trustedHTML);
+    }
     function inicializarColores() {
       let coloresGuardados = localStorage.getItem('colores');
 
       if (coloresGuardados) {
         return JSON.parse(coloresGuardados);
       } else {
-        // Color default empty string
         return {
           color_progress_bar: '#ff0000',
         };
@@ -1008,25 +1015,31 @@
 
     // TODO: Inicia y inserta los botones
     function renderizarContenido() {
-      const addButton = document.querySelector('.style-scope .ytd-watch-metadata');
+      const addButton = document.querySelector(
+        '.style-scope .ytd-watch-metadata'
+      );
       const addButton2 = document.querySelector('#contents');
 
       if (addButton != undefined && validoBotones) {
         validoBotones = false;
-        const isVisible = !!(addButton.offsetWidth || addButton.offsetHeight || addButton.getClientRects().length);
+        const isVisible = !!(
+          addButton.offsetWidth ||
+          addButton.offsetHeight ||
+          addButton.getClientRects().length
+        );
         if (isVisible) {
-          addButton.insertAdjacentHTML('beforebegin', menuBotones);
+          insertHTML(addButton, menuBotones);
         } else if (addButton2 != undefined) {
-          addButton2.insertAdjacentHTML('beforebegin', menuBotones);
+          insertHTML(addButton, menuBotones);
         }
         // document.querySelector("video").style.borderRadius = "30px";
         const containerButtons = document.querySelector('.containerButtons');
-      
+
         if (containerButtons != undefined) {
           if (isVisible) {
-            addButton.insertAdjacentHTML('beforebegin', menuBotones);
+            insertHTML(addButton, menuBotones);
           } else if (addButton2 != undefined) {
-            addButton2.insertAdjacentHTML('beforebegin', menuBotones);
+            insertHTML(addButton, menuBotones);
           }
 
           containerButtons.innerHTML = '';
@@ -1102,13 +1115,13 @@
           const close = (item) => {
             item.onclick = () => {
               button_collapsible.style.color =
-                content_collapsible_colors.style.display === 'block' ?
-                  '#ff0000' :
-                  '';
+                content_collapsible_colors.style.display === 'block'
+                  ? '#ff0000'
+                  : '';
               content_collapsible_colors.style.display =
-                content_collapsible_colors.style.display == 'block' ?
-                  'none' :
-                  'block';
+                content_collapsible_colors.style.display == 'block'
+                  ? 'none'
+                  : 'block';
             };
           };
           close(button_collapsible);
@@ -1186,20 +1199,20 @@
 
         const background_image = document.querySelector('#background_image');
         const color_bg = document.querySelector('#color_bg');
-         const alertShown = localStorage.getItem('alertShown');
-         const alertShownBg = localStorage.getItem('alertShownBg');
-         if (!alertShown) {
+        const alertShown = localStorage.getItem('alertShown');
+        const alertShownBg = localStorage.getItem('alertShownBg');
+        if (!alertShown) {
           color_bg.addEventListener('change', () => {
-              alert('disable cinematic mode in the video');
-              localStorage.setItem('alertShown', true);
+            alert('disable cinematic mode in the video');
+            localStorage.setItem('alertShown', true);
           });
         }
-         if (!alertShownBg) {
+        if (!alertShownBg) {
           background_image.addEventListener('input', () => {
-              alert('disable cinematic mode in the video');
-              localStorage.setItem('alertShownBg', true);
+            alert('disable cinematic mode in the video');
+            localStorage.setItem('alertShownBg', true);
           });
-      }
+        }
         const color_primary = document.querySelector('#color_primary');
         const color_progress_bar = document.querySelector(
           '#color_progress_bar'
@@ -1217,35 +1230,35 @@
           '#color_time_preview'
         );
 
-        color_bg.value = obtenerColorPorId('color_bg') ?
-          obtenerColorPorId('color_bg') :
-          '#000000';
-        color_primary.value = obtenerColorPorId('color_primary') ?
-          obtenerColorPorId('color_primary') :
-          '#ffffff';
-        color_progress_bar.value = obtenerColorPorId('color_progress_bar') ?
-          obtenerColorPorId('color_progress_bar') :
-          '#ffffff';
+        color_bg.value = obtenerColorPorId('color_bg')
+          ? obtenerColorPorId('color_bg')
+          : '#000000';
+        color_primary.value = obtenerColorPorId('color_primary')
+          ? obtenerColorPorId('color_primary')
+          : '#ffffff';
+        color_progress_bar.value = obtenerColorPorId('color_progress_bar')
+          ? obtenerColorPorId('color_progress_bar')
+          : '#ffffff';
         color_header_background.value = obtenerColorPorId(
           'color_header_background'
-        ) ?
-          obtenerColorPorId('color_header_background') :
-          '#ffffff';
-        color_secondary.value = obtenerColorPorId('color_secondary') ?
-          obtenerColorPorId('color_secondary') :
-          '#ffffff';
-        color_icons_color.value = obtenerColorPorId('color_icons_color') ?
-          obtenerColorPorId('color_icons_color') :
-          '#ffffff';
-        color_menu.value = obtenerColorPorId('color_menu') ?
-          obtenerColorPorId('color_menu') :
-          '#ffffff';
-        color_line_preview.value = obtenerColorPorId('color_line_preview') ?
-          obtenerColorPorId('color_line_preview') :
-          '#ffffff';
-        color_time_preview.value = obtenerColorPorId('color_time_preview') ?
-          obtenerColorPorId('color_time_preview') :
-          '#ffffff';
+        )
+          ? obtenerColorPorId('color_header_background')
+          : '#ffffff';
+        color_secondary.value = obtenerColorPorId('color_secondary')
+          ? obtenerColorPorId('color_secondary')
+          : '#ffffff';
+        color_icons_color.value = obtenerColorPorId('color_icons_color')
+          ? obtenerColorPorId('color_icons_color')
+          : '#ffffff';
+        color_menu.value = obtenerColorPorId('color_menu')
+          ? obtenerColorPorId('color_menu')
+          : '#ffffff';
+        color_line_preview.value = obtenerColorPorId('color_line_preview')
+          ? obtenerColorPorId('color_line_preview')
+          : '#ffffff';
+        color_time_preview.value = obtenerColorPorId('color_time_preview')
+          ? obtenerColorPorId('color_time_preview')
+          : '#ffffff';
 
         applyStyles(
           propiedadExiste('color_bg'),
@@ -1385,7 +1398,9 @@
               }
             }, 1000);
           } else {
-            mostrarAlerta('Active Dark Theme in Youtube page or Reload Pafe if exits error');
+            mostrarAlerta(
+              'Active Dark Theme in Youtube page or Reload Pafe if exits error'
+            );
           }
         };
         // Background transparent
@@ -1398,12 +1413,13 @@
         const btnReset = document.querySelector('#reset_button'); // Reset button
         if (btnReset != undefined) {
           btnReset.addEventListener('click', function () {
-            if (localStorage.getItem('colores') != null ) {
+            if (localStorage.getItem('colores') != null) {
               localStorage.removeItem('colores');
-              document.querySelector('#ojosprotect').style.backgroundColor ='transparent';
+              document.querySelector('#ojosprotect').style.backgroundColor =
+                'transparent';
               setTimeout(() => {
                 location.reload();
-              },400)
+              }, 400);
             }
           });
         }
@@ -1471,27 +1487,27 @@
           };
         }
         // for background image file photo higt quality
-        const fileInput = document.getElementById("background_image");
-        const backgroundDiv = document.querySelector("ytd-app");
-       
-        const storedImage = localStorage.getItem("backgroundImage");
+        const fileInput = document.getElementById('background_image');
+        const backgroundDiv = document.querySelector('ytd-app');
+
+        const storedImage = localStorage.getItem('backgroundImage');
         if (storedImage) {
-            backgroundDiv.style = `background-size: contain; background-repeat: repeat; background-image: url(${storedImage}) !important`;
+          backgroundDiv.style = `background-size: contain; background-repeat: repeat; background-image: url(${storedImage}) !important`;
         }
 
-        fileInput.addEventListener("change", event => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imageUrl = e.target.result;
-                    localStorage.setItem("backgroundImage", imageUrl);
-                    backgroundDiv.style.backgroundImage = `url(${imageUrl})`;
-                };
-                reader.readAsDataURL(file);
-            }
+        fileInput.addEventListener('change', (event) => {
+          const file = event.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              const imageUrl = e.target.result;
+              localStorage.setItem('backgroundImage', imageUrl);
+              backgroundDiv.style.backgroundImage = `url(${imageUrl})`;
+            };
+            reader.readAsDataURL(file);
+          }
         });
-        
+
         // Input colors
         if (color_bg) {
           color_bg.addEventListener('input', actualizarColor);
@@ -1638,18 +1654,19 @@
     // Función para adaptar dislikes
     // Función para formatear los dislikes
     function FormatiarNumero(num, digits) {
-      const lookup = [{
-        value: 1,
-        symbol: '',
-      },
-      {
-        value: 1e3,
-        symbol: ' K',
-      },
-      {
-        value: 1e6,
-        symbol: ' M',
-      },
+      const lookup = [
+        {
+          value: 1,
+          symbol: '',
+        },
+        {
+          value: 1e3,
+          symbol: ' K',
+        },
+        {
+          value: 1e6,
+          symbol: ' M',
+        },
       ];
       const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
       const item = lookup
@@ -1658,9 +1675,9 @@
         .find((item) => {
           return num >= item.value;
         });
-      return item ?
-        (num / item.value).toFixed(digits).replace(rx, '$1') + item.symbol :
-        '0';
+      return item
+        ? (num / item.value).toFixed(digits).replace(rx, '$1') + item.symbol
+        : '0';
     }
 
     let validoUrl = document.location.href;
@@ -1680,9 +1697,7 @@
         try {
           const respuesta = await fetch(urlShorts);
           const datosShort = await respuesta.json();
-          const {
-            dislikes
-          } = datosShort;
+          const { dislikes } = datosShort;
           // alert(dislikes, 'Video')
           const dislikes_content = document.querySelector(
             '#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > dislike-button-view-model > toggle-button-view-model > button-view-model > button'
@@ -1716,9 +1731,7 @@
         try {
           const respuesta = await fetch(urlShorts);
           const datosShort = await respuesta.json();
-          const {
-            dislikes
-          } = datosShort;
+          const { dislikes } = datosShort;
           for (let i = 0; i < validoVentanaShort.length; i++) {
             validoVentanaShort[i].textContent = `${FormatiarNumero(
               dislikes,
@@ -1754,7 +1767,7 @@
       // Skip ads video / saltar publicidad
       if (
         document.querySelector('.ytp-ad-skip-button-modern.ytp-button') !==
-        null ||
+          null ||
         document.querySelector(
           '.ytp-ad-text.ytp-ad-preview-text-modern' !== null
         ) ||
