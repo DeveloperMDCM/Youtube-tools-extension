@@ -70,7 +70,7 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.2.4
+// @version      2.2.5
 // @author       MDCM
 // @match        https://*.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -91,7 +91,7 @@
 // @namespace https://github.com/DeveloperMDCM/
 // ==/UserScript==
 
-// update 08/08/2024 🟢 FIXED
+// update 10/08/2024 🟢 FIXED
 // I am updating the script for PC and mobile, new update very soon
 (function () {
   // Youtube tools by: DeveloperMDCM
@@ -114,7 +114,7 @@
 
     console.log(
       '%cYoutube Tools Extension\n' +
-        '%cRun %c(v2.2.0)\n' +
+        '%cRun %c(v2.2.4)\n' +
         'By: DeveloperMDCM.',
       HEADER_STYLE,
       CODE_STYLE,
@@ -793,12 +793,19 @@
     `;
 
     let validoBotones = true;
-    const policy = trustedTypes.createPolicy('default', {
+
+    const policy = window.trustedTypes?.createPolicy('default', {
       createHTML: (input) => input,
     });
+   
     function insertHTML(targetElement, htmlContent) {
-      const trustedHTML = policy.createHTML(htmlContent);
-      targetElement.insertAdjacentHTML('beforebegin', trustedHTML);
+      if (policy) {
+    
+        const trustedHTML = policy.createHTML(htmlContent);
+        targetElement.insertAdjacentHTML('beforebegin', trustedHTML);
+      } else {
+        targetElement.insertAdjacentHTML('beforebegin', htmlContent);
+      }
     }
     function inicializarColores() {
       let coloresGuardados = localStorage.getItem('colores');
