@@ -77,7 +77,7 @@
 // @exclude      *://*.music.youtube.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @grant        GM_info
-// @grant        GM_addStyle 
+// @grant        GM_addStyle
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        unsafeWindow
@@ -99,6 +99,12 @@
   const policy = window.trustedTypes?.createPolicy('default', {
     createHTML: (input) => input,
   });
+  const $e = (el) => document.querySelector(el); // any element
+  const $id = (el) => document.getElementById(el); // element by id
+  const $m = (el) => document.querySelectorAll(el); // multiple all elements
+  const $cl = (el) => document.createElement(el); // create element
+  const $sp = (el, pty) => document.documentElement.style.setProperty(el, pty); // set property variable css
+  const $ap = (el) => document.body.appendChild(el); // append element
 
   // Styles for our enhancement panel
   GM_addStyle(` 
@@ -348,7 +354,7 @@
   ];
 
   // Create our enhancement panel
-  const panel = document.createElement('div');
+  const panel = $cl('div');
 
   panel.id = 'yt-enhancement-panel';
 
@@ -370,7 +376,7 @@
     .join('');
 
   // Buscamos el elemento html con el atributo dark theme
-  const htmlElement = document.querySelector('html');
+  const htmlElement = $e('html');
   const isDarkMode = htmlElement.hasAttribute('dark');
   let isDarkModeActive = isDarkMode;
 
@@ -534,11 +540,11 @@
     `;
 
   panel.innerHTML = panelHTML;
-  document.body.appendChild(panel);
+  $ap(panel);
   // Create toggle button
-  const toggleButton = document.createElement('div');
+  const toggleButton = $cl('div');
   toggleButton.id = 'toggle-panel';
-  const icon = document.createElement('img');
+  const icon = $cl('img');
   icon.id = 'icon-menu-settings';
   icon.src =
     'https://cdn.iconscout.com/icon/premium/png-512-thumb/settings-782-1095915.png?f=webp&w=256';
@@ -546,8 +552,8 @@
   toggleButton.appendChild(icon);
 
   // Add panel and toggle button to the page
-  document.body.appendChild(panel);
-  document.body.appendChild(toggleButton);
+  $ap(panel);
+  $ap(toggleButton);
 
   // Toggle panel visibility
   let openMenu = false;
@@ -560,8 +566,8 @@
   });
 
   // Tab functionality
-  const tabButtons = document.querySelectorAll('.tab-button');
-  const tabContents = document.querySelectorAll('.tab-content');
+  const tabButtons = $m('.tab-button');
+  const tabContents = $m('.tab-content');
 
   tabButtons.forEach((button) => {
     button.addEventListener('click', () => {
@@ -569,35 +575,33 @@
       tabButtons.forEach((btn) => btn.classList.remove('active'));
       tabContents.forEach((content) => content.classList.remove('active'));
       button.classList.add('active');
-      document.getElementById(tabName).classList.add('active');
+      $id(tabName).classList.add('active');
     });
   });
 
   // Menu settings icon functionality
-  document
-    .getElementById('menu-settings-icon')
-    .addEventListener('click', () => {
-      tabButtons.forEach((btn) => btn.classList.remove('active'));
-      tabContents.forEach((content) => content.classList.remove('active'));
-      document.getElementById('menu-settings').classList.add('active');
-    });
+  $id('menu-settings-icon').addEventListener('click', () => {
+    tabButtons.forEach((btn) => btn.classList.remove('active'));
+    tabContents.forEach((content) => content.classList.remove('active'));
+    $id('menu-settings').classList.add('active');
+  });
 
   // Function to save settings
   function saveSettings() {
     const settings = {
       // ... (other settings as before)
-      theme: document.querySelector('input[name="theme"]:checked').value,
-      darkMode: document.getElementById('dark-mode-toggle').checked,
-      hideComments: document.getElementById('hide-comments-toggle').checked,
-      hideSidebar: document.getElementById('hide-sidebar-toggle').checked,
-      disableAutoplay: document.getElementById('autoplay-toggle').checked,
-      fontSize: document.getElementById('font-size-slider').value,
-      playerSize: document.getElementById('player-size-slider').value,
-      primaryColor: document.getElementById('primary-color-picker').value,
-      secondaryColor: document.getElementById('secondary-color-picker').value,
-      menuBgColor: document.getElementById('menu-bg-color-picker').value,
-      menuTextColor: document.getElementById('menu-text-color-picker').value,
-      menuFontSize: document.getElementById('menu-font-size-slider').value,
+      theme: $e('input[name="theme"]:checked').value,
+      darkMode: $id('dark-mode-toggle').checked,
+      hideComments: $id('hide-comments-toggle').checked,
+      hideSidebar: $id('hide-sidebar-toggle').checked,
+      disableAutoplay: $id('autoplay-toggle').checked,
+      fontSize: $id('font-size-slider').value,
+      playerSize: $id('player-size-slider').value,
+      primaryColor: $id('primary-color-picker').value,
+      secondaryColor: $id('secondary-color-picker').value,
+      menuBgColor: $id('menu-bg-color-picker').value,
+      menuTextColor: $id('menu-text-color-picker').value,
+      menuFontSize: $id('menu-font-size-slider').value,
     };
     GM_setValue('ytEnhancementSettings', JSON.stringify(settings));
   }
@@ -607,31 +611,19 @@
     const settings = JSON.parse(GM_getValue('ytEnhancementSettings', '{}'));
     // ... (load other settings as before)
     if (settings.theme) {
-      document.querySelector(
-        `input[name="theme"][value="${settings.theme}"]`
-      ).checked = true;
+      $e(`input[name="theme"][value="${settings.theme}"]`).checked = true;
     }
-    document.getElementById('dark-mode-toggle').checked =
-      settings.darkMode || false;
-    document.getElementById('hide-comments-toggle').checked =
-      settings.hideComments || false;
-    document.getElementById('hide-sidebar-toggle').checked =
-      settings.hideSidebar || false;
-    document.getElementById('autoplay-toggle').checked =
-      settings.disableAutoplay || false;
-    document.getElementById('font-size-slider').value = settings.fontSize || 16;
-    document.getElementById('player-size-slider').value =
-      settings.playerSize || 100;
-    document.getElementById('primary-color-picker').value =
-      settings.primaryColor || '#000000';
-    document.getElementById('secondary-color-picker').value =
-      settings.secondaryColor || '#606060';
-    document.getElementById('menu-bg-color-picker').value =
-      settings.menuBgColor || '#ffffff';
-    document.getElementById('menu-text-color-picker').value =
-      settings.menuTextColor || '#000000';
-    document.getElementById('menu-font-size-slider').value =
-      settings.menuFontSize || 14;
+    $id('dark-mode-toggle').checked = settings.darkMode || false;
+    $id('hide-comments-toggle').checked = settings.hideComments || false;
+    $id('hide-sidebar-toggle').checked = settings.hideSidebar || false;
+    $id('autoplay-toggle').checked = settings.disableAutoplay || false;
+    $id('font-size-slider').value = settings.fontSize || 16;
+    $id('player-size-slider').value = settings.playerSize || 100;
+    $id('primary-color-picker').value = settings.primaryColor || '#000000';
+    $id('secondary-color-picker').value = settings.secondaryColor || '#606060';
+    $id('menu-bg-color-picker').value = settings.menuBgColor || '#ffffff';
+    $id('menu-text-color-picker').value = settings.menuTextColor || '#000000';
+    $id('menu-font-size-slider').value = settings.menuFontSize || 14;
     updateSliderValues();
     setTimeout(() => {
       applySettings();
@@ -639,47 +631,46 @@
   }
   // Function to update slider values
   function updateSliderValues() {
-    document.getElementById('font-size-value').textContent =
-      document.getElementById('font-size-slider').value;
-    document.getElementById('player-size-value').textContent =
-      document.getElementById('player-size-slider').value;
-    document.getElementById('menu-font-size-value').textContent =
-      document.getElementById('menu-font-size-slider').value;
+    $id('font-size-value').textContent = $id('font-size-slider').value;
+    $id('player-size-value').textContent = $id('player-size-slider').value;
+    $id('menu-font-size-value').textContent = $id(
+      'menu-font-size-slider'
+    ).value;
   }
 
   // Function to apply settings
   function applySettings() {
     const settings = {
       // ... (other settings as before)
-      theme: document.querySelector('input[name="theme"]:checked').value,
-      darkMode: document.getElementById('dark-mode-toggle').checked,
-      hideComments: document.getElementById('hide-comments-toggle').checked,
-      hideSidebar: document.getElementById('hide-sidebar-toggle').checked,
-      disableAutoplay: document.getElementById('autoplay-toggle').checked,
-      fontSize: document.getElementById('font-size-slider').value,
-      playerSize: document.getElementById('player-size-slider').value,
-      primaryColor: document.getElementById('primary-color-picker').value,
-      secondaryColor: document.getElementById('secondary-color-picker').value,
-      menuBgColor: document.getElementById('menu-bg-color-picker').value,
-      menuTextColor: document.getElementById('menu-text-color-picker').value,
-      menuFontSize: document.getElementById('menu-font-size-slider').value,
+      theme: $e('input[name="theme"]:checked').value,
+      darkMode: $id('dark-mode-toggle').checked,
+      hideComments: $id('hide-comments-toggle').checked,
+      hideSidebar: $id('hide-sidebar-toggle').checked,
+      disableAutoplay: $id('autoplay-toggle').checked,
+      fontSize: $id('font-size-slider').value,
+      playerSize: $id('player-size-slider').value,
+      primaryColor: $id('primary-color-picker').value,
+      secondaryColor: $id('secondary-color-picker').value,
+      menuBgColor: $id('menu-bg-color-picker').value,
+      menuTextColor: $id('menu-text-color-picker').value,
+      menuFontSize: $id('menu-font-size-slider').value,
     };
 
     // ... (apply other settings as before)
     // Hide comments
-    const commentsSection = document.getElementById('comments');
+    const commentsSection = $id('comments');
     if (commentsSection) {
       commentsSection.style.display = settings.hideComments ? 'none' : 'block';
     }
 
     // Hide sidebar
-    const sidebarSection = document.getElementById('secondary');
+    const sidebarSection = $id('secondary');
     if (sidebarSection) {
       sidebarSection.style.display = settings.hideSidebar ? 'none' : 'block';
     }
 
     // Disable autoplay
-    const autoplayToggle = document.querySelector('.ytp-autonav-toggle-button');
+    const autoplayToggle = $e('.ytp-autonav-toggle-button');
     if (autoplayToggle) {
       const isCurrentlyOn =
         autoplayToggle.getAttribute('aria-checked') === 'true';
@@ -691,27 +682,18 @@
     }
 
     // Adjust font size
-    document.body.style.fontSize = `${settings.fontSize}px`;
+    $e('body').style.fontSize = `${settings.fontSize}px`;
 
     // Adjust player size
-    const player = document.querySelector('video');
+    const player = $e('video');
     if (player) {
       player.style.transform = `scale(${settings.playerSize / 100})`;
     }
 
     // Apply menu appearance settings
-    document.documentElement.style.setProperty(
-      '--yt-enhance-menu-bg',
-      settings.menuBgColor
-    );
-    document.documentElement.style.setProperty(
-      '--yt-enhance-menu-text',
-      settings.menuTextColor
-    );
-    document.documentElement.style.setProperty(
-      '--yt-enhance-menu-font-size',
-      `${settings.menuFontSize}px`
-    );
+    $sp('--yt-enhance-menu-bg', settings.menuBgColor);
+    $sp('--yt-enhance-menu-text', settings.menuTextColor);
+    $sp('--yt-enhance-menu-font-size', `${settings.menuFontSize}px`);
 
     // Apply theme
     const selectedTheme = themes[settings.theme];
@@ -719,58 +701,19 @@
       if (isDarkMode) {
         // Apply theme
 
-        document.documentElement.style.setProperty(
-          '--yt-spec-base-background',
-          selectedTheme.gradient
-        );
-        document.documentElement.style.setProperty(
-          '--yt-spec-text-primary',
-          selectedTheme.textColor
-        );
-        document.documentElement.style.setProperty(
-          '--yt-spec-text-secondary',
-          selectedTheme.textColor
-        );
-        document.documentElement.style.setProperty(
-          '--yt-spec-menu-background',
-          selectedTheme.gradient
-        );
-        document.documentElement.style.setProperty(
-          '--yt-spec-icon-inactive',
-          selectedTheme.textColor
-        );
-        document.documentElement.style.setProperty(
-          '--yt-spec-brand-icon-inactive',
-          selectedTheme.textColor
-        );
-        document.documentElement.style.setProperty(
-          '--yt-spec-brand-icon-active',
-          selectedTheme.gradient
-        );
-        document.documentElement.style.setProperty(
-          '--yt-spec-static-brand-red',
-          selectedTheme.gradient
-        ); // line current time
-        document.documentElement.style.setProperty(
-          '--yt-spec-raised-background',
-          selectedTheme.raised
-        );
-        document.documentElement.style.setProperty(
-          '--yt-spec-static-brand-red',
-          selectedTheme.CurrentProgressVideo
-        );
-        document.documentElement.style.setProperty(
-          '--yt-spec-static-brand-white',
-          selectedTheme.textColor
-        );
-        document.documentElement.style.setProperty(
-          '--ytd-searchbox-background',
-          selectedTheme.gradient
-        );
-        document.documentElement.style.setProperty(
-          '--ytd-searchbox-text-color',
-          selectedTheme.textColor
-        );
+        $sp('--yt-spec-base-background', selectedTheme.gradient);
+        $sp('--yt-spec-text-primary', selectedTheme.textColor);
+        $sp('--yt-spec-text-secondary', selectedTheme.textColor);
+        $sp('--yt-spec-menu-background', selectedTheme.gradient);
+        $sp('--yt-spec-icon-inactive', selectedTheme.textColor);
+        $sp('--yt-spec-brand-icon-inactive', selectedTheme.textColor);
+        $sp('--yt-spec-brand-icon-active', selectedTheme.gradient);
+        $sp('--yt-spec-static-brand-red', selectedTheme.gradient); // line current time
+        $sp('--yt-spec-raised-background', selectedTheme.raised);
+        $sp('--yt-spec-static-brand-red', selectedTheme.CurrentProgressVideo);
+        $sp('--yt-spec-static-brand-white', selectedTheme.textColor);
+        $sp('--ytd-searchbox-background', selectedTheme.gradient);
+        $sp('--ytd-searchbox-text-color', selectedTheme.textColor);
 
         GM_addStyle(`
         #background.ytd-masthead { background: ${
@@ -837,15 +780,15 @@
     let traducido; // Texto traducido
     let urlLista; // Url lista
     async function traductor() {
-      const texto = document.querySelectorAll('#content-text');
+      const texto = $m('#content-text');
       let o = `?client=dict-chrome-ex&sl=auto&tl=${navigator.language}&q=`;
       for (let i = 0; i < texto.length; i++) {
-        const botonTraducir = document.createElement('BUTTON');
+        const botonTraducir = $cl('BUTTON');
         botonTraducir.classList.add('buttons-tranlate');
         botonTraducir.textContent = 'Translate';
         botonTraducir.setAttribute('id', `btn${i}`);
         texto[i].insertAdjacentElement('afterend', botonTraducir);
-        const mdcm = document.querySelectorAll(`.buttons-tranlate`);
+        const mdcm = $m(`.buttons-tranlate`);
         mdcm[i].onclick = function () {
           traducido = o;
           urlLista = traducido + texto[i].textContent;
@@ -876,7 +819,7 @@
         `);
     // Limpiar botones de comentarios
     function limpiarHTML(element) {
-      const buttons = document.querySelectorAll(`${element}`);
+      const buttons = $m(`${element}`);
       [].forEach.call(buttons, function (buttons) {
         buttons.remove();
       });
@@ -884,8 +827,8 @@
     }
 
     window.onscroll = () => {
-      const divEl = document.querySelector('#content-text');
-      const divEl2 = document.querySelector(
+      const divEl = $e('#content-text');
+      const divEl2 = $e(
         'ytd-item-section-renderer[static-comments-header] #contents'
       );
       if (divEl != undefined || divEl2 != undefined) {
@@ -893,7 +836,7 @@
       }
     };
 
-    const targetNode = document.querySelector('body');
+    const targetNode = $e('body');
 
     if (targetNode != undefined) {
       // Configura las opciones de observación
@@ -905,7 +848,7 @@
         for (let mutation of mutationsList) {
           if (mutation.type === 'childList') {
             // Busca el elemento que quieres estilizar
-            const targetElement = document.querySelector(
+            const targetElement = $e(
               'ytd-item-section-renderer[static-comments-header] #contents'
             );
 
@@ -924,7 +867,7 @@
   }
 
   // Add event listeners to all inputs
-  const inputs = document.querySelectorAll('input');
+  const inputs = $m('input');
   inputs.forEach((input) => {
     input.addEventListener('change', applySettings);
 
@@ -941,11 +884,11 @@
   // Export configuration
 
   const settings = GM_getValue('ytEnhancementSettings', '{}');
-  document.getElementById('config-data').value = settings;
+  $id('config-data').value = settings;
 
-  document.getElementById('export-config').addEventListener('click', () => {
+  $id('export-config').addEventListener('click', () => {
     const settings = GM_getValue('ytEnhancementSettings', '{}');
-    document.getElementById('config-data').value = settings;
+    $id('config-data').value = settings;
     const configData = settings;
     try {
       JSON.parse(configData); // Validate JSON
@@ -957,8 +900,8 @@
     }
   });
   // Import configuration
-  document.getElementById('import-config').addEventListener('click', () => {
-    const configData = document.getElementById('config-data').value;
+  $id('import-config').addEventListener('click', () => {
+    const configData = $id('config-data').value;
     try {
       JSON.parse(configData); // Validate JSON
       GM_setValue('ytEnhancementSettings', configData);
@@ -973,7 +916,7 @@
   // Visible element DOM
   function checkElement(selector, callback) {
     const interval = setInterval(() => {
-      if (document.querySelector(selector)) {
+      if ($e(selector)) {
         clearInterval(interval);
 
         callback();
