@@ -105,7 +105,7 @@
   const $cl = (el) => document.createElement(el); // create element
   const $sp = (el, pty) => document.documentElement.style.setProperty(el, pty); // set property variable css
   const $ap = (el) => document.body.appendChild(el); // append element
-
+  const apiDislikes = "https://returnyoutubedislikeapi.com/Votes?videoId="; // Api dislikes
   // Styles for our enhancement panel
   GM_addStyle(` 
         #yt-enhancement-panel {
@@ -375,10 +375,11 @@
     )
     .join('');
 
-  // Buscamos el elemento html con el atributo dark theme
+  // find atribute dark in dom
   const htmlElement = $e('html');
   const isDarkMode = htmlElement.hasAttribute('dark');
   let isDarkModeActive = isDarkMode;
+
 
   // Use Trusted Types to set innerHTML
   const panelHTML = policy
@@ -590,6 +591,7 @@
   function saveSettings() {
     const settings = {
       // ... (other settings as before)
+      dislikes: true,
       theme: $e('input[name="theme"]:checked').value,
       darkMode: $id('dark-mode-toggle').checked,
       hideComments: $id('hide-comments-toggle').checked,
@@ -609,7 +611,6 @@
   // Function to load settings
   function loadSettings() {
     const settings = JSON.parse(GM_getValue('ytEnhancementSettings', '{}'));
-    // ... (load other settings as before)
     if (settings.theme) {
       $e(`input[name="theme"][value="${settings.theme}"]`).checked = true;
     }
@@ -641,7 +642,6 @@
   // Function to apply settings
   function applySettings() {
     const settings = {
-      // ... (other settings as before)
       theme: $e('input[name="theme"]:checked').value,
       darkMode: $id('dark-mode-toggle').checked,
       hideComments: $id('hide-comments-toggle').checked,
@@ -656,7 +656,94 @@
       menuFontSize: $id('menu-font-size-slider').value,
     };
 
-    // ... (apply other settings as before)
+    function FormatterNumber(num, digits) {
+        const lookup = [
+          {
+            value: 1,
+            symbol: '',
+          },
+          {
+            value: 1e3,
+            symbol: ' K',
+          },
+          {
+            value: 1e6,
+            symbol: ' M',
+          },
+        ];
+        const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+        const item = lookup
+          .slice()
+          .reverse()
+          .find((item) => {
+            return num >= item.value;
+          });
+        return item
+          ? (num / item.value).toFixed(digits).replace(rx, '$1') + item.symbol
+          : '0';
+      }
+  
+      let validoUrl = document.location.href;
+
+      function paramsVideoURL() {
+        const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
+        return parametrosURL.get('v');
+      }
+
+    //   Dislikes video
+      async function videoDislike() {
+        console.log('cargando dislikes');
+        
+        validoUrl = document.location.href;
+  
+        const validoVentana = $e('#below > ytd-watch-metadata > div');
+        if (validoVentana != undefined && document.location.href.split('?v=')[0].includes('youtube.com/watch')) {
+            validoUrl = paramsVideoURL();
+            const urlShorts = `${apiDislikes}${validoUrl}`;
+          try {
+            const respuesta = await fetch(urlShorts);
+            const datosShort = await respuesta.json();
+            const { dislikes } = datosShort;
+            const dislikes_content = $e('#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > dislike-button-view-model > toggle-button-view-model > button-view-model > button');
+            if (dislikes_content !== undefined) {
+              dislikes_content.style = 'width: 90px';
+              dislikes_content.innerHTML = `
+                <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 13v-8a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v7a1 1 0 0 0 1 1h3a4 4 0 0 1 4 4v1a2 2 0 0 0 4 0v-5h3a2 2 0 0 0 2 -2l-1 -5a2 3 0 0 0 -2 -2h-7a3 3 0 0 0 -3 3" /></svg>
+                ${FormatterNumber(dislikes, 0)}`;
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      }
+  
+      // dislikes shorts
+      async function shortDislike() {
+        validoUrl = document.location.href;
+        const validoVentanaShort = document.querySelectorAll(
+          '#dislike-button > yt-button-shape > label > div > span'
+        );
+        if (validoVentanaShort != undefined && document.location.href.split('/')[3] === 'shorts') {
+          validoUrl = document.location.href.split('/')[4];
+          const urlShorts = `${apiDislikes}${validoUrl}`;
+          try {
+            const respuesta = await fetch(urlShorts);
+            const datosShort = await respuesta.json();
+            const { dislikes } = datosShort;
+            for (let i = 0; i < validoVentanaShort.length; i++) {
+              validoVentanaShort[i].textContent = `${FormatterNumber(
+                dislikes,
+                0
+              )}`;
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      }
+      
+  
+  
     // Hide comments
     const commentsSection = $id('comments');
     if (commentsSection) {
@@ -773,7 +860,9 @@
     function checkUrlChange() {
       setTimeout(() => {
         applySettings();
-      }, 1500);
+        videoDislike();
+        shortDislike();
+      }, 1000);
       clearInterval(urlCheckInterval);
     }
 
@@ -839,15 +928,15 @@
     const targetNode = $e('body');
 
     if (targetNode != undefined) {
-      // Configura las opciones de observación
+      // config observe
       const config = { childList: true, subtree: true };
 
-      // Crea una instancia de MutationObserver
+      // instance  MutationObserver
       const observer = new MutationObserver((mutationsList, observer) => {
-        // Itera sobre las mutaciones observadas
+        // Observe
         for (let mutation of mutationsList) {
           if (mutation.type === 'childList') {
-            // Busca el elemento que quieres estilizar
+            // Element find
             const targetElement = $e(
               'ytd-item-section-renderer[static-comments-header] #contents'
             );
@@ -862,15 +951,14 @@
       // Inicia la observación del nodo con las opciones configuradas
       observer.observe(targetNode, config);
     }
-
     saveSettings();
+    
   }
 
   // Add event listeners to all inputs
   const inputs = $m('input');
   inputs.forEach((input) => {
     input.addEventListener('change', applySettings);
-
     if (input.type === 'range') {
       input.addEventListener('change', () => {
         updateSliderValues();
@@ -878,8 +966,6 @@
       });
     }
   });
-
-  // ... (Export and import functionality as before)
 
   // Export configuration
 
@@ -912,6 +998,7 @@
     }
   });
   panel.style.display = 'none'; // Ensure panel is hidden on load
+  
   // Load saved settings
   // Visible element DOM
   function checkElement(selector, callback) {
@@ -925,4 +1012,6 @@
   }
 
   checkElement('ytd-topbar-menu-button-renderer', loadSettings);
+  videoDislike();
+  shortDislike();
 })();
