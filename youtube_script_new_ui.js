@@ -1012,6 +1012,5 @@
   }
 
   checkElement('ytd-topbar-menu-button-renderer', loadSettings);
-  videoDislike();
-  shortDislike();
+
 })();
