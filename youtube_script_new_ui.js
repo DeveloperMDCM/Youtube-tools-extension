@@ -95,10 +95,7 @@
 (function () {
   'use strict';
 
-  // Create a Trusted Types policy
-  const policy = window.trustedTypes?.createPolicy('default', {
-    createHTML: (input) => input,
-  });
+  let validoUrl = document.location.href;
   const $e = (el) => document.querySelector(el); // any element
   const $id = (el) => document.getElementById(el); // element by id
   const $m = (el) => document.querySelectorAll(el); // multiple all elements
@@ -106,6 +103,114 @@
   const $sp = (el, pty) => document.documentElement.style.setProperty(el, pty); // set property variable css
   const $ap = (el) => document.body.appendChild(el); // append element
   const apiDislikes = "https://returnyoutubedislikeapi.com/Votes?videoId="; // Api dislikes
+  
+  function FormatterNumber(num, digits) {
+    const lookup = [
+      {
+        value: 1,
+        symbol: '',
+      },
+      {
+        value: 1e3,
+        symbol: ' K',
+      },
+      {
+        value: 1e6,
+        symbol: ' M',
+      },
+    ];
+    const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+    const item = lookup
+      .slice()
+      .reverse()
+      .find((item) => {
+        return num >= item.value;
+      });
+    return item
+      ? (num / item.value).toFixed(digits).replace(rx, '$1') + item.symbol
+      : '0';
+  }
+
+  function paramsVideoURL() {
+    const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
+    return parametrosURL.get('v');
+  }
+
+//   Dislikes video
+  async function videoDislike() {
+   
+    validoUrl = document.location.href;
+
+    const validoVentana = $e('#below > ytd-watch-metadata > div');
+    if (validoVentana != undefined && document.location.href.split('?v=')[0].includes('youtube.com/watch')) {
+        validoUrl = paramsVideoURL();
+        const urlShorts = `${apiDislikes}${validoUrl}`;
+      try {
+        const respuesta = await fetch(urlShorts);
+        const datosShort = await respuesta.json();
+        const { dislikes } = datosShort;
+        const dislikes_content = $e('#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > dislike-button-view-model > toggle-button-view-model > button-view-model > button');
+        if (dislikes_content !== undefined) {
+          dislikes_content.style = 'width: 90px';
+          dislikes_content.innerHTML = `
+            <svg class="svg-dislike-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 13v-8a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v7a1 1 0 0 0 1 1h3a4 4 0 0 1 4 4v1a2 2 0 0 0 4 0v-5h3a2 2 0 0 0 2 -2l-1 -5a2 3 0 0 0 -2 -2h-7a3 3 0 0 0 -3 3" /></svg>
+            ${FormatterNumber(dislikes, 0)}`;
+        }
+        console.log('cargando dislikes');
+    
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
+  // dislikes shorts
+  async function shortDislike() {
+    validoUrl = document.location.href;
+    const validoVentanaShort = document.querySelectorAll(
+      '#dislike-button > yt-button-shape > label > div > span'
+    );
+    if (validoVentanaShort != undefined && document.location.href.split('/')[3] === 'shorts') {
+      validoUrl = document.location.href.split('/')[4];
+      const urlShorts = `${apiDislikes}${validoUrl}`;
+      try {
+        const respuesta = await fetch(urlShorts);
+        const datosShort = await respuesta.json();
+        const { dislikes } = datosShort;
+        for (let i = 0; i < validoVentanaShort.length; i++) {
+          validoVentanaShort[i].textContent = `${FormatterNumber(
+            dislikes,
+            0
+          )}`;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
+  // Url change in second load
+  let prevUrl;
+ 
+  setInterval(() => {
+    const svgDislike = $e('.svg-dislike-ico'); // Check svg in dom
+    const currUrl = window.location.href;
+    if (prevUrl !== undefined && currUrl !== prevUrl && !svgDislike) {
+      setTimeout(async() => {
+          await videoDislike();
+      },2000)
+    }
+    prevUrl = currUrl;
+  }, 1000);
+
+
+
+  // Create a Trusted Types policy
+  const policy = window.trustedTypes?.createPolicy('default', {
+    createHTML: (input) => input,
+  });
+
+ 
   // Styles for our enhancement panel
   GM_addStyle(` 
         #yt-enhancement-panel {
@@ -412,6 +517,11 @@
                     <input type="checkbox" id="autoplay-toggle"> Disable Autoplay
                 </label>
             </div>
+              <div class="enhancement-option">
+                <label>
+                    <input type="checkbox" id="dislikes-toggle"> Show Dislikes
+                </label>
+            </div>
             <div class="enhancement-option">
                 <label>Font Size: <span id="font-size-value">16</span>px</label>
                 <input type="range" id="font-size-slider" class="slider" min="12" max="24" value="16">
@@ -488,6 +598,11 @@
             <div class="enhancement-option">
                 <label>
                     <input type="checkbox" id="autoplay-toggle"> Disable Autoplay
+                </label>
+            </div>
+            <div class="enhancement-option">
+                <label>
+                    <input type="checkbox" id="dislikes-toggle"> Show Dislikes
                 </label>
             </div>
             <div class="enhancement-option">
@@ -590,9 +705,8 @@
   // Function to save settings
   function saveSettings() {
     const settings = {
-      // ... (other settings as before)
-      dislikes: true,
       theme: $e('input[name="theme"]:checked').value,
+      dislikes: $id('dislikes-toggle').checked,
       darkMode: $id('dark-mode-toggle').checked,
       hideComments: $id('hide-comments-toggle').checked,
       hideSidebar: $id('hide-sidebar-toggle').checked,
@@ -605,15 +719,16 @@
       menuTextColor: $id('menu-text-color-picker').value,
       menuFontSize: $id('menu-font-size-slider').value,
     };
-    GM_setValue('ytEnhancementSettings', JSON.stringify(settings));
+    GM_setValue('ytSettingsMDCM', JSON.stringify(settings));
   }
 
   // Function to load settings
   function loadSettings() {
-    const settings = JSON.parse(GM_getValue('ytEnhancementSettings', '{}'));
+    const settings = JSON.parse(GM_getValue('ytSettingsMDCM', '{}'));
     if (settings.theme) {
       $e(`input[name="theme"][value="${settings.theme}"]`).checked = true;
     }
+    $id('dislikes-toggle').checked = settings.dislikes || false;
     $id('dark-mode-toggle').checked = settings.darkMode || false;
     $id('hide-comments-toggle').checked = settings.hideComments || false;
     $id('hide-sidebar-toggle').checked = settings.hideSidebar || false;
@@ -628,6 +743,10 @@
     updateSliderValues();
     setTimeout(() => {
       applySettings();
+      if(settings.dislikes) {
+          videoDislike();
+          shortDislike(); 
+      }
     }, 500);
   }
   // Function to update slider values
@@ -643,6 +762,7 @@
   function applySettings() {
     const settings = {
       theme: $e('input[name="theme"]:checked').value,
+      dislikes: $id('dislikes-toggle').checked,
       darkMode: $id('dark-mode-toggle').checked,
       hideComments: $id('hide-comments-toggle').checked,
       hideSidebar: $id('hide-sidebar-toggle').checked,
@@ -655,94 +775,6 @@
       menuTextColor: $id('menu-text-color-picker').value,
       menuFontSize: $id('menu-font-size-slider').value,
     };
-
-    function FormatterNumber(num, digits) {
-        const lookup = [
-          {
-            value: 1,
-            symbol: '',
-          },
-          {
-            value: 1e3,
-            symbol: ' K',
-          },
-          {
-            value: 1e6,
-            symbol: ' M',
-          },
-        ];
-        const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
-        const item = lookup
-          .slice()
-          .reverse()
-          .find((item) => {
-            return num >= item.value;
-          });
-        return item
-          ? (num / item.value).toFixed(digits).replace(rx, '$1') + item.symbol
-          : '0';
-      }
-  
-      let validoUrl = document.location.href;
-
-      function paramsVideoURL() {
-        const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
-        return parametrosURL.get('v');
-      }
-
-    //   Dislikes video
-      async function videoDislike() {
-        console.log('cargando dislikes');
-        
-        validoUrl = document.location.href;
-  
-        const validoVentana = $e('#below > ytd-watch-metadata > div');
-        if (validoVentana != undefined && document.location.href.split('?v=')[0].includes('youtube.com/watch')) {
-            validoUrl = paramsVideoURL();
-            const urlShorts = `${apiDislikes}${validoUrl}`;
-          try {
-            const respuesta = await fetch(urlShorts);
-            const datosShort = await respuesta.json();
-            const { dislikes } = datosShort;
-            const dislikes_content = $e('#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > dislike-button-view-model > toggle-button-view-model > button-view-model > button');
-            if (dislikes_content !== undefined) {
-              dislikes_content.style = 'width: 90px';
-              dislikes_content.innerHTML = `
-                <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 13v-8a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v7a1 1 0 0 0 1 1h3a4 4 0 0 1 4 4v1a2 2 0 0 0 4 0v-5h3a2 2 0 0 0 2 -2l-1 -5a2 3 0 0 0 -2 -2h-7a3 3 0 0 0 -3 3" /></svg>
-                ${FormatterNumber(dislikes, 0)}`;
-            }
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      }
-  
-      // dislikes shorts
-      async function shortDislike() {
-        validoUrl = document.location.href;
-        const validoVentanaShort = document.querySelectorAll(
-          '#dislike-button > yt-button-shape > label > div > span'
-        );
-        if (validoVentanaShort != undefined && document.location.href.split('/')[3] === 'shorts') {
-          validoUrl = document.location.href.split('/')[4];
-          const urlShorts = `${apiDislikes}${validoUrl}`;
-          try {
-            const respuesta = await fetch(urlShorts);
-            const datosShort = await respuesta.json();
-            const { dislikes } = datosShort;
-            for (let i = 0; i < validoVentanaShort.length; i++) {
-              validoVentanaShort[i].textContent = `${FormatterNumber(
-                dislikes,
-                0
-              )}`;
-            }
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      }
-      
-  
   
     // Hide comments
     const commentsSection = $id('comments');
@@ -787,7 +819,6 @@
     function checkDarkMode() {
       if (isDarkMode) {
         // Apply theme
-
         $sp('--yt-spec-base-background', selectedTheme.gradient);
         $sp('--yt-spec-text-primary', selectedTheme.textColor);
         $sp('--yt-spec-text-secondary', selectedTheme.textColor);
@@ -823,9 +854,8 @@
         color: ${selectedTheme.videoDuration} !important;
          background: ${selectedTheme.gradient} !important;
         }
-
-          #logo-icon {
-        color:  ${selectedTheme.textLogo} !important;
+         #logo-icon {
+         color:  ${selectedTheme.textLogo} !important;
       }
       .yt-spec-button-shape-next--overlay.yt-spec-button-shape-next--text {
         color:  ${selectedTheme.iconsColor} !important;
@@ -842,8 +872,6 @@
       #ytp-id-30,#ytp-id-17,#ytp-id-19,#ytp-id-20{
         fill:  ${selectedTheme.iconsColor} !important;
       }
-
-
         `);
       }
     }
@@ -860,8 +888,6 @@
     function checkUrlChange() {
       setTimeout(() => {
         applySettings();
-        videoDislike();
-        shortDislike();
       }, 1000);
       clearInterval(urlCheckInterval);
     }
@@ -894,19 +920,17 @@
         .buttons-tranlate {
          background: ${selectedTheme.btnTranslate};
          font-size: 10px;
-      border: none;
-      color: #fbf4f4 !important;
-      padding: 3px 0;
-      margin-left: 10px;
-      width: 70px;
-      border-radius: 10px;
-         }
+         border: none;
+         color: #fbf4f4 !important;
+         padding: 3px 0;
+         margin-left: 10px;
+         width: 70px;
+         border-radius: 10px;}
          .buttons-tranlate:hover {
          cursor: pointer;
          background-color: #6b6b6b;}
-
         `);
-    // Limpiar botones de comentarios
+    // clean buttoms dom 
     function limpiarHTML(element) {
       const buttons = $m(`${element}`);
       [].forEach.call(buttons, function (buttons) {
@@ -952,8 +976,8 @@
       observer.observe(targetNode, config);
     }
     saveSettings();
-    
   }
+
 
   // Add event listeners to all inputs
   const inputs = $m('input');
@@ -969,17 +993,17 @@
 
   // Export configuration
 
-  const settings = GM_getValue('ytEnhancementSettings', '{}');
-  $id('config-data').value = settings;
+//   Settings saved
+//   const settings = GM_getValue('ytSettingsMDCM', '{}');
+//   $id('config-data').value = settings;
 
   $id('export-config').addEventListener('click', () => {
-    const settings = GM_getValue('ytEnhancementSettings', '{}');
+    const settings = GM_getValue('ytSettingsMDCM', '{}');
     $id('config-data').value = settings;
     const configData = settings;
     try {
       JSON.parse(configData); // Validate JSON
-      GM_setValue('ytEnhancementSettings', configData);
-      loadSettings();
+      GM_setValue('ytSettingsMDCM', configData);
       alert('Configuration export successfully!');
     } catch (e) {
       alert('Invalid configuration data. Please check and try again.');
@@ -990,9 +1014,9 @@
     const configData = $id('config-data').value;
     try {
       JSON.parse(configData); // Validate JSON
-      GM_setValue('ytEnhancementSettings', configData);
-      loadSettings();
+      GM_setValue('ytSettingsMDCM', configData);
       alert('Configuration imported successfully!');
+      window.location.reload();
     } catch (e) {
       alert('Invalid configuration data. Please check and try again.');
     }
