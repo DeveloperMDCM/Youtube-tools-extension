@@ -191,13 +191,15 @@
 
   // Url change in second load
   let prevUrl;
+  let showDislikes = false;
  
   setInterval(() => {
     const svgDislike = $e('.svg-dislike-ico'); // Check svg in dom
     const currUrl = window.location.href;
-    if (prevUrl !== undefined && currUrl !== prevUrl && !svgDislike) {
+    if (prevUrl !== undefined && currUrl !== prevUrl && !svgDislike && showDislikes) {
       setTimeout(async() => {
-          await videoDislike();
+            await videoDislike();
+            await shortDislike();
       },2000)
     }
     prevUrl = currUrl;
@@ -265,7 +267,7 @@
         width: 24px;
         height: 24px;
         cursor: pointer;
-        filter: brightness(100);
+        
         user-select: none;
         }
 
@@ -473,7 +475,7 @@
         <input type="radio"" name="theme" value="${index}" ${
         index === 0 ? 'checked' : ''
       }>
-        <span class="theme-name">${theme.name}</span>
+        <span style="${theme.name === 'Default' ? 'color: red' : '' }" class="theme-name">${theme.name}</span>
 </div>
     </label>
     `
@@ -519,7 +521,7 @@
             </div>
               <div class="enhancement-option">
                 <label>
-                    <input type="checkbox" id="dislikes-toggle"> Show Dislikes
+                    <input type="checkbox" id="dislikes-toggle"> Show Dislikes / Reload page
                 </label>
             </div>
             <div class="enhancement-option">
@@ -602,7 +604,7 @@
             </div>
             <div class="enhancement-option">
                 <label>
-                    <input type="checkbox" id="dislikes-toggle"> Show Dislikes
+                    <input type="checkbox" id="dislikes-toggle"> Show Dislikes / Reload page
                 </label>
             </div>
             <div class="enhancement-option">
@@ -675,9 +677,9 @@
   let openMenu = false;
   toggleButton.addEventListener('click', () => {
     openMenu = !openMenu;
-    openMenu
-      ? (toggleButton.style.backgroundColor = '#f00')
-      : (toggleButton.style.backgroundColor = 'transparent');
+    // openMenu
+    //   ? (toggleButton.style.backgroundColor = '#f00')
+    //   : (toggleButton.style.backgroundColor = 'transparent');
     panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
   });
 
@@ -746,6 +748,9 @@
       if(settings.dislikes) {
           videoDislike();
           shortDislike(); 
+          showDislikes = true;
+          console.log('joder');
+          
       }
     }, 500);
   }
@@ -781,7 +786,7 @@
     if (commentsSection) {
       commentsSection.style.display = settings.hideComments ? 'none' : 'block';
     }
-
+  
     // Hide sidebar
     const sidebarSection = $id('secondary');
     if (sidebarSection) {
@@ -834,9 +839,7 @@
         $sp('--ytd-searchbox-text-color', selectedTheme.textColor);
 
         GM_addStyle(`
-        #background.ytd-masthead { background: ${
-          selectedTheme.gradient
-        }  !important; }
+        #background.ytd-masthead { background: ${selectedTheme.gradient}  !important; }
         .ytp-swatch-background-color {
         background: ${
           selectedTheme.gradient === '' ? '#f00' : selectedTheme.gradient
