@@ -87,14 +87,12 @@
 // @compatible opera
 // @compatible safari
 // @compatible edge
-// @compatible brave
 // @license MIT
 // @namespace https://github.com/DeveloperMDCM/
 // ==/UserScript==
 
 (function () {
   'use strict';
-
   let validoUrl = document.location.href;
   const $e = (el) => document.querySelector(el); // any element
   const $id = (el) => document.getElementById(el); // element by id
@@ -103,6 +101,7 @@
   const $sp = (el, pty) => document.documentElement.style.setProperty(el, pty); // set property variable css
   const $ap = (el) => document.body.appendChild(el); // append element
   const apiDislikes = "https://returnyoutubedislikeapi.com/Votes?videoId="; // Api dislikes
+  
   
   function FormatterNumber(num, digits) {
     const lookup = [
@@ -353,21 +352,22 @@
     position: relative;
     z-index: 2;
 }
-
     `);
 
   // Define themes
   const themes = [
     {
-      name: 'Default',
+      name: 'Default / Reload Page',
       gradient: '',
       textColor: '',
       raised: '',
-      btnTranslate: '#000',
+      btnTranslate: '',
       CurrentProgressVideo: '',
       videoDuration: '',
       colorIcons: '',
       textLogo: '',
+      primaryColor: '',
+      secondaryColor: '',
     },
     {
       name: 'Midnight Blue',
@@ -447,6 +447,39 @@
       textLogo: '#f00',
     },
     {
+      name: 'Neon',
+      gradient: 'linear-gradient(273deg, #ee49fd 0%, #6175ff 100%)',
+      textColor: '#ffffff',
+      raised: '#303131',
+      btnTranslate: '#000',
+      CurrentProgressVideo: '#0f0',
+      videoDuration: '#fff',
+      colorIcons: '#fff',
+      textLogo: '#f00',
+    },
+    {
+      name: 'Azure',
+      gradient: 'linear-gradient(273deg, #0172af 0%, #74febd 100%)',
+      textColor: '#ffffff',
+      raised: '#303131',
+      btnTranslate: '#000',
+      CurrentProgressVideo: '#0f0',
+      videoDuration: '#fff',
+      colorIcons: '#fff',
+      textLogo: '#f00',
+    },
+    {
+      name: 'Butterfly',
+      gradient: 'linear-gradient(273deg, #ff4060 0%, #fff16a 100%)',
+      textColor: '#ffffff',
+      raised: '#303131',
+      btnTranslate: '#000',
+      CurrentProgressVideo: '#0f0',
+      videoDuration: '#fff',
+      colorIcons: '#fff',
+      textLogo: '#f00',
+    },
+    {
       name: 'Colombia',
       gradient:
         'linear-gradient(106deg, #fbf63f  0%, #0000bb 45%, #ff0000 99%)',
@@ -469,15 +502,15 @@
   const themeOptionsHTML = themes
     .map(
       (theme, index) => `
-    <label>
-     <div class="theme-option">
-    <div class="theme-preview" style="background: ${theme.gradient};"></div>
-        <input type="radio"" name="theme" value="${index}" ${
-        index === 0 ? 'checked' : ''
-      }>
-        <span style="${theme.name === 'Default' ? 'color: red' : '' }" class="theme-name">${theme.name}</span>
-</div>
-    </label>
+        <label class="themes-options">
+          <div class="theme-option">
+          <div class="theme-preview" style="background: ${theme.gradient};"></div>
+          <input type="radio" name="theme" value="${index}" ${
+              index === 0 ? 'checked' : ''
+            }>
+              <span style="${theme.name === 'Default / Reload Page' ? 'color: red; ' : '' }" class="theme-name">${theme.name}</span>
+              </div>
+        </label>
     `
     )
     .join('');
@@ -491,7 +524,13 @@
   // Use Trusted Types to set innerHTML
   const panelHTML = policy
     ? policy.createHTML(`
-        <h3>YouTube Tools v1.0 <span id="menu-settings-icon">⚙️</span></h3>
+      <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+      <div style="display: flex;justify-content: space-between;align-items: center;gap: 3px;margin-bottom: 10px;">
+      <h3 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v1.0  <a target="_blank" href="https://github.com/DeveloperMDCM">
+      <svg style="background-color: white; border-radius: 5px;color: #000;" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
+      </a></h3>
+      <span id="menu-settings-icon">⚙️</span>
+      </div>
         <div class="tab-buttons">
             <button class="tab-button active" data-tab="general">General</button>
             <button class="tab-button" data-tab="themes">Themes</button>
@@ -499,11 +538,6 @@
             <button class="tab-button" data-tab="header">Header</button>
         </div>
         <div id="general" class="tab-content active">
-                    <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="dark-mode-toggle"> Dark Mode
-                </label>
-            </div>
             <div class="enhancement-option">
                 <label>
                     <input type="checkbox" id="hide-comments-toggle"> Hide Comments
@@ -541,10 +575,60 @@
                 <input type="color" id="secondary-color-picker" class="color-picker" value="#606060">
             </div>
         </div>
-        <div id="themes" class="tab-content">
-            <h4 style="margin-bottom: 10px">Choose a Theme</h4>
+        <div id="themes" class="tab-content" style="height: 350px; overflow-y: auto;">
+            <h4>Choose a Theme</h4>
+              <label>
+          <div class="theme-option">
+          <div class="theme-preview" style="background: dark;"></div>
+          <input type="radio" name="theme" value="custom">
+              <span class="theme-name">Custom</span>
+              </div>
+          <div class="theme-option theme-selected-normal">
+          <div class="theme-preview" style="background: dark;"></div>
+          <input type="radio" name="theme" value="normal">
+              <span class="theme-name">Selected Themes</span>
+              </div>
+        </label>
             <p>${isDarkModeActive ? '' : 'activate dark mode to use themes'}</p>
             ${themeOptionsHTML}
+            <div class="theme-custom-options">
+            <div class="enhancement-option">
+                <label>Background Image:</label>
+                <input type="file"  name="avatar" accept="image/png, image/jpeg" id="background_image" class="color-picker">
+            </div>
+            <div class="enhancement-option">
+                <label>Background Color:</label>
+                <input type="color" id="primary-color-picker" class="color-picker" value="#000000">
+            </div>
+            <div class="enhancement-option">
+                <label>Primary Color:</label>
+                <input type="color" id="primary-color-picker" class="color-picker" value="#606060">
+            </div>
+            <div class="enhancement-option">
+                <label>Secondary Color:</label>
+                <input type="color" id="secondary-color-picker" class="color-picker" value="#606060">
+            </div>
+            <div class="enhancement-option">
+                <label>Header Color:</label>
+                <input type="color" id="header-color-picker" class="color-picker" value="#606060">
+            </div>
+            <div class="enhancement-option">
+                <label>Icons Color:</label>
+                <input type="color" id="icons-color-picker" class="color-picker" value="#606060">
+            </div>
+            <div class="enhancement-option">
+                <label>Menu Color:</label>
+                <input type="color" id="menu-color-picker" class="color-picker" value="#606060">
+            </div>
+            <div class="enhancement-option">
+                <label>Line Color Preview:</label>
+                <input type="color" id="line-color-picker" class="color-picker" value="#606060">
+            </div>
+            <div class="enhancement-option">
+                <label>Time Color Preview:</label>
+                <input type="color" id="time-color-picker" class="color-picker" value="#606060">
+            </div>
+            </div>
         </div>
         <div id="sidebar" class="tab-content">
             <!-- Sidebar content here -->
@@ -568,93 +652,19 @@
             </div>
         </div>
         <div id="import-export">
-            <button id="export-config">Export Configuration</button>
-            <button id="import-config">Import Configuration</button>
+        <div style="display: flex;width: 100%;justify-content: space-between;">
+        <button id="export-config" style="width: 100%;display: flex;align-items: center;justify-content: center;">Export 
+        <svg width="20" height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M9 15h6" /><path d="M12.5 17.5l2.5 -2.5l-2.5 -2.5" /></svg>
+        </button>
+       <button id="import-config" style="width: 100%;display: flex;align-items: center;justify-content: center;">Import
+        <svg width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M15 15h-6" /><path d="M11.5 17.5l-2.5 -2.5l2.5 -2.5" /></svg>
+        </button>
+        </div>
             <textarea id="config-data" placeholder="Paste configuration here to import"></textarea>
         </div>
     `)
     : `
-          <h3>YouTube Tools v1.0 <span id="menu-settings-icon">⚙️</span></h3>
-        <div class="tab-buttons">
-            <button class="tab-button active" data-tab="general">General</button>
-            <button class="tab-button" data-tab="themes">Themes</button>
-            <button class="tab-button" data-tab="sidebar">Sidebar</button>
-            <button class="tab-button" data-tab="header">Header</button>
-        </div>
-        <div id="general" class="tab-content active">
-                    <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="dark-mode-toggle"> Dark Mode
-                </label>
-            </div>
-            <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="hide-comments-toggle"> Hide Comments
-                </label>
-            </div>
-             <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="hide-sidebar-toggle"> Hide Sidebar
-                </label>
-            </div>
-            <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="autoplay-toggle"> Disable Autoplay
-                </label>
-            </div>
-            <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="dislikes-toggle"> Show Dislikes / Reload page
-                </label>
-            </div>
-            <div class="enhancement-option">
-                <label>Font Size: <span id="font-size-value">16</span>px</label>
-                <input type="range" id="font-size-slider" class="slider" min="12" max="24" value="16">
-            </div>
-             <div class="enhancement-option">
-                <label>Video Player Size: <span id="player-size-value">100</span>%</label>
-                <input type="range" id="player-size-slider" class="slider" min="50" max="150" value="100">
-            </div>
-            <div class="enhancement-option">
-                <label>Primary Text Color:</label>
-                <input type="color" id="primary-color-picker" class="color-picker" value="#000000">
-            </div>
-            <div class="enhancement-option">
-                <label>Secondary Text Color:</label>
-                <input type="color" id="secondary-color-picker" class="color-picker" value="#606060">
-            </div>
-        </div>
-        <div id="themes" class="tab-content">
-            <h4 style="margin-bottom: 10px">Choose a Theme</h4>
-            <p>${isDarkModeActive ? '' : 'activate dark mode to use themes'}</p>
-            ${themeOptionsHTML}
-        </div>
-        <div id="sidebar" class="tab-content">
-            <!-- Sidebar content here -->
-        </div>
-        <div id="header" class="tab-content">
-            <!-- Header content here -->
-        </div>
-        <div id="menu-settings" class="tab-content">
-            <h4>Menu Appearance</h4>
-            <div class="enhancement-option">
-                <label>Menu Background Color:</label>
-                <input type="color" id="menu-bg-color-picker" class="color-picker" value="#ffffff">
-            </div>
-            <div class="enhancement-option">
-                <label>Menu Text Color:</label>
-                <input type="color" id="menu-text-color-picker" class="color-picker" value="#000000">
-            </div>
-            <div class="enhancement-option">
-                <label>Menu Font Size: <span id="menu-font-size-value">14</span>px</label>
-                <input type="range" id="menu-font-size-slider" class="slider" min="10" max="20" value="14">
-            </div>
-        </div>
-        <div id="import-export">
-            <button id="export-config">Export Configuration</button>
-            <button id="import-config">Import Configuration</button>
-            <textarea id="config-data" placeholder="Paste configuration here to import"></textarea>
-        </div>
+         
     `;
 
   panel.innerHTML = panelHTML;
@@ -708,8 +718,8 @@
   function saveSettings() {
     const settings = {
       theme: $e('input[name="theme"]:checked').value,
+      // themeCustom: $e('input[name="theme_custom"]:checked').value,
       dislikes: $id('dislikes-toggle').checked,
-      darkMode: $id('dark-mode-toggle').checked,
       hideComments: $id('hide-comments-toggle').checked,
       hideSidebar: $id('hide-sidebar-toggle').checked,
       disableAutoplay: $id('autoplay-toggle').checked,
@@ -730,8 +740,8 @@
     if (settings.theme) {
       $e(`input[name="theme"][value="${settings.theme}"]`).checked = true;
     }
+    // $e(`input[name="theme_custom"][value="${settings.themeCustom}"]`).checked = true;
     $id('dislikes-toggle').checked = settings.dislikes || false;
-    $id('dark-mode-toggle').checked = settings.darkMode || false;
     $id('hide-comments-toggle').checked = settings.hideComments || false;
     $id('hide-sidebar-toggle').checked = settings.hideSidebar || false;
     $id('autoplay-toggle').checked = settings.disableAutoplay || false;
@@ -748,9 +758,7 @@
       if(settings.dislikes) {
           videoDislike();
           shortDislike(); 
-          showDislikes = true;
-          console.log('joder');
-          
+          showDislikes = true; 
       }
     }, 500);
   }
@@ -767,8 +775,8 @@
   function applySettings() {
     const settings = {
       theme: $e('input[name="theme"]:checked').value,
+      // themeCustom: $e('input[name="theme_custom"]:checked').value,
       dislikes: $id('dislikes-toggle').checked,
-      darkMode: $id('dark-mode-toggle').checked,
       hideComments: $id('hide-comments-toggle').checked,
       hideSidebar: $id('hide-sidebar-toggle').checked,
       disableAutoplay: $id('autoplay-toggle').checked,
@@ -780,7 +788,9 @@
       menuTextColor: $id('menu-text-color-picker').value,
       menuFontSize: $id('menu-font-size-slider').value,
     };
-  
+
+    
+
     // Hide comments
     const commentsSection = $id('comments');
     if (commentsSection) {
@@ -821,9 +831,30 @@
 
     // Apply theme
     const selectedTheme = themes[settings.theme];
+    const isThemeCustom = $e(`input[name="theme"][value="custom"]`).checked;
+    const isThemeNormal = $e(`input[name="theme"][value="normal"]`).checked;
+    const themeCustomOptions = $e('.theme-custom-options');
+    const themeNormal = $e('.theme-selected-normal');
+    if(isThemeCustom != undefined) {
+      themeNormal.style.display = "block"
+      $m('.themes-options').forEach((input) => {
+        input.style.display = "none"
+      });
+    } 
+    if(isThemeNormal) {
+      $e(`input[name="theme"][value="custom"]`).checked = false;
+    }
+ 
+ 
+
+    
     function checkDarkMode() {
-      if (isDarkMode) {
+      if (isDarkMode && !isThemeCustom) {
         // Apply theme
+        $m('.themes-options').forEach((input) => {
+          input.style.display = "block"
+        });
+        themeNormal.style.display = "none"
         $sp('--yt-spec-base-background', selectedTheme.gradient);
         $sp('--yt-spec-text-primary', selectedTheme.textColor);
         $sp('--yt-spec-text-secondary', selectedTheme.textColor);
@@ -842,7 +873,7 @@
         #background.ytd-masthead { background: ${selectedTheme.gradient}  !important; }
         .ytp-swatch-background-color {
         background: ${
-          selectedTheme.gradient === '' ? '#f00' : selectedTheme.gradient
+           selectedTheme.gradient
         } !important;
       }
  .ytd-shorts, #page-manager.ytd-app {
@@ -875,7 +906,34 @@
       #ytp-id-30,#ytp-id-17,#ytp-id-19,#ytp-id-20{
         fill:  ${selectedTheme.iconsColor} !important;
       }
+
+      .buttons-tranlate {
+        background: ${selectedTheme.btnTranslate};
+        font-size: 10px;
+        border: none;
+        color: #fbf4f4 !important;
+        padding: 3px 0;
+        margin-left: 10px;
+        width: 70px;
+        border-radius: 10px;}
+        .buttons-tranlate:hover {
+        cursor: pointer;
+        background-color: #6b6b6b;}
         `);
+      } else {
+        $sp('--yt-spec-base-background', "red");
+        $sp('--yt-spec-text-primary', "red");
+        $sp('--yt-spec-text-secondary', "red");
+        $sp('--yt-spec-menu-background', "red");
+        $sp('--yt-spec-icon-inactive', "red");
+        $sp('--yt-spec-brand-icon-inactive', "red");
+        $sp('--yt-spec-brand-icon-active', "red");
+        $sp('--yt-spec-static-brand-red', "red"); // line current time
+        $sp('--yt-spec-raised-background', "red");
+        $sp('--yt-spec-static-brand-red', "red");
+        $sp('--yt-spec-static-brand-white', "red");
+        $sp('--ytd-searchbox-background', "red");
+        $sp('--ytd-searchbox-text-color', "red");
       }
     }
 
@@ -919,20 +977,7 @@
         };
       }
     }
-    GM_addStyle(`
-        .buttons-tranlate {
-         background: ${selectedTheme.btnTranslate};
-         font-size: 10px;
-         border: none;
-         color: #fbf4f4 !important;
-         padding: 3px 0;
-         margin-left: 10px;
-         width: 70px;
-         border-radius: 10px;}
-         .buttons-tranlate:hover {
-         cursor: pointer;
-         background-color: #6b6b6b;}
-        `);
+   
     // clean buttoms dom 
     function limpiarHTML(element) {
       const buttons = $m(`${element}`);
@@ -952,34 +997,46 @@
       }
     };
 
+
     const targetNode = $e('body');
 
     if (targetNode != undefined) {
-      // config observe
-      const config = { childList: true, subtree: true };
-
-      // instance  MutationObserver
-      const observer = new MutationObserver((mutationsList, observer) => {
-        // Observe
-        for (let mutation of mutationsList) {
-          if (mutation.type === 'childList') {
-            // Element find
-            const targetElement = $e(
-              'ytd-item-section-renderer[static-comments-header] #contents'
-            );
-
-            if (targetElement) {
-              targetElement.style.background = `${selectedTheme.gradient}`;
-            }
-          }
+      const element = $e('ytd-item-section-renderer[static-comments-header] #contents');
+      if(element != undefined) {
+        const observerElementDom = (elem) => {
+          const observer = new IntersectionObserver(entries => {
+      
+              if(entries[0].isIntersecting) {
+    
+                element.style.background = `${selectedTheme.gradient}`;
+              } else {return}
+          })
+          
+          return observer.observe($e(`${elem}`))
+           
         }
-      });
-
-      // Inicia la observación del nodo con las opciones configuradas
-      observer.observe(targetNode, config);
+        observerElementDom('ytd-item-section-renderer[static-comments-header] #contents')
+      }
     }
     saveSettings();
   }
+
+  console.log('Scrip en ejecución by: DeveloperMDCM  MDCM');
+  const HEADER_STYLE = 'color: #F00; font-size: 24px; font-family: sans-serif;';
+  const MESSAGE_STYLE = 'color: #00aaff; font-size: 16px; font-family: sans-serif;';
+  const CODE_STYLE = 'font-size: 14px; font-family: monospace;';
+
+  console.log(
+    '%cYoutube Tools Extension NEW UI\n' +
+      '%cRun %c(v1.0)\n' +
+      'By: DeveloperMDCM.',
+    HEADER_STYLE,
+    CODE_STYLE,
+    MESSAGE_STYLE
+  );
+
+  
+  
 
 
   // Add event listeners to all inputs
