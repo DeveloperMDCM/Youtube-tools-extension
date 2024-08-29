@@ -101,8 +101,8 @@
   const $sp = (el, pty) => document.documentElement.style.setProperty(el, pty); // set property variable css
   const $ap = (el) => document.body.appendChild(el); // append element
   const apiDislikes = "https://returnyoutubedislikeapi.com/Votes?videoId="; // Api dislikes
-  
-  
+
+
   function FormatterNumber(num, digits) {
     const lookup = [
       {
@@ -137,7 +137,7 @@
 
 //   Dislikes video
   async function videoDislike() {
-   
+
     validoUrl = document.location.href;
 
     const validoVentana = $e('#below > ytd-watch-metadata > div');
@@ -156,7 +156,7 @@
             ${FormatterNumber(dislikes, 0)}`;
         }
         console.log('cargando dislikes');
-    
+
       } catch (error) {
         console.log(error);
       }
@@ -191,7 +191,7 @@
   // Url change in second load
   let prevUrl;
   let showDislikes = false;
- 
+
   setInterval(() => {
     const svgDislike = $e('.svg-dislike-ico'); // Check svg in dom
     const currUrl = window.location.href;
@@ -211,9 +211,17 @@
     createHTML: (input) => input,
   });
 
- 
+
   // Styles for our enhancement panel
-  GM_addStyle(` 
+  GM_addStyle(`
+    .html5-video-player.unstarted-mode,.html5-video-player.ad-showing,.html5-video-player.ended-mode {
+    background-image: url('https://avatars.githubusercontent.com/u/54366580?v=4');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    }
         #yt-enhancement-panel {
             position: fixed;
             top: 60px;
@@ -266,7 +274,7 @@
         width: 24px;
         height: 24px;
         cursor: pointer;
-        
+
         user-select: none;
         }
 
@@ -352,7 +360,289 @@
     position: relative;
     z-index: 2;
 }
+
+  .buttons-tranlate {
+        background: #000;
+        font-size: 10px;
+        border: none;
+        color: #fbf4f4 !important;
+        padding: 3px 0;
+        margin-left: 10px;
+        width: 70px;
+        border-radius: 10px;}
+        .buttons-tranlate:hover {
+        cursor: pointer;
+        background-color: #6b6b6b;}
+
+         button.botones_div {
+      margin: 0;
+      padding: 0;
+     
+    }
+
+    button:hover {
+      color: #ec3203;
+    }
+    .botones_div {
+      background-color: transparent;
+      border: none;
+      color: #999999;
+       user-select: none;
+    }
+        #eyes {
+      opacity: 0.5;
+      position: absolute;
+      height: 24px;
+      bottom: 0;
+      top: 0;
+      width: 24px;
+    }
+      
+    /* width */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 10px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background: ##d5d5d5;
+
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background: #000;
+
+    }
+
     `);
+
+  // botons bottom video player
+
+  const thumbnailVideo = `
+  <button title="Image video" class="botones_div" type="button" id="imagen">
+
+  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-photo-down" width="24"
+    height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+    <path d="M15 8h.01"></path>
+    <path d="M12.5 21h-6.5a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v6.5"></path>
+    <path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l4 4"></path>
+    <path d="M14 14l1 -1c.653 -.629 1.413 -.815 2.13 -.559"></path>
+    <path d="M19 16v6"></path>
+    <path d="M22 19l-3 3l-3 -3"></path>
+  </svg>
+</button>
+  `;
+
+  const modeReverse = `
+  <button title="Reverse" class="botones_div" type="button" id="invertir">
+  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrows-diff" width="24"
+    height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+    <path d="M11 16h10"></path>
+    <path d="M11 16l4 4"></path>
+    <path d="M11 16l4 -4"></path>
+    <path d="M13 8h-10"></path>
+    <path d="M13 8l-4 4"></path>
+    <path d="M13 8l-4 -4"></path>
+  </svg>
+</button>
+  `;
+
+  const filterEyes = `
+
+  <div style="position:relative; display:inline-block ">
+  <button title="Filter eyes" class="botones_div" type="button">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-half"
+      width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+      fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+      <path d="M12 9a3 3 0 0 0 0 6v-6z"></path>
+      <path
+        d="M6 6h3.5l2.5 -2.5l2.5 2.5h3.5v3.5l2.5 2.5l-2.5 2.5v3.5h-3.5l-2.5 2.5l-2.5 -2.5h-3.5v-3.5l-2.5 -2.5l2.5 -2.5z">
+      </path>
+    </svg>
+    <input id="eyes" list="presetColors" type="color" value="#ffffff"></button>
+  <datalist id="presetColors">
+    <option value="#000000" />
+    <option value="#fbff00" />
+    <option value="#ff0000" />
+    <option value="#00ff00" />
+    <option value="#0000ff" />
+  </datalist>
+</div>
+<div id="ojosprotect"
+style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0px; top: 0px; opacity: 0.2; z-index: 10; display: block;">
+</div>
+  `;
+
+  const resetButton = `
+  <button title="reset" class="botones_div" type="button" id="reset_button">
+  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-power" width="24"
+    height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+    <path d="M7 6a7.75 7.75 0 1 0 10 0"></path>
+    <path d="M12 4l0 8"></path>
+  </svg>
+</button>
+  `;
+
+  const repeatVideo = `
+  <button title="Repeat video" class="botones_div" type="button" id="repeatvideo">
+
+  <svg  xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-repeat" width="24"
+    height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+    <path d="M4 12v-3a3 3 0 0 1 3 -3h13m-3 -3l3 3l-3 3"></path>
+    <path d="M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3"></path>
+  </svg>
+</button>
+  `;
+
+  const downloadMp4Mp3 = `
+  <button title="MP4" type="button" class="btn1 botones_div">
+  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-download"
+    width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+    <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+    <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
+    <path d="M12 17v-6"></path>
+    <path d="M9.5 14.5l2.5 2.5l2.5 -2.5"></path>
+  </svg>
+</button>
+<button title="MP3" type="button" class="btn2 botones_div">
+
+  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-music" width="24"
+    height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+    <path d="M14 3v4a1 1 0 0 0 1 1h4"></path>
+    <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path>
+    <path d="M11 16m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+    <path d="M12 16l0 -5l2 1"></path>
+  </svg>
+</button>
+<button title="Close" type="button" class="btn3 botones_div">
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-circle-x" width="24"
+  height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+  stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+  <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+  <path d="M10 10l4 4m0 -4l-4 4"></path>
+</svg>
+</button>
+  `;
+
+  const donwloadExternal = `
+
+  <button title="External Download" type="button" class="external_link botones_div">
+
+  <svg class="icon icon-tabler icon-tabler-external-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+      <path d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6"></path>
+      <path d="M11 13l9 -9"></path>
+      <path d="M15 4h5v5"></path>
+   </svg>
+</button>
+
+  `;
+  const viewExternalVideo = `
+
+  <button title="view External no cookie" type="button" class="view_external_link botones_div">
+
+  <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 16m0 1a1 1 0 0 1 1 -1h3a1 1 0 0 1 1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1z" /><path d="M4 12v-6a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-6" /><path d="M12 8h4v4" /><path d="M16 8l-5 5" /></svg>
+</button>
+
+  `;
+
+  const pictureToPicture = `
+  <button title="Picture to picture" type="button" class="video_picture_to_picture botones_div">
+
+  <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11 19h-6a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v4" /><path d="M14 14m0 1a1 1 0 0 1 1 -1h5a1 1 0 0 1 1 1v3a1 1 0 0 1 -1 1h-5a1 1 0 0 1 -1 -1z" /></svg>
+</button>
+
+  `;
+  const screenShot = `
+  <button title="Screenshot video" type="button" class="screenshot_video botones_div">
+  <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 8h.01" /><path d="M6 13l2.644 -2.644a1.21 1.21 0 0 1 1.712 0l3.644 3.644" /><path d="M13 13l1.644 -1.644a1.21 1.21 0 0 1 1.712 0l1.644 1.644" /><path d="M4 8v-2a2 2 0 0 1 2 -2h2" /><path d="M4 16v2a2 2 0 0 0 2 2h2" /><path d="M16 4h2a2 2 0 0 1 2 2v2" /><path d="M16 20h2a2 2 0 0 0 2 -2v-2" /></svg>
+</button>
+
+  `;
+
+  const checkUpdates = `
+  <button title="Check new updates" type="button" class="checked_updates botones_div">
+  <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" /><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" /></svg>
+</button>
+  `;
+
+
+  const menuBotones = `
+<main>
+<div class="container">
+<form>
+  <div class="containerButtons">
+  ${thumbnailVideo}
+  ${modeReverse}
+  ${filterEyes}
+  ${resetButton}
+  ${repeatVideo}
+  ${downloadMp4Mp3}
+  ${donwloadExternal}
+  ${viewExternalVideo}
+  ${pictureToPicture}
+  ${screenShot}
+  ${checkUpdates}
+  </div>
+  <div>
+  </div>
+</form>
+
+</div>
+<div class="content_collapsible_colors" style="margin-top: 10px">
+
+<form class="formulariodescarga" action="">
+<div class="containerall">
+<select class="selectcalidades  ocultarframe" required>
+  <option selected disabled>Calidad del video / Quality video</option>
+  <option value="360">360p Mp4</option>
+  <option value="480">480p Mp4</option>
+  <option value="720">720p HD Mp4 Default</option>
+  <option value="1080">1080p FULL HD Mp4</option>
+  <option value="4k">2160p 4K WEBM</option>
+  <option value="8k">4320p 8K WEBM</option>
+  </select>
+  <iframe id="descargando"  style="z-index: 99; border: none; height: 27.4px; width: 50%;"  class="containerall ocultarframe" src="" frameborder="0"></iframe>
+
+</div>
+</form>
+<form class="formulariodescargaaudio" action="">
+<div class="containerall">
+<select class="selectcalidadesaudio ocultarframeaudio" required>
+  <option selected disabled>Calidad del Audio / Quality Audio</option>
+  <option value="flac">Audio FLAC UHQ</option>
+  <option value="wav">Audio WAV UHQ</option>
+  <option value="mp3">Audio MP3 Default</option>
+  <option value="m4a">Audio M4A</option>
+  <option value="aac">Audio AAC</option>
+  <option value="opus">Audio OPUS</option>
+  <option value="ogg">Audio OGG</option>
+  </select>
+  <iframe id="descargandomp3"  style="z-index: 99; border: none; height: 27.4px; width: 50%;"  class="containerall ocultarframeaudio" src="" frameborder="0"></iframe>
+
+  </iframe>
+
+</div>
+</form>
+  </main>
+  </html>
+  `;
 
   // Define themes
   const themes = [
@@ -502,7 +792,7 @@
   const themeOptionsHTML = themes
     .map(
       (theme, index) => `
-        <label class="themes-options">
+        <label >
           <div class="theme-option">
           <div class="theme-preview" style="background: ${theme.gradient};"></div>
           <input type="radio" name="theme" value="${index}" ${
@@ -526,7 +816,7 @@
     ? policy.createHTML(`
       <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
       <div style="display: flex;justify-content: space-between;align-items: center;gap: 3px;margin-bottom: 10px;">
-      <h3 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v1.0  <a target="_blank" href="https://github.com/DeveloperMDCM">
+      <h3 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v1.0  <a target="_blank" href=https://github.com/DeveloperMDCM/Youtube-tools-extension">
       <svg style="background-color: white; border-radius: 5px;color: #000;" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
       </a></h3>
       <span id="menu-settings-icon">⚙️</span>
@@ -553,6 +843,16 @@
                     <input type="checkbox" id="autoplay-toggle"> Disable Autoplay
                 </label>
             </div>
+            <div class="enhancement-option">
+                <label>
+                    <input type="checkbox" id="cinematic-lighting-toggle"> Disable cinematic Lighting
+                </label>
+            </div>
+            <div class="enhancement-option">
+                <label>
+                    <input type="checkbox" id="subtitles-toggle"> Disable Subtitles
+                </label>
+            </div>
               <div class="enhancement-option">
                 <label>
                     <input type="checkbox" id="dislikes-toggle"> Show Dislikes / Reload page
@@ -566,14 +866,6 @@
                 <label>Video Player Size: <span id="player-size-value">100</span>%</label>
                 <input type="range" id="player-size-slider" class="slider" min="50" max="150" value="100">
             </div>
-            <div class="enhancement-option">
-                <label>Primary Text Color:</label>
-                <input type="color" id="primary-color-picker" class="color-picker" value="#000000">
-            </div>
-            <div class="enhancement-option">
-                <label>Secondary Text Color:</label>
-                <input type="color" id="secondary-color-picker" class="color-picker" value="#606060">
-            </div>
         </div>
         <div id="themes" class="tab-content" style="height: 350px; overflow-y: auto;">
             <h4>Choose a Theme</h4>
@@ -583,22 +875,30 @@
           <input type="radio" name="theme" value="custom">
               <span class="theme-name">Custom</span>
               </div>
-          <div class="theme-option theme-selected-normal">
-          <div class="theme-preview" style="background: dark;"></div>
-          <input type="radio" name="theme" value="normal">
-              <span class="theme-name">Selected Themes</span>
-              </div>
-        </label>
+              </label>
+              <label>
+              <div class="theme-option theme-selected-normal">
+              <div class="theme-preview" style="background: dark;"></div>
+              <input type="radio" name="theme" value="normal">
+                  <span class="theme-name">Selected Themes</span>
+                  </div>
+              </label>
             <p>${isDarkModeActive ? '' : 'activate dark mode to use themes'}</p>
-            ${themeOptionsHTML}
+            <div class="themes-options">
+              ${themeOptionsHTML}
+            </div>
             <div class="theme-custom-options">
             <div class="enhancement-option">
                 <label>Background Image:</label>
                 <input type="file"  name="avatar" accept="image/png, image/jpeg" id="background_image" class="color-picker">
             </div>
             <div class="enhancement-option">
+                <label>Progressbar Video:</label>
+                <input type="color" id="progressbar-color-picker" class="color-picker" value="#ff0000">
+            </div>
+            <div class="enhancement-option">
                 <label>Background Color:</label>
-                <input type="color" id="primary-color-picker" class="color-picker" value="#000000">
+                <input type="color" id="bg-color-picker" class="color-picker" value="#000000">
             </div>
             <div class="enhancement-option">
                 <label>Primary Color:</label>
@@ -631,20 +931,20 @@
             </div>
         </div>
         <div id="sidebar" class="tab-content">
-            <!-- Sidebar content here -->
+            <h4>Available in next update</h4>
         </div>
         <div id="header" class="tab-content">
-            <!-- Header content here -->
+            <h4>Available in next update</h4>
         </div>
         <div id="menu-settings" class="tab-content">
-            <h4>Menu Appearance</h4>
+            <h4 style="margin: 10px 0">Menu Appearance</h4>
             <div class="enhancement-option">
                 <label>Menu Background Color:</label>
-                <input type="color" id="menu-bg-color-picker" class="color-picker" value="#ffffff">
+                <input type="color" id="menu-bg-color-picker" class="color-picker" value="#000000">
             </div>
             <div class="enhancement-option">
                 <label>Menu Text Color:</label>
-                <input type="color" id="menu-text-color-picker" class="color-picker" value="#000000">
+                <input type="color" id="menu-text-color-picker" class="color-picker" value="#ff0000">
             </div>
             <div class="enhancement-option">
                 <label>Menu Font Size: <span id="menu-font-size-value">14</span>px</label>
@@ -653,7 +953,7 @@
         </div>
         <div id="import-export">
         <div style="display: flex;width: 100%;justify-content: space-between;">
-        <button id="export-config" style="width: 100%;display: flex;align-items: center;justify-content: center;">Export 
+        <button id="export-config" style="width: 100%;display: flex;align-items: center;justify-content: center;">Export
         <svg width="20" height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M9 15h6" /><path d="M12.5 17.5l2.5 -2.5l-2.5 -2.5" /></svg>
         </button>
        <button id="import-config" style="width: 100%;display: flex;align-items: center;justify-content: center;">Import
@@ -664,7 +964,7 @@
         </div>
     `)
     : `
-         
+
     `;
 
   panel.innerHTML = panelHTML;
@@ -718,21 +1018,32 @@
   function saveSettings() {
     const settings = {
       theme: $e('input[name="theme"]:checked').value,
-      // themeCustom: $e('input[name="theme_custom"]:checked').value,
+      bgColorPicker: $id('bg-color-picker').value,
+      progressbarColorPicker: $id('progressbar-color-picker').value,
+      primaryColorPicker: $id('primary-color-picker').value,
+      secondaryColorPicker: $id('secondary-color-picker').value,
+      headerColorPicker: $id('header-color-picker').value,
+      iconsColorPicker: $id('icons-color-picker').value,
+      menuColorPicker: $id('menu-color-picker').value,
+      lineColorPicker: $id('line-color-picker').value,
+      timeColorPicker: $id('time-color-picker').value,
       dislikes: $id('dislikes-toggle').checked,
       hideComments: $id('hide-comments-toggle').checked,
       hideSidebar: $id('hide-sidebar-toggle').checked,
       disableAutoplay: $id('autoplay-toggle').checked,
+      cinematicLighting: $id('cinematic-lighting-toggle').checked,
+      disableSubtitles: $id('subtitles-toggle').checked,
       fontSize: $id('font-size-slider').value,
       playerSize: $id('player-size-slider').value,
-      primaryColor: $id('primary-color-picker').value,
-      secondaryColor: $id('secondary-color-picker').value,
       menuBgColor: $id('menu-bg-color-picker').value,
       menuTextColor: $id('menu-text-color-picker').value,
       menuFontSize: $id('menu-font-size-slider').value,
     };
+
     GM_setValue('ytSettingsMDCM', JSON.stringify(settings));
   }
+
+
 
   // Function to load settings
   function loadSettings() {
@@ -740,25 +1051,34 @@
     if (settings.theme) {
       $e(`input[name="theme"][value="${settings.theme}"]`).checked = true;
     }
-    // $e(`input[name="theme_custom"][value="${settings.themeCustom}"]`).checked = true;
+
+    $id('bg-color-picker').value = settings.bgColorPicker || '#606060';
+    $id('progressbar-color-picker').value = settings.progressbarColorPicker || '#ff0000';
+    $id('primary-color-picker').value = settings.primaryColorPicker || '#606060';
+    $id('secondary-color-picker').value = settings.secondaryColorPicker || '#606060';
+    $id('header-color-picker').value = settings.headerColorPicker || '#606060';
+    $id('icons-color-picker').value = settings.iconsColorPicker || '#606060';
+    $id('menu-color-picker').value = settings.menuColorPicker || '#606060';
+    $id('line-color-picker').value = settings.lineColorPicker || '#606060';
+    $id('time-color-picker').value = settings.timeColorPicker || '#606060';
     $id('dislikes-toggle').checked = settings.dislikes || false;
     $id('hide-comments-toggle').checked = settings.hideComments || false;
     $id('hide-sidebar-toggle').checked = settings.hideSidebar || false;
     $id('autoplay-toggle').checked = settings.disableAutoplay || false;
+    $id('cinematic-lighting-toggle').checked = settings.cinematicLighting || false;
+    $id('subtitles-toggle').checked = settings.disableSubtitles || false;
     $id('font-size-slider').value = settings.fontSize || 16;
     $id('player-size-slider').value = settings.playerSize || 100;
-    $id('primary-color-picker').value = settings.primaryColor || '#000000';
-    $id('secondary-color-picker').value = settings.secondaryColor || '#606060';
-    $id('menu-bg-color-picker').value = settings.menuBgColor || '#ffffff';
-    $id('menu-text-color-picker').value = settings.menuTextColor || '#000000';
+    $id('menu-bg-color-picker').value = settings.menuBgColor || '#000000';
+    $id('menu-text-color-picker').value = settings.menuTextColor || '#ffffff';
     $id('menu-font-size-slider').value = settings.menuFontSize || 14;
     updateSliderValues();
     setTimeout(() => {
       applySettings();
       if(settings.dislikes) {
           videoDislike();
-          shortDislike(); 
-          showDislikes = true; 
+          shortDislike();
+          showDislikes = true;
       }
     }, 500);
   }
@@ -775,28 +1095,37 @@
   function applySettings() {
     const settings = {
       theme: $e('input[name="theme"]:checked').value,
-      // themeCustom: $e('input[name="theme_custom"]:checked').value,
+      bgColorPicker: $id('bg-color-picker').value,
+      progressbarColorPicker: $id('progressbar-color-picker').value,
+      primaryColorPicker: $id('primary-color-picker').value,
+      secondaryColorPicker: $id('secondary-color-picker').value,
+      headerColorPicker: $id('header-color-picker').value,
+      iconsColorPicker: $id('icons-color-picker').value,
+      menuColorPicker: $id('menu-color-picker').value,
+      lineColorPicker: $id('line-color-picker').value,
+      timeColorPicker: $id('time-color-picker').value,
       dislikes: $id('dislikes-toggle').checked,
       hideComments: $id('hide-comments-toggle').checked,
       hideSidebar: $id('hide-sidebar-toggle').checked,
       disableAutoplay: $id('autoplay-toggle').checked,
+      cinematicLighting: $id('cinematic-lighting-toggle').checked,
+      disableSubtitles: $id('subtitles-toggle').checked,
       fontSize: $id('font-size-slider').value,
       playerSize: $id('player-size-slider').value,
-      primaryColor: $id('primary-color-picker').value,
-      secondaryColor: $id('secondary-color-picker').value,
       menuBgColor: $id('menu-bg-color-picker').value,
       menuTextColor: $id('menu-text-color-picker').value,
       menuFontSize: $id('menu-font-size-slider').value,
     };
 
-    
+
+    renderizarButtons()
 
     // Hide comments
     const commentsSection = $id('comments');
     if (commentsSection) {
       commentsSection.style.display = settings.hideComments ? 'none' : 'block';
     }
-  
+
     // Hide sidebar
     const sidebarSection = $id('secondary');
     if (sidebarSection) {
@@ -814,6 +1143,36 @@
         autoplayToggle.click();
       }
     }
+    // Disable subtitles
+    const subtitleToggle = $e('.ytp-subtitles-button');
+    if (subtitleToggle) {
+      const isCurrentlyOn =
+        subtitleToggle.getAttribute('aria-pressed') === 'true';
+      if (settings.disableSubtitles && isCurrentlyOn) {
+        subtitleToggle.click();
+      } else if (!settings.disableSubtitles && !isCurrentlyOn) {
+        subtitleToggle.click();
+      }
+    }
+    // Disable cinematicLighting
+    const buttonSettingVideo = $e(".ytp-settings-button");
+    if(buttonSettingVideo && !settings.cinematicLighting) {
+      buttonSettingVideo.click();
+      setTimeout(() => {
+        buttonSettingVideo.click();
+      },50)
+    }
+    const cinematicLightingToggle = $e('#ytp-id-18 > div > div > div:nth-child(2)');
+    if (cinematicLightingToggle && buttonSettingVideo) {
+      const isCurrentlyOn =
+        cinematicLightingToggle.getAttribute('aria-checked') === 'true';
+      if (settings.cinematicLighting && isCurrentlyOn) {
+        cinematicLightingToggle.click();
+      } else if (!settings.cinematicLighting && !isCurrentlyOn) {
+        cinematicLightingToggle.click();
+      }
+    }
+
 
     // Adjust font size
     $e('body').style.fontSize = `${settings.fontSize}px`;
@@ -837,24 +1196,22 @@
     const themeNormal = $e('.theme-selected-normal');
     if(isThemeCustom != undefined) {
       themeNormal.style.display = "block"
-      $m('.themes-options').forEach((input) => {
-        input.style.display = "none"
-      });
-    } 
+      themeCustomOptions.style.display = "block";
+      $e('.themes-options').style.display = "none";
+    }
     if(isThemeNormal) {
       $e(`input[name="theme"][value="custom"]`).checked = false;
     }
- 
- 
 
-    
+
+
+
     function checkDarkMode() {
       if (isDarkMode && !isThemeCustom) {
         // Apply theme
-        $m('.themes-options').forEach((input) => {
-          input.style.display = "block"
-        });
-        themeNormal.style.display = "none"
+        $e('.themes-options').style.display = "block";
+        themeNormal.style.display = "none";
+        themeCustomOptions.style.display = "none";
         $sp('--yt-spec-base-background', selectedTheme.gradient);
         $sp('--yt-spec-text-primary', selectedTheme.textColor);
         $sp('--yt-spec-text-secondary', selectedTheme.textColor);
@@ -870,6 +1227,9 @@
         $sp('--ytd-searchbox-text-color', selectedTheme.textColor);
 
         GM_addStyle(`
+          .ytp-menuitem[aria-checked=true] .ytp-menuitem-toggle-checkbox {
+          background:  ${selectedTheme.gradient} !important;
+          }
         #background.ytd-masthead { background: ${selectedTheme.gradient}  !important; }
         .ytp-swatch-background-color {
         background: ${
@@ -907,35 +1267,82 @@
         fill:  ${selectedTheme.iconsColor} !important;
       }
 
-      .buttons-tranlate {
-        background: ${selectedTheme.btnTranslate};
-        font-size: 10px;
-        border: none;
-        color: #fbf4f4 !important;
-        padding: 3px 0;
-        margin-left: 10px;
-        width: 70px;
-        border-radius: 10px;}
-        .buttons-tranlate:hover {
-        cursor: pointer;
-        background-color: #6b6b6b;}
+
         `);
       } else {
-        $sp('--yt-spec-base-background', "red");
-        $sp('--yt-spec-text-primary', "red");
-        $sp('--yt-spec-text-secondary', "red");
-        $sp('--yt-spec-menu-background', "red");
-        $sp('--yt-spec-icon-inactive', "red");
-        $sp('--yt-spec-brand-icon-inactive', "red");
-        $sp('--yt-spec-brand-icon-active', "red");
-        $sp('--yt-spec-static-brand-red', "red"); // line current time
-        $sp('--yt-spec-raised-background', "red");
-        $sp('--yt-spec-static-brand-red', "red");
-        $sp('--yt-spec-static-brand-white', "red");
-        $sp('--ytd-searchbox-background', "red");
-        $sp('--ytd-searchbox-text-color', "red");
+        $sp('--yt-spec-base-background', settings.bgColorPicker);
+        $sp('--yt-spec-text-primary', settings.primaryColorPicker);
+        $sp('--yt-spec-text-secondary', settings.secondaryColorPicker);
+        $sp('--yt-spec-menu-background', settings.menuColorPicker);
+        $sp('--yt-spec-icon-inactive', settings.iconsColorPicker);
+        $sp('--yt-spec-brand-icon-inactive', settings.primaryColorPicker);
+        $sp('--yt-spec-brand-icon-active', settings.primaryColorPicker);
+        $sp('--yt-spec-raised-background', settings.headerColorPicker);
+        $sp('--yt-spec-static-brand-red', settings.lineColorPicker);
+        $sp('--yt-spec-static-brand-white', settings.timeColorPicker);
+        $sp('--ytd-searchbox-background', settings.primaryColorPicker);
+        $sp('--ytd-searchbox-text-color', settings.secondaryColorPicker);
+
+        GM_addStyle(`
+          .ytp-volume-slider-handle:before, .ytp-volume-slider-handle, .ytp-tooltip.ytp-preview:not(.ytp-text-detail){
+            background-color: ${settings.iconsColorPicker} !important;
+          }
+            #container.ytd-searchbox {
+            color: red !important;
+            }
+          .ytp-menuitem[aria-checked=true] .ytp-menuitem-toggle-checkbox {
+          background:  ${settings.primaryColorPicker} !important;
+          }
+          .yt-spec-icon-shape {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            color: ${settings.iconsColorPicker} !important;
+        }
+          .ytp-time-current, .ytp-time-separator, .ytp-time-duration {
+            color: ${settings.iconsColorPicker} !important;
+          }
+          #background.ytd-masthead { background: ${settings.headerColorPicker}  !important; }
+          .ytp-swatch-background-color {
+          background: ${
+            settings.progressbarColorPicker
+          } !important;
+        }
+   .ytd-shorts, #page-manager.ytd-app {
+       background: ${settings.bgColorPicker};
+       }
+          ytd-engagement-panel-title-header-renderer[shorts-panel] #header.ytd-engagement-panel-title-header-renderer {
+          background: ${settings.bgColorPicker}  !important;}
+
+          .badge-shape-wiz--thumbnail-default {
+          color: ${settings.timeColorPicker} !important;
+           background: ${settings.secondaryColor} !important;
+          }
+           #logo-icon {
+           color:  ${settings.primaryColorPicker} !important;
+        }
+        .yt-spec-button-shape-next--overlay.yt-spec-button-shape-next--text {
+          color:  ${settings.iconsColorPicker} !important;
+        }
+        .ytd-topbar-menu-button-renderer #button.ytd-topbar-menu-button-renderer {
+          color:  ${settings.iconsColorPicker} !important;
+        }
+        .yt-spec-icon-badge-shape--style-overlay .yt-spec-icon-badge-shape__icon {
+          color:  ${settings.iconsColorPicker} !important;
+        }
+        .ytp-svg-fill {
+          fill:  ${settings.iconsColorPicker} !important;
+        }
+        #ytp-id-30,#ytp-id-17,#ytp-id-19,#ytp-id-20{
+          fill:  ${settings.iconsColorPicker} !important;
+        }
+          `);
       }
     }
+
+
 
     checkDarkMode();
     let currentUrl = window.location.href;
@@ -977,8 +1384,8 @@
         };
       }
     }
-   
-    // clean buttoms dom 
+
+    // clean buttoms dom
     function limpiarHTML(element) {
       const buttons = $m(`${element}`);
       [].forEach.call(buttons, function (buttons) {
@@ -1005,21 +1412,426 @@
       if(element != undefined) {
         const observerElementDom = (elem) => {
           const observer = new IntersectionObserver(entries => {
-      
+
               if(entries[0].isIntersecting) {
-    
+
                 element.style.background = `${selectedTheme.gradient}`;
               } else {return}
           })
-          
+
           return observer.observe($e(`${elem}`))
-           
+
         }
         observerElementDom('ytd-item-section-renderer[static-comments-header] #contents')
       }
     }
     saveSettings();
   }
+
+  let validoBotones = true;
+  function renderizarButtons() {
+    const addButton = document.querySelector('.style-scope .ytd-watch-metadata');
+    const addButton2 = document.querySelector('#contents');
+
+    if (addButton != undefined && validoBotones) {
+        validoBotones = false;
+        const isVisible = !!(
+          addButton.offsetWidth ||
+          addButton.offsetHeight ||
+          addButton.getClientRects().length
+        );
+        if (isVisible) {
+          addButton.insertAdjacentHTML("beforebegin", menuBotones);
+        } else if (addButton2 != undefined) {
+          addButton.insertAdjacentHTML("beforebegin", menuBotones);
+        }
+    }
+
+      // Formulario de botones para descargar
+      const formulariodescarga = document.querySelector(
+        '.formulariodescarga'
+      );
+      const formulariodescargaaudio = document.querySelector(
+        '.formulariodescargaaudio'
+      );
+      const framedescarga = document.querySelector('#descargando');
+      const framedescargamp3 = document.querySelector('#descargandomp3');
+      if (formulariodescarga && formulariodescargaaudio) {
+        formulariodescarga.addEventListener('click', (e) => {
+          e.preventDefault();
+        });
+        formulariodescargaaudio.addEventListener('click', (e) => {
+          e.preventDefault();
+        });
+      }
+      const btn1mp4 = document.querySelector('.btn1');
+      const btn2mp3 = document.querySelector('.btn2');
+      const btn3cancel = document.querySelector('.btn3');
+      const selectcalidades = document.querySelector('.selectcalidades');
+      const selectcalidadesaudio = document.querySelector(
+        '.selectcalidadesaudio'
+      );
+
+      selectcalidades.addEventListener('change', (e) => {
+        framedescarga.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=0af`;
+        framedescarga.classList.remove('ocultarframe');
+      });
+
+      selectcalidadesaudio.addEventListener('change', (e) => {
+        framedescargamp3.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=049c16`;
+        // console.log(e.target.value)
+        framedescargamp3.classList.remove('ocultarframeaudio');
+      });
+
+      if (btn3cancel != undefined) {
+        btn3cancel.onclick = () => {
+          formulariodescarga.style.display = 'none';
+          formulariodescargaaudio.style.display = 'none';
+        };
+      }
+
+      if (btn1mp4 != undefined) {
+        btn1mp4.onclick = () => {
+          selectcalidades.classList.remove('ocultarframe');
+          framedescarga.classList.add('ocultarframe');
+          formulariodescarga.classList.remove('ocultarframe');
+          formulariodescarga.style.display = '';
+          selectcalidadesaudio.classList.add('ocultarframeaudio');
+          formulariodescargaaudio.classList.add('ocultarframe');
+          formulariodescarga.reset();
+        };
+      }
+
+      if (btn2mp3 != undefined) {
+        btn2mp3.onclick = () => {
+          formulariodescargaaudio.classList.remove('ocultarframe');
+          formulariodescarga.classList.add('ocultarframe');
+          framedescargamp3.classList.remove('ocultarframeaudio');
+          formulariodescargaaudio.style.display = '';
+          selectcalidadesaudio.classList.remove('ocultarframeaudio');
+          framedescargamp3.classList.add('ocultarframeaudio');
+          formulariodescargaaudio.reset();
+        };
+      }
+
+      const reverse = document.querySelector('#columns'); // Invertir contenido
+
+      const background_image = document.querySelector('#background_image');
+      const color_bg = document.querySelector('#color_bg');
+      const alertShown = localStorage.getItem('alertShown');
+      const alertShownBg = localStorage.getItem('alertShownBg');
+      if (!alertShown) {
+        color_bg.addEventListener('change', () => {
+          alert('disable cinematic mode in the video');
+          localStorage.setItem('alertShown', true);
+        });
+      }
+      if (!alertShownBg) {
+        background_image.addEventListener('input', () => {
+          alert('disable cinematic mode in the video');
+          localStorage.setItem('alertShownBg', true);
+        });
+      }
+
+
+
+      const btnImagen = document.querySelector('#imagen');
+      const formularioButtons = document.querySelector('#eyes'); 
+      const invertirVista = document.querySelector('#invertir'); 
+
+     
+
+      reverse.style.flexDirection = 'row';
+    
+
+      let countViewRow = 0; // Count
+      if (invertirVista != undefined) {
+        invertirVista.onclick = () => {
+          countViewRow += 1;
+          switch (countViewRow) {
+            case 1:
+              reverse.style.flexDirection = 'row-reverse';
+              break;
+            case 2:
+              reverse.style.flexDirection = 'row';
+              countViewRow = 0;
+              break;
+          }
+        };
+      }
+
+      // valido modo oscuro y venta de video
+      // Repeat video button
+      let countRepeat = 0; // count
+      const repeat = document.querySelector('#repeatvideo'); // Repeat button
+      const imarepeat = document.querySelector('.icon-tabler-repeat'); // img repeat
+      const videoFull = document.querySelector(
+        '#movie_player > div.html5-video-container > video'
+      );
+      repeat.onclick = () => {
+        if (
+          document.querySelector('#cinematics > div') != undefined ||
+          videoFull != undefined
+        ) {
+          countRepeat += 1;
+          setInterval(() => {
+            switch (countRepeat) {
+              case 1:
+                document
+                  .querySelector(
+                    '#movie_player > div.html5-video-container > video'
+                  )
+                  .setAttribute('loop', 'true');
+                imarepeat.innerHTML = `  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-repeat-off" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M4 12v-3c0 -1.336 .873 -2.468 2.08 -2.856m3.92 -.144h10m-3 -3l3 3l-3 3"></path>
+                    <path d="M20 12v3a3 3 0 0 1 -.133 .886m-1.99 1.984a3 3 0 0 1 -.877 .13h-13m3 3l-3 -3l3 -3"></path>
+                    <path d="M3 3l18 18"></path>
+                 </svg> `; // img repeat
+                break;
+              case 2:
+                countRepeat = 0;
+                document
+                  .querySelector(
+                    '#movie_player > div.html5-video-container > video'
+                  )
+                  .removeAttribute('loop');
+                imarepeat.innerHTML = ` <svg  xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-repeat" width="24"
+                    height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M4 12v-3a3 3 0 0 1 3 -3h13m-3 -3l3 3l-3 3"></path>
+                    <path d="M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3"></path>
+                  </svg>`;
+                break;
+            }
+          }, 1000);
+        } else {
+          mostrarAlerta(
+            'Active Dark Theme in Youtube page or Reload Pafe if exits error'
+          );
+        }
+      };
+      // Background transparent
+      reverse.style.flexDirection = 'row';
+      const cinematica = document.querySelector('#cinematics > div');
+      if (cinematica != undefined) {
+        cinematica.style =
+          'position: fixed; inset: 0px; pointer-events: none; transform: scale(1.5, 2)';
+      }
+      const btnReset = document.querySelector('#reset_button'); // Reset button
+      if (btnReset != undefined) {
+        btnReset.addEventListener('click', function () {
+          if (localStorage.getItem('colores') != null) {
+            localStorage.removeItem('colores');
+            document.querySelector('#ojosprotect').style.backgroundColor =
+              'transparent';
+            setTimeout(() => {
+              location.reload();
+            }, 400);
+          }
+        });
+      }
+
+      if (btnImagen != undefined) {
+        btnImagen.onclick = () => {
+          if (
+            document.querySelector('#cinematics > div') != undefined ||
+            videoFull != undefined
+          ) {
+            const parametrosURL = new URLSearchParams(window.location.search);
+            let enlace = parametrosURL.get('v');
+
+            // Construir la URL de la imagen
+            const imageUrl = `https://i.ytimg.com/vi/${enlace}/maxresdefault.jpg`;
+
+            // Realizar la solicitud para obtener la imagen
+            fetch(imageUrl)
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.blob();
+              })
+              .then((blob) => {
+                // Obtener el tamaño de la imagen en kilobytes
+                const imageSizeKB = blob.size / 1024;
+
+                // Verificar si el tamaño de la imagen es menor o igual a 20 KB
+                if (imageSizeKB >= 20) {
+                  window.open(
+                    `https://i.ytimg.com/vi/${enlace}/maxresdefault.jpg`,
+                    'popUpWindow',
+                    'height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes'
+                  );
+                  // Crear una URL para la imagen
+                  const imageUrlObject = URL.createObjectURL(blob);
+
+                  // Crear un enlace para descargar la imagen
+                  const enlaceDescarga = document.createElement('a');
+                  enlaceDescarga.href = imageUrlObject;
+                  const titleVideo = document.querySelector(
+                    'h1.style-scope.ytd-watch-metadata'
+                  ).innerText;
+                  enlaceDescarga.download = `${titleVideo}_maxresdefault.jpg`;
+
+                  // Simular un clic en el enlace para iniciar la descarga
+                  enlaceDescarga.click();
+
+                  // Limpiar la URL del objeto después de la descarga
+                  URL.revokeObjectURL(imageUrlObject);
+                } else {
+                  console.log(
+                    'La imagen no excede los 20 KB. No se descargará.'
+                  );
+                }
+              })
+              .catch((error) => {
+                alert('No found image');
+                console.error('Error al obtener la imagen:', error);
+              });
+          } else {
+            mostrarAlerta('Active Dark Theme in Youtube page');
+          }
+        };
+      }
+      // for background image file photo higt quality
+      const fileInput = document.getElementById('background_image');
+      const backgroundDiv = document.querySelector('ytd-app');
+
+      const storedImage = localStorage.getItem('backgroundImage');
+      if (storedImage) {
+        backgroundDiv.style = `background-size: contain; background-repeat: repeat; background-image: url(${storedImage}) !important`;
+      }
+
+      fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const imageUrl = e.target.result;
+            localStorage.setItem('backgroundImage', imageUrl);
+            backgroundDiv.style.backgroundImage = `url(${imageUrl})`;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+
+      const externalLink = document.querySelector('.external_link');
+      if (externalLink != undefined) {
+        externalLink.onclick = () => {
+          const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
+          let enlace;
+          enlace = parametrosURL.get('v');
+          window.open(
+            `https://www.y2mate.com/es/convert-youtube/${enlace}`,
+            'popUpWindow',
+            'height=800,width=1000,left=50%,top=100,resizable=no,scrollbars=yes,toolbar=no,menubar=yes,location=no,directories=yes, status=no'
+          );
+        };
+      }
+      const viewExternalLink = document.querySelector('.view_external_link');
+      if (viewExternalLink != undefined) {
+        viewExternalLink.onclick = () => {
+          document.querySelector('video').click();
+          const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
+          let enlace;
+          enlace = parametrosURL.get('v');
+          window.open(
+            `https://www.youtube.com/embed/${enlace}?rel=0&controls=2&color=white&iv_load_policy=3&showinfo=0&modestbranding=1&autoplay=1`
+          );
+        };
+      }
+      const viewPictureToPicture = document.querySelector(
+        '.video_picture_to_picture'
+      );
+      if (viewPictureToPicture != undefined) {
+        viewPictureToPicture.onclick = () => {
+          const video = document.querySelector('video');
+          // Verifica si el navegador admite Picture-in-Picture
+          if ('pictureInPictureEnabled' in document) {
+            // Verifica si el video aún no está en modo Picture-in-Picture
+            if (!document.pictureInPictureElement) {
+              // Intenta activar el modo Picture-in-Picture
+              video
+                .requestPictureInPicture()
+                .then(() => {
+                  // El video está ahora en modo Picture-in-Picture
+                })
+                .catch((error) => {
+                  console.error(
+                    'Error al activar el modo Picture-in-Picture:',
+                    error
+                  );
+                });
+            } else {
+              // video picture
+            }
+          } else {
+            alert('Picture-in-Picture not supported');
+          }
+        };
+
+        // Filtro de pantalla
+        if (formularioButtons != undefined) {
+          formularioButtons.addEventListener('input', function () {
+            if (
+              document.querySelector('#cinematics > div') != undefined ||
+              videoFull != undefined
+            ) {
+              document.querySelector('#ojosprotect').style.backgroundColor =
+                formularioButtons.value;
+            }
+          });
+        }
+        clearInterval(renderizarButtons);
+      }
+
+      const checked_updates = document.querySelector('.checked_updates');
+
+      if (checked_updates != undefined) {
+        checked_updates.onclick = () => {
+          window.open(
+            `https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js`
+          );
+        };
+      }
+
+      const screenShotVideo = document.querySelector('.screenshot_video');
+      if (screenShotVideo != undefined) {
+        screenShotVideo.onclick = () => {
+          const video = document.querySelector('video');
+          const canvas = document.createElement('canvas');
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          const context = canvas.getContext('2d');
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const imagenURL = canvas.toDataURL('image/png');
+          const enlaceDescarga = document.createElement('a');
+          enlaceDescarga.href = imagenURL;
+          const titleVideo = document.querySelector(
+            'h1.style-scope.ytd-watch-metadata'
+          ).innerText;
+          enlaceDescarga.download = `${video.currentTime.toFixed(
+            0
+          )}s_${titleVideo}.png`;
+          enlaceDescarga.click();
+        };
+      } else {
+        // Si result.GeneralIsActiveIconColor es falso, quitar contenido del DOM
+        const containerButtons = document.querySelector('.containerButtons');
+
+        if (containerButtons != undefined) {
+          containerButtons.innerHTML = '';
+          // También puedes ocultar o manipular otros elementos según tus necesidades
+        }
+      }
+      clearInterval(renderizarButtons);
+    }
+
+
+
 
   console.log('Scrip en ejecución by: DeveloperMDCM  MDCM');
   const HEADER_STYLE = 'color: #F00; font-size: 24px; font-family: sans-serif;';
@@ -1035,8 +1847,8 @@
     MESSAGE_STYLE
   );
 
-  
-  
+
+
 
 
   // Add event listeners to all inputs
@@ -1082,7 +1894,7 @@
     }
   });
   panel.style.display = 'none'; // Ensure panel is hidden on load
-  
+
   // Load saved settings
   // Visible element DOM
   function checkElement(selector, callback) {
