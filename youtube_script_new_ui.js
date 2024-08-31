@@ -155,7 +155,6 @@
             <svg class="svg-dislike-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 13v-8a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v7a1 1 0 0 0 1 1h3a4 4 0 0 1 4 4v1a2 2 0 0 0 4 0v-5h3a2 2 0 0 0 2 -2l-1 -5a2 3 0 0 0 -2 -2h-7a3 3 0 0 0 -3 3" /></svg>
             ${FormatterNumber(dislikes, 0)}`;
         }
-        console.log('cargando dislikes');
 
       } catch (error) {
         console.log(error);
@@ -166,7 +165,7 @@
   // dislikes shorts
   async function shortDislike() {
     validoUrl = document.location.href;
-    const validoVentanaShort = document.querySelectorAll(
+    const validoVentanaShort = $eAll(
       '#dislike-button > yt-button-shape > label > div > span'
     );
     if (validoVentanaShort != undefined && document.location.href.split('/')[3] === 'shorts') {
@@ -214,7 +213,7 @@
 
   // Styles for our enhancement panel
   GM_addStyle(`
-    .html5-video-player.unstarted-mode,.html5-video-player.ad-showing,.html5-video-player.ended-mode {
+    .html5-video-player.unstarted-mode,.html5-video-player.ended-mode {
     background-image: url('https://avatars.githubusercontent.com/u/54366580?v=4');
     background-repeat: no-repeat;
     background-position: 50% 50%;
@@ -377,27 +376,21 @@
          button.botones_div {
       margin: 0;
       padding: 0;
-     
+
     }
 
     button:hover {
       color: #ec3203;
     }
-    .botones_div {
-      background-color: transparent;
-      border: none;
-      color: #999999;
-       user-select: none;
-    }
+
         #eyes {
-      opacity: 0.5;
+      opacity: 0;
       position: absolute;
       height: 24px;
-      bottom: 0;
-      top: 0;
+      left: 0;
       width: 24px;
     }
-      
+
     /* width */
     ::-webkit-scrollbar {
       width: 4px;
@@ -416,6 +409,82 @@
 
     }
 
+    .containerButtons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+      #meta.ytd-playlist-panel-video-renderer {
+    min-width: 0;
+    padding: 0 8px;
+    display: flexbox;
+    display: flex;
+    flex-direction: column-reverse;
+    flex: 1;
+    flex-basis: 0.000000001px;
+}
+
+    .containerall {
+        display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    margin: auto;
+}
+    }
+    .container .botoncalidades {
+      margin: 3px 2px;
+      width: 24.6%;
+    }
+
+    .botoncalidades:first-child {
+      background-color: #0af;
+    }
+
+    .botoncalidades:last-child {
+      background-color: red;
+      width: 100px;
+    }
+
+    .selectcalidades,
+    .botoncalidades,
+    .selectcalidadesaudio {
+      width: 50%;
+      height: 27.8px;
+      background-color: #fff;
+      color: #000;
+      font-size: 25px;
+      text-align: center;
+      border: none;
+      font-size: 20px;
+      margin: 2px 2px;
+    }
+
+    .botoncalidades {
+      width: 70px;
+      height: 30px;
+      background-color: rgb(4, 156, 22);
+      border: 0px solid #000;
+      color: #fff;
+      font-size: 20px;
+      border-radius: 10px;
+      margin: 2px 2px;
+    }
+
+    .botoncalidades:hover,
+    .bntcontainer:hover {
+      cursor: pointer;
+    }
+
+   .ocultarframe,
+    .ocultarframeaudio {
+      display: none;
+    }
+      .checked_updates {
+      cursor: pointer;
+      }
     `);
 
   // botons bottom video player
@@ -455,7 +524,7 @@
 
   const filterEyes = `
 
-  <div style="position:relative; display:inline-block ">
+  <div style="position:relative; ">
   <button title="Filter eyes" class="botones_div" type="button">
     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-half"
       width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
@@ -466,7 +535,7 @@
         d="M6 6h3.5l2.5 -2.5l2.5 2.5h3.5v3.5l2.5 2.5l-2.5 2.5v3.5h-3.5l-2.5 2.5l-2.5 -2.5h-3.5v-3.5l-2.5 -2.5l2.5 -2.5z">
       </path>
     </svg>
-    <input id="eyes" list="presetColors" type="color" value="#ffffff"></button>
+    <input id="eyes" list="presetColors" type="color" value="#ffffff">
   <datalist id="presetColors">
     <option value="#000000" />
     <option value="#fbff00" />
@@ -474,10 +543,11 @@
     <option value="#00ff00" />
     <option value="#0000ff" />
   </datalist>
+  <div id="ojosprotect"
+  style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0px; top: 0px; opacity: 0.2; z-index: 10; display: block;">
+  </div>
 </div>
-<div id="ojosprotect"
-style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0px; top: 0px; opacity: 0.2; z-index: 10; display: block;">
-</div>
+</button>
   `;
 
   const resetButton = `
@@ -816,16 +886,19 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
     ? policy.createHTML(`
       <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
       <div style="display: flex;justify-content: space-between;align-items: center;gap: 3px;margin-bottom: 10px;">
-      <h3 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v1.0  <a target="_blank" href=https://github.com/DeveloperMDCM/Youtube-tools-extension">
+      <h3 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v1.0  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
       <svg style="background-color: white; border-radius: 5px;color: #000;" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
       </a></h3>
+      <div style="display: flex; gap: 5px;">
       <span id="menu-settings-icon">⚙️</span>
+      <span class="checked_updates">🔄️</span>
+      </div>
       </div>
         <div class="tab-buttons">
             <button class="tab-button active" data-tab="general">General</button>
             <button class="tab-button" data-tab="themes">Themes</button>
             <button class="tab-button" data-tab="sidebar">Sidebar</button>
-            <button class="tab-button" data-tab="header">Header</button>
+            <button class="tab-button" data-tab="headers">Header</button>
         </div>
         <div id="general" class="tab-content active">
             <div class="enhancement-option">
@@ -867,6 +940,7 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
                 <input type="range" id="player-size-slider" class="slider" min="50" max="150" value="100">
             </div>
         </div>
+
         <div id="themes" class="tab-content" style="height: 350px; overflow-y: auto;">
             <h4>Choose a Theme</h4>
               <label>
@@ -888,10 +962,6 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
               ${themeOptionsHTML}
             </div>
             <div class="theme-custom-options">
-            <div class="enhancement-option">
-                <label>Background Image:</label>
-                <input type="file"  name="avatar" accept="image/png, image/jpeg" id="background_image" class="color-picker">
-            </div>
             <div class="enhancement-option">
                 <label>Progressbar Video:</label>
                 <input type="color" id="progressbar-color-picker" class="color-picker" value="#ff0000">
@@ -930,11 +1000,12 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
             </div>
             </div>
         </div>
+
         <div id="sidebar" class="tab-content">
             <h4>Available in next update</h4>
         </div>
-        <div id="header" class="tab-content">
-            <h4>Available in next update</h4>
+        <div id="headers" class="tab-content">
+           <h4>Available in next update</h4>
         </div>
         <div id="menu-settings" class="tab-content">
             <h4 style="margin: 10px 0">Menu Appearance</h4>
@@ -1073,6 +1144,7 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
     $id('menu-text-color-picker').value = settings.menuTextColor || '#ffffff';
     $id('menu-font-size-slider').value = settings.menuFontSize || 14;
     updateSliderValues();
+
     setTimeout(() => {
       applySettings();
       if(settings.dislikes) {
@@ -1093,6 +1165,12 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
 
   // Function to apply settings
   function applySettings() {
+    const formulariodescarga = $e('.formulariodescarga');
+    const formulariodescargaaudio = $e('.formulariodescargaaudio');
+      if (formulariodescarga != undefined) {
+        formulariodescarga.classList.add('ocultarframe');
+        formulariodescargaaudio.classList.add('ocultarframe');
+      }
     const settings = {
       theme: $e('input[name="theme"]:checked').value,
       bgColorPicker: $id('bg-color-picker').value,
@@ -1190,6 +1268,7 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
 
     // Apply theme
     const selectedTheme = themes[settings.theme];
+
     const isThemeCustom = $e(`input[name="theme"][value="custom"]`).checked;
     const isThemeNormal = $e(`input[name="theme"][value="normal"]`).checked;
     const themeCustomOptions = $e('.theme-custom-options');
@@ -1212,63 +1291,77 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
         $e('.themes-options').style.display = "block";
         themeNormal.style.display = "none";
         themeCustomOptions.style.display = "none";
-        $sp('--yt-spec-base-background', selectedTheme.gradient);
-        $sp('--yt-spec-text-primary', selectedTheme.textColor);
-        $sp('--yt-spec-text-secondary', selectedTheme.textColor);
-        $sp('--yt-spec-menu-background', selectedTheme.gradient);
-        $sp('--yt-spec-icon-inactive', selectedTheme.textColor);
-        $sp('--yt-spec-brand-icon-inactive', selectedTheme.textColor);
-        $sp('--yt-spec-brand-icon-active', selectedTheme.gradient);
-        $sp('--yt-spec-static-brand-red', selectedTheme.gradient); // line current time
-        $sp('--yt-spec-raised-background', selectedTheme.raised);
-        $sp('--yt-spec-static-brand-red', selectedTheme.CurrentProgressVideo);
-        $sp('--yt-spec-static-brand-white', selectedTheme.textColor);
-        $sp('--ytd-searchbox-background', selectedTheme.gradient);
-        $sp('--ytd-searchbox-text-color', selectedTheme.textColor);
+        if(settings.theme === 'normal') {
+          $e(`input[name="theme"][value="0"]`).checked = true;
+          applySettings();
+        } else {
 
-        GM_addStyle(`
-          .ytp-menuitem[aria-checked=true] .ytp-menuitem-toggle-checkbox {
-          background:  ${selectedTheme.gradient} !important;
+          $sp('--yt-spec-base-background', selectedTheme.gradient);
+          $sp('--yt-spec-text-primary', selectedTheme.textColor);
+          $sp('--yt-spec-text-secondary', selectedTheme.textColor);
+          $sp('--yt-spec-menu-background', selectedTheme.gradient);
+          $sp('--yt-spec-icon-inactive', selectedTheme.textColor);
+          $sp('--yt-spec-brand-icon-inactive', selectedTheme.textColor);
+          $sp('--yt-spec-brand-icon-active', selectedTheme.gradient);
+          $sp('--yt-spec-static-brand-red', selectedTheme.gradient); // line current time
+          $sp('--yt-spec-raised-background', selectedTheme.raised);
+          $sp('--yt-spec-static-brand-red', selectedTheme.CurrentProgressVideo);
+          $sp('--yt-spec-static-brand-white', selectedTheme.textColor);
+          $sp('--ytd-searchbox-background', selectedTheme.gradient);
+          $sp('--ytd-searchbox-text-color', selectedTheme.textColor);
+
+          GM_addStyle(`
+
+            .botones_div {
+            background-color: transparent;
+            border: none;
+            color: #999999;
+            user-select: none;
           }
-        #background.ytd-masthead { background: ${selectedTheme.gradient}  !important; }
-        .ytp-swatch-background-color {
-        background: ${
-           selectedTheme.gradient
-        } !important;
-      }
- .ytd-shorts, #page-manager.ytd-app {
-     background: ${selectedTheme.gradient};
-     }
-        ytd-engagement-panel-title-header-renderer[shorts-panel] #header.ytd-engagement-panel-title-header-renderer {
-        background: ${selectedTheme.gradient}  !important;}
-        .buttons-tranlate {
-         background: ${selectedTheme.btnTranslate} !important;
+            .ytp-menuitem[aria-checked=true] .ytp-menuitem-toggle-checkbox {
+            background:  ${selectedTheme.gradient} !important;
+            }
+          #background.ytd-masthead { background: ${selectedTheme.gradient}  !important; }
+          .ytp-swatch-background-color {
+          background: ${
+             selectedTheme.gradient
+          } !important;
         }
-        .badge-shape-wiz--thumbnail-default {
-        color: ${selectedTheme.videoDuration} !important;
-         background: ${selectedTheme.gradient} !important;
+   .ytd-shorts, #page-manager.ytd-app {
+       background: ${selectedTheme.gradient};
+       }
+          ytd-engagement-panel-title-header-renderer[shorts-panel] #header.ytd-engagement-panel-title-header-renderer {
+          background: ${selectedTheme.gradient}  !important;}
+          .buttons-tranlate {
+           background: ${selectedTheme.btnTranslate} !important;
+          }
+          .badge-shape-wiz--thumbnail-default {
+          color: ${selectedTheme.videoDuration} !important;
+           background: ${selectedTheme.gradient} !important;
+          }
+           #logo-icon {
+           color:  ${selectedTheme.textLogo} !important;
         }
-         #logo-icon {
-         color:  ${selectedTheme.textLogo} !important;
-      }
-      .yt-spec-button-shape-next--overlay.yt-spec-button-shape-next--text {
-        color:  ${selectedTheme.iconsColor} !important;
-      }
-      .ytd-topbar-menu-button-renderer #button.ytd-topbar-menu-button-renderer {
-        color:  ${selectedTheme.iconsColor} !important;
-      }
-      .yt-spec-icon-badge-shape--style-overlay .yt-spec-icon-badge-shape__icon {
-        color:  ${selectedTheme.iconsColor} !important;
-      }
-      .ytp-svg-fill {
-        fill:  ${selectedTheme.iconsColor} !important;
-      }
-      #ytp-id-30,#ytp-id-17,#ytp-id-19,#ytp-id-20{
-        fill:  ${selectedTheme.iconsColor} !important;
-      }
+        .yt-spec-button-shape-next--overlay.yt-spec-button-shape-next--text {
+          color:  ${selectedTheme.iconsColor} !important;
+        }
+        .ytd-topbar-menu-button-renderer #button.ytd-topbar-menu-button-renderer {
+          color:  ${selectedTheme.iconsColor} !important;
+        }
+        .yt-spec-icon-badge-shape--style-overlay .yt-spec-icon-badge-shape__icon {
+          color:  ${selectedTheme.iconsColor} !important;
+        }
+        .ytp-svg-fill {
+          fill:  ${selectedTheme.iconsColor} !important;
+        }
+        #ytp-id-30,#ytp-id-17,#ytp-id-19,#ytp-id-20{
+          fill:  ${selectedTheme.iconsColor} !important;
+        }
 
 
-        `);
+          `);
+        }
+
       } else {
         $sp('--yt-spec-base-background', settings.bgColorPicker);
         $sp('--yt-spec-text-primary', settings.primaryColorPicker);
@@ -1284,8 +1377,15 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
         $sp('--ytd-searchbox-text-color', settings.secondaryColorPicker);
 
         GM_addStyle(`
+
+           .botones_div {
+          background-color: transparent;
+          border: none;
+          color: ${settings.iconsColorPicker} !important;
+          user-select: none;
+        }
           .ytp-volume-slider-handle:before, .ytp-volume-slider-handle, .ytp-tooltip.ytp-preview:not(.ytp-text-detail){
-            background-color: ${settings.iconsColorPicker} !important;
+            background-color:
           }
             #container.ytd-searchbox {
             color: red !important;
@@ -1430,8 +1530,8 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
 
   let validoBotones = true;
   function renderizarButtons() {
-    const addButton = document.querySelector('.style-scope .ytd-watch-metadata');
-    const addButton2 = document.querySelector('#contents');
+    const addButton = $e('.style-scope .ytd-watch-metadata');
+    const addButton2 = $e('#contents');
 
     if (addButton != undefined && validoBotones) {
         validoBotones = false;
@@ -1448,14 +1548,14 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
     }
 
       // Formulario de botones para descargar
-      const formulariodescarga = document.querySelector(
+      const formulariodescarga = $e(
         '.formulariodescarga'
       );
-      const formulariodescargaaudio = document.querySelector(
+      const formulariodescargaaudio = $e(
         '.formulariodescargaaudio'
       );
-      const framedescarga = document.querySelector('#descargando');
-      const framedescargamp3 = document.querySelector('#descargandomp3');
+      const framedescarga = $e('#descargando');
+      const framedescargamp3 = $e('#descargandomp3');
       if (formulariodescarga && formulariodescargaaudio) {
         formulariodescarga.addEventListener('click', (e) => {
           e.preventDefault();
@@ -1464,24 +1564,29 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
           e.preventDefault();
         });
       }
-      const btn1mp4 = document.querySelector('.btn1');
-      const btn2mp3 = document.querySelector('.btn2');
-      const btn3cancel = document.querySelector('.btn3');
-      const selectcalidades = document.querySelector('.selectcalidades');
-      const selectcalidadesaudio = document.querySelector(
+      const btn1mp4 = $e('.btn1');
+      const btn2mp3 = $e('.btn2');
+      const btn3cancel = $e('.btn3');
+      const selectcalidades = $e('.selectcalidades');
+      const selectcalidadesaudio = $e(
         '.selectcalidadesaudio'
       );
 
-      selectcalidades.addEventListener('change', (e) => {
-        framedescarga.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=0af`;
-        framedescarga.classList.remove('ocultarframe');
-      });
+      if(selectcalidades != undefined) {
+        selectcalidades.addEventListener('change', (e) => {
+          framedescarga.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=0af`;
+          framedescarga.classList.remove('ocultarframe');
+        });
 
-      selectcalidadesaudio.addEventListener('change', (e) => {
-        framedescargamp3.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=049c16`;
-        // console.log(e.target.value)
-        framedescargamp3.classList.remove('ocultarframeaudio');
-      });
+      }
+
+      if(selectcalidadesaudio != undefined) {
+        selectcalidadesaudio.addEventListener('change', (e) => {
+          framedescargamp3.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=049c16`;
+          // console.log(e.target.value)
+          framedescargamp3.classList.remove('ocultarframeaudio');
+        });
+      }
 
       if (btn3cancel != undefined) {
         btn3cancel.onclick = () => {
@@ -1514,35 +1619,32 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
         };
       }
 
-      const reverse = document.querySelector('#columns'); // Invertir contenido
+      // Invertir contenido
 
-      const background_image = document.querySelector('#background_image');
-      const color_bg = document.querySelector('#color_bg');
-      const alertShown = localStorage.getItem('alertShown');
-      const alertShownBg = localStorage.getItem('alertShownBg');
-      if (!alertShown) {
-        color_bg.addEventListener('change', () => {
-          alert('disable cinematic mode in the video');
-          localStorage.setItem('alertShown', true);
-        });
-      }
-      if (!alertShownBg) {
-        background_image.addEventListener('input', () => {
-          alert('disable cinematic mode in the video');
-          localStorage.setItem('alertShownBg', true);
-        });
-      }
+      // const background_image = $e('#background_image');
+      // const color_bg = $e('#color_bg');
+      // const alertShown = localStorage.getItem('alertShown');
+      // const alertShownBg = localStorage.getItem('alertShownBg');
+      // if (!alertShown) {
+      //   color_bg.addEventListener('change', () => {
+      //     alert('disable cinematic mode in the video');
+      //     localStorage.setItem('alertShown', true);
+      //   });
+      // }
+      // if (!alertShownBg) {
+      //   background_image.addEventListener('input', () => {
+      //     alert('disable cinematic mode in the video');
+      //     localStorage.setItem('alertShownBg', true);
+      //   });
+      // }
 
 
 
-      const btnImagen = document.querySelector('#imagen');
-      const formularioButtons = document.querySelector('#eyes'); 
-      const invertirVista = document.querySelector('#invertir'); 
+      const btnImagen = $e('#imagen');
+      const formularioButtons = $e('#eyes');
+      const invertirVista = $e('#invertir');
 
-     
-
-      reverse.style.flexDirection = 'row';
-    
+      const reverse = $e('#columns');
 
       let countViewRow = 0; // Count
       if (invertirVista != undefined) {
@@ -1563,68 +1665,68 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
       // valido modo oscuro y venta de video
       // Repeat video button
       let countRepeat = 0; // count
-      const repeat = document.querySelector('#repeatvideo'); // Repeat button
-      const imarepeat = document.querySelector('.icon-tabler-repeat'); // img repeat
-      const videoFull = document.querySelector(
+      const repeat = $e('#repeatvideo'); // Repeat button
+      const imarepeat = $e('.icon-tabler-repeat'); // img repeat
+      const videoFull = $e(
         '#movie_player > div.html5-video-container > video'
       );
-      repeat.onclick = () => {
-        if (
-          document.querySelector('#cinematics > div') != undefined ||
-          videoFull != undefined
-        ) {
-          countRepeat += 1;
-          setInterval(() => {
-            switch (countRepeat) {
-              case 1:
-                document
-                  .querySelector(
-                    '#movie_player > div.html5-video-container > video'
-                  )
-                  .setAttribute('loop', 'true');
-                imarepeat.innerHTML = `  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-repeat-off" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                    <path d="M4 12v-3c0 -1.336 .873 -2.468 2.08 -2.856m3.92 -.144h10m-3 -3l3 3l-3 3"></path>
-                    <path d="M20 12v3a3 3 0 0 1 -.133 .886m-1.99 1.984a3 3 0 0 1 -.877 .13h-13m3 3l-3 -3l3 -3"></path>
-                    <path d="M3 3l18 18"></path>
-                 </svg> `; // img repeat
-                break;
-              case 2:
-                countRepeat = 0;
-                document
-                  .querySelector(
-                    '#movie_player > div.html5-video-container > video'
-                  )
-                  .removeAttribute('loop');
-                imarepeat.innerHTML = ` <svg  xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-repeat" width="24"
-                    height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                    <path d="M4 12v-3a3 3 0 0 1 3 -3h13m-3 -3l3 3l-3 3"></path>
-                    <path d="M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3"></path>
-                  </svg>`;
-                break;
-            }
-          }, 1000);
-        } else {
-          mostrarAlerta(
-            'Active Dark Theme in Youtube page or Reload Pafe if exits error'
-          );
-        }
-      };
+      if(repeat != undefined) {
+
+        repeat.onclick = () => {
+          if (
+            $e('#cinematics > div') != undefined ||
+            videoFull != undefined
+          ) {
+            countRepeat += 1;
+            setInterval(() => {
+              switch (countRepeat) {
+                case 1:
+                  document
+                    .querySelector(
+                      '#movie_player > div.html5-video-container > video'
+                    )
+                    .setAttribute('loop', 'true');
+                  imarepeat.innerHTML = `  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-repeat-off" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                      <path d="M4 12v-3c0 -1.336 .873 -2.468 2.08 -2.856m3.92 -.144h10m-3 -3l3 3l-3 3"></path>
+                      <path d="M20 12v3a3 3 0 0 1 -.133 .886m-1.99 1.984a3 3 0 0 1 -.877 .13h-13m3 3l-3 -3l3 -3"></path>
+                      <path d="M3 3l18 18"></path>
+                   </svg> `; // img repeat
+                  break;
+                case 2:
+                  countRepeat = 0;
+                  document
+                    .querySelector(
+                      '#movie_player > div.html5-video-container > video'
+                    )
+                    .removeAttribute('loop');
+                  imarepeat.innerHTML = ` <svg  xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-repeat" width="24"
+                      height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                      <path d="M4 12v-3a3 3 0 0 1 3 -3h13m-3 -3l3 3l-3 3"></path>
+                      <path d="M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3"></path>
+                    </svg>`;
+                  break;
+              }
+            }, 1000);
+          }
+          }
+      }
+
       // Background transparent
-      reverse.style.flexDirection = 'row';
-      const cinematica = document.querySelector('#cinematics > div');
+
+      const cinematica = $e('#cinematics > div');
       if (cinematica != undefined) {
         cinematica.style =
           'position: fixed; inset: 0px; pointer-events: none; transform: scale(1.5, 2)';
       }
-      const btnReset = document.querySelector('#reset_button'); // Reset button
+      const btnReset = $e('#reset_button'); // Reset button
       if (btnReset != undefined) {
         btnReset.addEventListener('click', function () {
           if (localStorage.getItem('colores') != null) {
             localStorage.removeItem('colores');
-            document.querySelector('#ojosprotect').style.backgroundColor =
+            $e('#ojosprotect').style.backgroundColor =
               'transparent';
             setTimeout(() => {
               location.reload();
@@ -1636,7 +1738,7 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
       if (btnImagen != undefined) {
         btnImagen.onclick = () => {
           if (
-            document.querySelector('#cinematics > div') != undefined ||
+            $e('#cinematics > div') != undefined ||
             videoFull != undefined
           ) {
             const parametrosURL = new URLSearchParams(window.location.search);
@@ -1668,9 +1770,9 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
                   const imageUrlObject = URL.createObjectURL(blob);
 
                   // Crear un enlace para descargar la imagen
-                  const enlaceDescarga = document.createElement('a');
+                  const enlaceDescarga = $cl('a');
                   enlaceDescarga.href = imageUrlObject;
-                  const titleVideo = document.querySelector(
+                  const titleVideo = $e(
                     'h1.style-scope.ytd-watch-metadata'
                   ).innerText;
                   enlaceDescarga.download = `${titleVideo}_maxresdefault.jpg`;
@@ -1690,35 +1792,33 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
                 alert('No found image');
                 console.error('Error al obtener la imagen:', error);
               });
-          } else {
-            mostrarAlerta('Active Dark Theme in Youtube page');
           }
         };
       }
       // for background image file photo higt quality
-      const fileInput = document.getElementById('background_image');
-      const backgroundDiv = document.querySelector('ytd-app');
+      // const fileInput = document.getElementById('background_image');
+      // const backgroundDiv = $e('ytd-app');
 
-      const storedImage = localStorage.getItem('backgroundImage');
-      if (storedImage) {
-        backgroundDiv.style = `background-size: contain; background-repeat: repeat; background-image: url(${storedImage}) !important`;
-      }
+      // const storedImage = localStorage.getItem('backgroundImage');
+      // if (storedImage) {
+      //   backgroundDiv.style = `background-size: contain; background-repeat: repeat; background-image: url(${storedImage}) !important`;
+      // }
 
-      fileInput.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            const imageUrl = e.target.result;
-            localStorage.setItem('backgroundImage', imageUrl);
-            backgroundDiv.style.backgroundImage = `url(${imageUrl})`;
-          };
-          reader.readAsDataURL(file);
-        }
-      });
+      // fileInput.addEventListener('change', (event) => {
+      //   const file = event.target.files[0];
+      //   if (file) {
+      //     const reader = new FileReader();
+      //     reader.onload = function (e) {
+      //       const imageUrl = e.target.result;
+      //       localStorage.setItem('backgroundImage', imageUrl);
+      //       backgroundDiv.style.backgroundImage = `url(${imageUrl})`;
+      //     };
+      //     reader.readAsDataURL(file);
+      //   }
+      // });
 
 
-      const externalLink = document.querySelector('.external_link');
+      const externalLink = $e('.external_link');
       if (externalLink != undefined) {
         externalLink.onclick = () => {
           const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
@@ -1731,10 +1831,10 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
           );
         };
       }
-      const viewExternalLink = document.querySelector('.view_external_link');
+      const viewExternalLink = $e('.view_external_link');
       if (viewExternalLink != undefined) {
         viewExternalLink.onclick = () => {
-          document.querySelector('video').click();
+          $e('video').click();
           const parametrosURL = new URLSearchParams(window.location.search); // Url parametros
           let enlace;
           enlace = parametrosURL.get('v');
@@ -1743,12 +1843,12 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
           );
         };
       }
-      const viewPictureToPicture = document.querySelector(
+      const viewPictureToPicture = $e(
         '.video_picture_to_picture'
       );
       if (viewPictureToPicture != undefined) {
         viewPictureToPicture.onclick = () => {
-          const video = document.querySelector('video');
+          const video = $e('video');
           // Verifica si el navegador admite Picture-in-Picture
           if ('pictureInPictureEnabled' in document) {
             // Verifica si el video aún no está en modo Picture-in-Picture
@@ -1777,10 +1877,10 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
         if (formularioButtons != undefined) {
           formularioButtons.addEventListener('input', function () {
             if (
-              document.querySelector('#cinematics > div') != undefined ||
+              $e('#cinematics > div') != undefined ||
               videoFull != undefined
             ) {
-              document.querySelector('#ojosprotect').style.backgroundColor =
+              $e('#ojosprotect').style.backgroundColor =
                 formularioButtons.value;
             }
           });
@@ -1788,7 +1888,7 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
         clearInterval(renderizarButtons);
       }
 
-      const checked_updates = document.querySelector('.checked_updates');
+      const checked_updates = $e('.checked_updates');
 
       if (checked_updates != undefined) {
         checked_updates.onclick = () => {
@@ -1798,19 +1898,19 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
         };
       }
 
-      const screenShotVideo = document.querySelector('.screenshot_video');
+      const screenShotVideo = $e('.screenshot_video');
       if (screenShotVideo != undefined) {
         screenShotVideo.onclick = () => {
-          const video = document.querySelector('video');
-          const canvas = document.createElement('canvas');
+          const video = $e('video');
+          const canvas = $cl('canvas');
           canvas.width = video.videoWidth;
           canvas.height = video.videoHeight;
           const context = canvas.getContext('2d');
           context.drawImage(video, 0, 0, canvas.width, canvas.height);
           const imagenURL = canvas.toDataURL('image/png');
-          const enlaceDescarga = document.createElement('a');
+          const enlaceDescarga = $cl('a');
           enlaceDescarga.href = imagenURL;
-          const titleVideo = document.querySelector(
+          const titleVideo = $e(
             'h1.style-scope.ytd-watch-metadata'
           ).innerText;
           enlaceDescarga.download = `${video.currentTime.toFixed(
@@ -1819,12 +1919,10 @@ style="position: fixed; pointer-events: none; width: 100%; height: 100%; left: 0
           enlaceDescarga.click();
         };
       } else {
-        // Si result.GeneralIsActiveIconColor es falso, quitar contenido del DOM
-        const containerButtons = document.querySelector('.containerButtons');
+        const containerButtons = $e('.containerButtons');
 
         if (containerButtons != undefined) {
           containerButtons.innerHTML = '';
-          // También puedes ocultar o manipular otros elementos según tus necesidades
         }
       }
       clearInterval(renderizarButtons);
