@@ -70,7 +70,7 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.2.70
+// @version      2.2.80
 // @author       MDCM
 // @match        https://*.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -884,14 +884,13 @@
   // Use Trusted Types to set innerHTML
   const panelHTML = policy
     ? policy.createHTML(`
-      <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
       <div style="display: flex;justify-content: space-between;align-items: center;gap: 3px;margin-bottom: 10px;">
       <h3 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v1.0  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
       <svg style="background-color: white; border-radius: 5px;color: #000;" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
       </a></h3>
       <div style="display: flex; gap: 5px;">
       <span id="menu-settings-icon">⚙️</span>
-      <span class="checked_updates">🔄️</span>
+      <a href="https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js" class="checked_updates">🔄️</a>
       </div>
       </div>
         <div class="tab-buttons">
@@ -914,11 +913,6 @@
             <div class="enhancement-option">
                 <label>
                     <input type="checkbox" id="autoplay-toggle"> Disable Autoplay
-                </label>
-            </div>
-            <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="cinematic-lighting-toggle"> Disable cinematic Lighting
                 </label>
             </div>
             <div class="enhancement-option">
@@ -972,31 +966,31 @@
             </div>
             <div class="enhancement-option">
                 <label>Primary Color:</label>
-                <input type="color" id="primary-color-picker" class="color-picker" value="#606060">
+                <input type="color" id="primary-color-picker" class="color-picker" value="#ffffff">
             </div>
             <div class="enhancement-option">
                 <label>Secondary Color:</label>
-                <input type="color" id="secondary-color-picker" class="color-picker" value="#606060">
+                <input type="color" id="secondary-color-picker" class="color-picker" value="#ffffff">
             </div>
             <div class="enhancement-option">
                 <label>Header Color:</label>
-                <input type="color" id="header-color-picker" class="color-picker" value="#606060">
+                <input type="color" id="header-color-picker" class="color-picker" value="#000000">
             </div>
             <div class="enhancement-option">
                 <label>Icons Color:</label>
-                <input type="color" id="icons-color-picker" class="color-picker" value="#606060">
+                <input type="color" id="icons-color-picker" class="color-picker" value="#ffffff">
             </div>
             <div class="enhancement-option">
                 <label>Menu Color:</label>
-                <input type="color" id="menu-color-picker" class="color-picker" value="#606060">
+                <input type="color" id="menu-color-picker" class="color-picker" value="#000000">
             </div>
             <div class="enhancement-option">
                 <label>Line Color Preview:</label>
-                <input type="color" id="line-color-picker" class="color-picker" value="#606060">
+                <input type="color" id="line-color-picker" class="color-picker" value="#ff0000">
             </div>
             <div class="enhancement-option">
                 <label>Time Color Preview:</label>
-                <input type="color" id="time-color-picker" class="color-picker" value="#606060">
+                <input type="color" id="time-color-picker" class="color-picker" value="#ffffff">
             </div>
             </div>
         </div>
@@ -1035,14 +1029,13 @@
         </div>
     `)
     : `
- <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
       <div style="display: flex;justify-content: space-between;align-items: center;gap: 3px;margin-bottom: 10px;">
       <h3 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v1.0  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
       <svg style="background-color: white; border-radius: 5px;color: #000;" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
       </a></h3>
       <div style="display: flex; gap: 5px;">
       <span id="menu-settings-icon">⚙️</span>
-      <span class="checked_updates">🔄️</span>
+      <a href="https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js" class="checked_updates">🔄️</a>
       </div>
       </div>
         <div class="tab-buttons">
@@ -1065,11 +1058,6 @@
             <div class="enhancement-option">
                 <label>
                     <input type="checkbox" id="autoplay-toggle"> Disable Autoplay
-                </label>
-            </div>
-            <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="cinematic-lighting-toggle"> Disable cinematic Lighting
                 </label>
             </div>
             <div class="enhancement-option">
@@ -1123,31 +1111,31 @@
             </div>
             <div class="enhancement-option">
                 <label>Primary Color:</label>
-                <input type="color" id="primary-color-picker" class="color-picker" value="#606060">
+                <input type="color" id="primary-color-picker" class="color-picker" value="#ffffff">
             </div>
             <div class="enhancement-option">
                 <label>Secondary Color:</label>
-                <input type="color" id="secondary-color-picker" class="color-picker" value="#606060">
+                <input type="color" id="secondary-color-picker" class="color-picker" value="#ffffff">
             </div>
             <div class="enhancement-option">
                 <label>Header Color:</label>
-                <input type="color" id="header-color-picker" class="color-picker" value="#606060">
+                <input type="color" id="header-color-picker" class="color-picker" value="#000000">
             </div>
             <div class="enhancement-option">
                 <label>Icons Color:</label>
-                <input type="color" id="icons-color-picker" class="color-picker" value="#606060">
+                <input type="color" id="icons-color-picker" class="color-picker" value="#ffffff">
             </div>
             <div class="enhancement-option">
                 <label>Menu Color:</label>
-                <input type="color" id="menu-color-picker" class="color-picker" value="#606060">
+                <input type="color" id="menu-color-picker" class="color-picker" value="#000000">
             </div>
             <div class="enhancement-option">
                 <label>Line Color Preview:</label>
-                <input type="color" id="line-color-picker" class="color-picker" value="#606060">
+                <input type="color" id="line-color-picker" class="color-picker" value="#ff0000">
             </div>
             <div class="enhancement-option">
                 <label>Time Color Preview:</label>
-                <input type="color" id="time-color-picker" class="color-picker" value="#606060">
+                <input type="color" id="time-color-picker" class="color-picker" value="#ffffff">
             </div>
             </div>
         </div>
@@ -1250,7 +1238,7 @@
       hideComments: $id('hide-comments-toggle').checked,
       hideSidebar: $id('hide-sidebar-toggle').checked,
       disableAutoplay: $id('autoplay-toggle').checked,
-      cinematicLighting: $id('cinematic-lighting-toggle').checked,
+      // cinematicLighting: $id('cinematic-lighting-toggle').checked,
       disableSubtitles: $id('subtitles-toggle').checked,
       fontSize: $id('font-size-slider').value,
       playerSize: $id('player-size-slider').value,
@@ -1271,20 +1259,20 @@
       $e(`input[name="theme"][value="${settings.theme}"]`).checked = true;
     }
 
-    $id('bg-color-picker').value = settings.bgColorPicker || '#606060';
+    $id('bg-color-picker').value = settings.bgColorPicker || '#000000';
     $id('progressbar-color-picker').value = settings.progressbarColorPicker || '#ff0000';
-    $id('primary-color-picker').value = settings.primaryColorPicker || '#606060';
-    $id('secondary-color-picker').value = settings.secondaryColorPicker || '#606060';
-    $id('header-color-picker').value = settings.headerColorPicker || '#606060';
-    $id('icons-color-picker').value = settings.iconsColorPicker || '#606060';
-    $id('menu-color-picker').value = settings.menuColorPicker || '#606060';
-    $id('line-color-picker').value = settings.lineColorPicker || '#606060';
-    $id('time-color-picker').value = settings.timeColorPicker || '#606060';
-    $id('dislikes-toggle').checked = settings.dislikes || false;
+    $id('primary-color-picker').value = settings.primaryColorPicker || '#ffffff';
+    $id('secondary-color-picker').value = settings.secondaryColorPicker || '#ffffff';
+    $id('header-color-picker').value = settings.headerColorPicker || '#000';
+    $id('icons-color-picker').value = settings.iconsColorPicker || '#ffffff';
+    $id('menu-color-picker').value = settings.menuColorPicker || '#000';
+    $id('line-color-picker').value = settings.lineColorPicker || '#ff0000';
+    $id('time-color-picker').value = settings.timeColorPicker || '#ffffff';
+    $id('dislikes-toggle').checked = settings.dislikes || true;
     $id('hide-comments-toggle').checked = settings.hideComments || false;
     $id('hide-sidebar-toggle').checked = settings.hideSidebar || false;
     $id('autoplay-toggle').checked = settings.disableAutoplay || false;
-    $id('cinematic-lighting-toggle').checked = settings.cinematicLighting || false;
+    // $id('cinematic-lighting-toggle').checked = settings.cinematicLighting || false;
     $id('subtitles-toggle').checked = settings.disableSubtitles || false;
     $id('font-size-slider').value = settings.fontSize || 16;
     $id('player-size-slider').value = settings.playerSize || 100;
@@ -1334,7 +1322,7 @@
       hideComments: $id('hide-comments-toggle').checked,
       hideSidebar: $id('hide-sidebar-toggle').checked,
       disableAutoplay: $id('autoplay-toggle').checked,
-      cinematicLighting: $id('cinematic-lighting-toggle').checked,
+      // cinematicLighting: $id('cinematic-lighting-toggle').checked,
       disableSubtitles: $id('subtitles-toggle').checked,
       fontSize: $id('font-size-slider').value,
       playerSize: $id('player-size-slider').value,
@@ -1381,24 +1369,14 @@
       }
     }
     // Disable cinematicLighting
-    const buttonSettingVideo = $e(".ytp-settings-button");
-    if(buttonSettingVideo && !settings.cinematicLighting) {
-      buttonSettingVideo.click();
-      setTimeout(() => {
-        buttonSettingVideo.click();
-      },50)
-    }
-    const cinematicLightingToggle = $e('#ytp-id-18 > div > div > div:nth-child(2)');
-    if (cinematicLightingToggle && buttonSettingVideo) {
-      const isCurrentlyOn =
-        cinematicLightingToggle.getAttribute('aria-checked') === 'true';
-      if (settings.cinematicLighting && isCurrentlyOn) {
-        cinematicLightingToggle.click();
-      } else if (!settings.cinematicLighting && !isCurrentlyOn) {
-        cinematicLightingToggle.click();
-      }
-    }
-
+    // const buttonSettingVideo = $e(".ytp-settings-button");
+    // if(buttonSettingVideo && !settings.cinematicLighting) {
+    //   buttonSettingVideo.click();
+    //   setTimeout(() => {
+    //     buttonSettingVideo.click();
+    //   },50)
+    // }
+    
 
     // Adjust font size
     $e('body').style.fontSize = `${settings.fontSize}px`;
@@ -1441,7 +1419,7 @@
         themeCustomOptions.style.display = "none";
         if(settings.theme === 'normal') {
           $e(`input[name="theme"][value="0"]`).checked = true;
-          applySettings();
+          // applySettings();
         } else {
 
           $sp('--yt-spec-base-background', selectedTheme.gradient);
