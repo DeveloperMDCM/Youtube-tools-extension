@@ -165,7 +165,7 @@
   // dislikes shorts
   async function shortDislike() {
     validoUrl = document.location.href;
-    const validoVentanaShort = $e(
+    const validoVentanaShort = $m(
       '#dislike-button > yt-button-shape > label > div > span'
     );
     if (validoVentanaShort != undefined && document.location.href.split('/')[3] === 'shorts') {
@@ -173,7 +173,7 @@
       const urlShorts = `${apiDislikes}${validoUrl}`;
       try {
         const respuesta = await fetch(urlShorts);
-        const datosShort = await respuesta.json();
+        const datosShort = await respuesta.json();  
         const { dislikes } = datosShort;
         for (let i = 0; i < validoVentanaShort.length; i++) {
           validoVentanaShort[i].textContent = `${FormatterNumber(
