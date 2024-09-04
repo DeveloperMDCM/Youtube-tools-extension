@@ -213,7 +213,24 @@
 
   // Styles for our enhancement panel
   GM_addStyle(`
-    .html5-video-player.unstarted-mode,.html5-video-player.ended-mode {
+  #cinematics {
+    position: absolute !important;
+    width: 90vw !important;
+    height: 100vh ;
+  }
+    #cinematics div {
+        position: fixed;
+      inset: 0px;
+      pointer-events: none;
+      transform: scale(1.5, 2);
+  }
+      #cinematics > div > div > canvas:nth-child(1), #cinematics > div > div > canvas:nth-child(2) {
+   position: absolute !important;
+    width: 90vw !important;
+    height: 100vh ;
+      }
+
+    .html5-video-player.unstarted-mode {
     background-image: url('https://avatars.githubusercontent.com/u/54366580?v=4');
     background-repeat: no-repeat;
     background-position: 50% 50%;
@@ -268,12 +285,12 @@
              #toggle-panel:hover {
              background-color: #fff;
              border-radius: 100px;
+             opacity: 1 !important;
         }
         #icon-menu-settings {
         width: 24px;
         height: 24px;
         cursor: pointer;
-
         user-select: none;
         }
 
@@ -885,12 +902,14 @@
   const panelHTML = policy
     ? policy.createHTML(`
       <div style="display: flex;justify-content: space-between;align-items: center;gap: 3px;margin-bottom: 10px;">
-      <h3 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.2.90  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
+    
+      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.2.90  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
       <svg style="background-color: white; border-radius: 5px;color: #000;" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
-      </a></h3>
+      </a></h4>
       <div style="display: flex; gap: 5px;">
       <span id="menu-settings-icon">⚙️</span>
-      <a href="https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js" class="checked_updates">🔄️</a>
+      <a href="https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js" target="_blank" class="checked_updates">🔄️</a>
+      <span style="cursor: pointer" class="close_menu_settings">❎</span>
       </div>
       </div>
         <div class="tab-buttons">
@@ -925,18 +944,22 @@
                     <input type="checkbox" id="dislikes-toggle"> Show Dislikes / Reload page
                 </label>
             </div>
-            <div class="enhancement-option">
-                <label>Font Size: <span id="font-size-value">16</span>px</label>
-                <input type="range" id="font-size-slider" class="slider" min="12" max="24" value="16">
+              <div class="enhancement-option">
+                <label>
+                    <input type="checkbox" id="themes-toggle"> Active Themes / Reload page
+                </label>
             </div>
+           
              <div class="enhancement-option">
                 <label>Video Player Size: <span id="player-size-value">100</span>%</label>
                 <input type="range" id="player-size-slider" class="slider" min="50" max="150" value="100">
             </div>
         </div>
 
-        <div id="themes" class="tab-content" style="height: 350px; overflow-y: auto;">
-            <h4>Choose a Theme</h4>
+        <div id="themes" class="tab-content" style="height: auto; max-height: 350px; overflow-y: auto;">
+        <div class="themes-hidden">
+        <h4>Choose a Theme</h4>
+        <p>Disable cinematic Lighting</p>
               <label>
           <div class="theme-option">
           <div class="theme-preview" style="background: dark;"></div>
@@ -994,6 +1017,8 @@
             </div>
             </div>
         </div>
+          
+        </div>
 
         <div id="sidebar" class="tab-content">
             <h4>Available in next update</h4>
@@ -1011,10 +1036,7 @@
                 <label>Menu Text Color:</label>
                 <input type="color" id="menu-text-color-picker" class="color-picker" value="#ff0000">
             </div>
-            <div class="enhancement-option">
-                <label>Menu Font Size: <span id="menu-font-size-value">14</span>px</label>
-                <input type="range" id="menu-font-size-slider" class="slider" min="10" max="20" value="14">
-            </div>
+        
         </div>
         <div id="import-export">
         <div style="display: flex;width: 100%;justify-content: space-between;">
@@ -1029,149 +1051,7 @@
         </div>
     `)
     : `
-      <div style="display: flex;justify-content: space-between;align-items: center;gap: 3px;margin-bottom: 10px;">
-      <h3 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.2.90  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
-      <svg style="background-color: white; border-radius: 5px;color: #000;" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
-      </a></h3>
-      <div style="display: flex; gap: 5px;">
-      <span id="menu-settings-icon">⚙️</span>
-      <a href="https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js" class="checked_updates">🔄️</a>
-      </div>
-      </div>
-        <div class="tab-buttons">
-            <button class="tab-button active" data-tab="general">General</button>
-            <button class="tab-button" data-tab="themes">Themes</button>
-            <button class="tab-button" data-tab="sidebar">Sidebar</button>
-            <button class="tab-button" data-tab="headers">Header</button>
-        </div>
-        <div id="general" class="tab-content active">
-            <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="hide-comments-toggle"> Hide Comments
-                </label>
-            </div>
-             <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="hide-sidebar-toggle"> Hide Sidebar
-                </label>
-            </div>
-            <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="autoplay-toggle"> Disable Autoplay
-                </label>
-            </div>
-            <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="subtitles-toggle"> Disable Subtitles
-                </label>
-            </div>
-              <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="dislikes-toggle"> Show Dislikes / Reload page
-                </label>
-            </div>
-            <div class="enhancement-option">
-                <label>Font Size: <span id="font-size-value">16</span>px</label>
-                <input type="range" id="font-size-slider" class="slider" min="12" max="24" value="16">
-            </div>
-             <div class="enhancement-option">
-                <label>Video Player Size: <span id="player-size-value">100</span>%</label>
-                <input type="range" id="player-size-slider" class="slider" min="50" max="150" value="100">
-            </div>
-        </div>
-
-        <div id="themes" class="tab-content" style="height: 350px; overflow-y: auto;">
-            <h4>Choose a Theme</h4>
-              <label>
-          <div class="theme-option">
-          <div class="theme-preview" style="background: dark;"></div>
-          <input type="radio" name="theme" value="custom">
-              <span class="theme-name">Custom</span>
-              </div>
-              </label>
-              <label>
-              <div class="theme-option theme-selected-normal">
-              <div class="theme-preview" style="background: dark;"></div>
-              <input type="radio" name="theme" value="normal">
-                  <span class="theme-name">Selected Themes</span>
-                  </div>
-              </label>
-            <p>${isDarkModeActive ? '' : 'activate dark mode to use themes'}</p>
-            <div class="themes-options">
-              ${themeOptionsHTML}
-            </div>
-            <div class="theme-custom-options">
-            <div class="enhancement-option">
-                <label>Progressbar Video:</label>
-                <input type="color" id="progressbar-color-picker" class="color-picker" value="#ff0000">
-            </div>
-            <div class="enhancement-option">
-                <label>Background Color:</label>
-                <input type="color" id="bg-color-picker" class="color-picker" value="#000000">
-            </div>
-            <div class="enhancement-option">
-                <label>Primary Color:</label>
-                <input type="color" id="primary-color-picker" class="color-picker" value="#ffffff">
-            </div>
-            <div class="enhancement-option">
-                <label>Secondary Color:</label>
-                <input type="color" id="secondary-color-picker" class="color-picker" value="#ffffff">
-            </div>
-            <div class="enhancement-option">
-                <label>Header Color:</label>
-                <input type="color" id="header-color-picker" class="color-picker" value="#000000">
-            </div>
-            <div class="enhancement-option">
-                <label>Icons Color:</label>
-                <input type="color" id="icons-color-picker" class="color-picker" value="#ffffff">
-            </div>
-            <div class="enhancement-option">
-                <label>Menu Color:</label>
-                <input type="color" id="menu-color-picker" class="color-picker" value="#000000">
-            </div>
-            <div class="enhancement-option">
-                <label>Line Color Preview:</label>
-                <input type="color" id="line-color-picker" class="color-picker" value="#ff0000">
-            </div>
-            <div class="enhancement-option">
-                <label>Time Color Preview:</label>
-                <input type="color" id="time-color-picker" class="color-picker" value="#ffffff">
-            </div>
-            </div>
-        </div>
-
-        <div id="sidebar" class="tab-content">
-            <h4>Available in next update</h4>
-        </div>
-        <div id="headers" class="tab-content">
-           <h4>Available in next update</h4>
-        </div>
-        <div id="menu-settings" class="tab-content">
-            <h4 style="margin: 10px 0">Menu Appearance</h4>
-            <div class="enhancement-option">
-                <label>Menu Background Color:</label>
-                <input type="color" id="menu-bg-color-picker" class="color-picker" value="#000000">
-            </div>
-            <div class="enhancement-option">
-                <label>Menu Text Color:</label>
-                <input type="color" id="menu-text-color-picker" class="color-picker" value="#ff0000">
-            </div>
-            <div class="enhancement-option">
-                <label>Menu Font Size: <span id="menu-font-size-value">14</span>px</label>
-                <input type="range" id="menu-font-size-slider" class="slider" min="10" max="20" value="14">
-            </div>
-        </div>
-        <div id="import-export">
-        <div style="display: flex;width: 100%;justify-content: space-between;">
-        <button id="export-config" style="width: 100%;display: flex;align-items: center;justify-content: center;">Export
-        <svg width="20" height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M9 15h6" /><path d="M12.5 17.5l2.5 -2.5l-2.5 -2.5" /></svg>
-        </button>
-       <button id="import-config" style="width: 100%;display: flex;align-items: center;justify-content: center;">Import
-        <svg width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M15 15h-6" /><path d="M11.5 17.5l-2.5 -2.5l2.5 -2.5" /></svg>
-        </button>
-        </div>
-            <textarea id="config-data" placeholder="Paste configuration here to import"></textarea>
-        </div>
+      
     `;
 
   panel.innerHTML = panelHTML;
@@ -1199,6 +1079,13 @@
     //   : (toggleButton.style.backgroundColor = 'transparent');
     panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
   });
+
+  const close_menu_settings = $e('.close_menu_settings');
+  close_menu_settings.addEventListener('click', () => {
+    openMenu = !openMenu;
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+  });
+
 
   // Tab functionality
   const tabButtons = $m('.tab-button');
@@ -1235,16 +1122,17 @@
       lineColorPicker: $id('line-color-picker').value,
       timeColorPicker: $id('time-color-picker').value,
       dislikes: $id('dislikes-toggle').checked,
+      themes: $id('themes-toggle').checked,
       hideComments: $id('hide-comments-toggle').checked,
       hideSidebar: $id('hide-sidebar-toggle').checked,
       disableAutoplay: $id('autoplay-toggle').checked,
       // cinematicLighting: $id('cinematic-lighting-toggle').checked,
       disableSubtitles: $id('subtitles-toggle').checked,
-      fontSize: $id('font-size-slider').value,
+      // fontSize: $id('font-size-slider').value,
       playerSize: $id('player-size-slider').value,
       menuBgColor: $id('menu-bg-color-picker').value,
       menuTextColor: $id('menu-text-color-picker').value,
-      menuFontSize: $id('menu-font-size-slider').value,
+      // menuFontSize: $id('menu-font-size-slider').value,
     };
 
     GM_setValue('ytSettingsMDCM', JSON.stringify(settings));
@@ -1269,16 +1157,17 @@
     $id('line-color-picker').value = settings.lineColorPicker || '#ff0000';
     $id('time-color-picker').value = settings.timeColorPicker || '#ffffff';
     $id('dislikes-toggle').checked = settings.dislikes || true;
+    $id('themes-toggle').checked = settings.themes || false;
     $id('hide-comments-toggle').checked = settings.hideComments || false;
     $id('hide-sidebar-toggle').checked = settings.hideSidebar || false;
     $id('autoplay-toggle').checked = settings.disableAutoplay || false;
     // $id('cinematic-lighting-toggle').checked = settings.cinematicLighting || false;
     $id('subtitles-toggle').checked = settings.disableSubtitles || false;
-    $id('font-size-slider').value = settings.fontSize || 16;
+    // $id('font-size-slider').value = settings.fontSize || 16;
     $id('player-size-slider').value = settings.playerSize || 100;
     $id('menu-bg-color-picker').value = settings.menuBgColor || '#000000';
     $id('menu-text-color-picker').value = settings.menuTextColor || '#ffffff';
-    $id('menu-font-size-slider').value = settings.menuFontSize || 14;
+    // $id('menu-font-size-slider').value = settings.menuFontSize || 14;
     updateSliderValues();
 
     setTimeout(() => {
@@ -1292,11 +1181,9 @@
   }
   // Function to update slider values
   function updateSliderValues() {
-    $id('font-size-value').textContent = $id('font-size-slider').value;
+    // $id('font-size-value').textContent = $id('font-size-slider').value;
     $id('player-size-value').textContent = $id('player-size-slider').value;
-    $id('menu-font-size-value').textContent = $id(
-      'menu-font-size-slider'
-    ).value;
+    // $id('menu-font-size-value').textContent = $id('menu-font-size-slider').value;
   }
 
   // Function to apply settings
@@ -1319,26 +1206,47 @@
       lineColorPicker: $id('line-color-picker').value,
       timeColorPicker: $id('time-color-picker').value,
       dislikes: $id('dislikes-toggle').checked,
+      themes: $id('themes-toggle').checked,
       hideComments: $id('hide-comments-toggle').checked,
       hideSidebar: $id('hide-sidebar-toggle').checked,
       disableAutoplay: $id('autoplay-toggle').checked,
       // cinematicLighting: $id('cinematic-lighting-toggle').checked,
       disableSubtitles: $id('subtitles-toggle').checked,
-      fontSize: $id('font-size-slider').value,
+      // fontSize: $id('font-size-slider').value,
       playerSize: $id('player-size-slider').value,
       menuBgColor: $id('menu-bg-color-picker').value,
       menuTextColor: $id('menu-text-color-picker').value,
-      menuFontSize: $id('menu-font-size-slider').value,
+      // menuFontSize: $id('menu-font-size-slider').value,
     };
 
 
-    renderizarButtons()
+    renderizarButtons();
+    function isFullscreen() {
+      return document.fullscreenElement !== null;
+  }
+  
+  
+  document.addEventListener("fullscreenchange", () => {
+    let panel = $e('#toggle-panel');
+      if (isFullscreen()) {
+        panel.style.opacity = 0;
+      } else {
+        panel.style.opacity = 1;
+      }
+  });
+  
 
     // Hide comments
     const commentsSection = $id('comments');
     if (commentsSection) {
       commentsSection.style.display = settings.hideComments ? 'none' : 'block';
     }
+   
+     // Active inactive Themes
+     const themesMenuSection = $e('.themes-hidden');
+     if (themesMenuSection) {
+      themesMenuSection.style.display = settings.themes ? 'block' : 'none';
+     }
 
     // Hide sidebar
     const sidebarSection = $id('secondary');
@@ -1379,7 +1287,7 @@
     
 
     // Adjust font size
-    $e('body').style.fontSize = `${settings.fontSize}px`;
+    // $e('body').style.fontSize = `${settings.fontSize}px`;
 
     // Adjust player size
     const player = $e('video');
@@ -1390,7 +1298,7 @@
     // Apply menu appearance settings
     $sp('--yt-enhance-menu-bg', settings.menuBgColor);
     $sp('--yt-enhance-menu-text', settings.menuTextColor);
-    $sp('--yt-enhance-menu-font-size', `${settings.menuFontSize}px`);
+    // $sp('--yt-enhance-menu-font-size', `${settings.menuFontSize}px`);
 
     // Apply theme
     const selectedTheme = themes[settings.theme];
@@ -1412,159 +1320,170 @@
 
 
     function checkDarkMode() {
-      if (isDarkMode && !isThemeCustom) {
-        // Apply theme
-        $e('.themes-options').style.display = "block";
-        themeNormal.style.display = "none";
-        themeCustomOptions.style.display = "none";
-        if(settings.theme === 'normal') {
-          $e(`input[name="theme"][value="0"]`).checked = true;
-          // applySettings();
+      if(settings.themes) {
+        if (isDarkMode && !isThemeCustom) {
+          // Apply theme
+          $e('.themes-options').style.display = "block";
+          themeNormal.style.display = "none";
+          themeCustomOptions.style.display = "none";
+          if(settings.theme === 'normal') {
+            $e(`input[name="theme"][value="0"]`).checked = true;
+            // applySettings();
+          } else {
+  
+            $sp('--yt-spec-base-background', selectedTheme.gradient);
+            $sp('--yt-spec-text-primary', selectedTheme.textColor);
+            $sp('--yt-spec-text-secondary', selectedTheme.textColor);
+            $sp('--yt-spec-menu-background', selectedTheme.gradient);
+            $sp('--yt-spec-icon-inactive', selectedTheme.textColor);
+            $sp('--yt-spec-brand-icon-inactive', selectedTheme.textColor);
+            $sp('--yt-spec-brand-icon-active', selectedTheme.gradient);
+            $sp('--yt-spec-static-brand-red', selectedTheme.gradient); // line current time
+            $sp('--yt-spec-raised-background', selectedTheme.raised);
+            $sp('--yt-spec-static-brand-red', selectedTheme.CurrentProgressVideo);
+            $sp('--yt-spec-static-brand-white', selectedTheme.textColor);
+            $sp('--ytd-searchbox-background', selectedTheme.gradient);
+            $sp('--ytd-searchbox-text-color', selectedTheme.textColor);
+  
+            GM_addStyle(`
+  
+              .botones_div {
+              background-color: transparent;
+              border: none;
+              color: #999999;
+              user-select: none;
+            }
+              .ytp-menuitem[aria-checked=true] .ytp-menuitem-toggle-checkbox {
+              background:  ${selectedTheme.gradient} !important;
+              }
+            #background.ytd-masthead { background: ${selectedTheme.gradient}  !important; }
+            .ytp-swatch-background-color {
+            background: ${
+               selectedTheme.gradient
+            } !important;
+          }
+     .ytd-shorts, #page-manager.ytd-app {
+         background: ${selectedTheme.gradient};
+         }
+            ytd-engagement-panel-title-header-renderer[shorts-panel] #header.ytd-engagement-panel-title-header-renderer {
+            background: ${selectedTheme.gradient}  !important;}
+            .buttons-tranlate {
+             background: ${selectedTheme.btnTranslate} !important;
+            }
+            .badge-shape-wiz--thumbnail-default {
+            color: ${selectedTheme.videoDuration} !important;
+             background: ${selectedTheme.gradient} !important;
+            }
+             #logo-icon {
+             color:  ${selectedTheme.textLogo} !important;
+          }
+          .yt-spec-button-shape-next--overlay.yt-spec-button-shape-next--text {
+            color:  ${selectedTheme.iconsColor} !important;
+          }
+          .ytd-topbar-menu-button-renderer #button.ytd-topbar-menu-button-renderer {
+            color:  ${selectedTheme.iconsColor} !important;
+          }
+          .yt-spec-icon-badge-shape--style-overlay .yt-spec-icon-badge-shape__icon {
+            color:  ${selectedTheme.iconsColor} !important;
+          }
+          .ytp-svg-fill {
+            fill:  ${selectedTheme.iconsColor} !important;
+          }
+          #ytp-id-30,#ytp-id-17,#ytp-id-19,#ytp-id-20{
+            fill:  ${selectedTheme.iconsColor} !important;
+          }
+  
+  
+            `);
+          }
+  
         } else {
-
-          $sp('--yt-spec-base-background', selectedTheme.gradient);
-          $sp('--yt-spec-text-primary', selectedTheme.textColor);
-          $sp('--yt-spec-text-secondary', selectedTheme.textColor);
-          $sp('--yt-spec-menu-background', selectedTheme.gradient);
-          $sp('--yt-spec-icon-inactive', selectedTheme.textColor);
-          $sp('--yt-spec-brand-icon-inactive', selectedTheme.textColor);
-          $sp('--yt-spec-brand-icon-active', selectedTheme.gradient);
-          $sp('--yt-spec-static-brand-red', selectedTheme.gradient); // line current time
-          $sp('--yt-spec-raised-background', selectedTheme.raised);
-          $sp('--yt-spec-static-brand-red', selectedTheme.CurrentProgressVideo);
-          $sp('--yt-spec-static-brand-white', selectedTheme.textColor);
-          $sp('--ytd-searchbox-background', selectedTheme.gradient);
-          $sp('--ytd-searchbox-text-color', selectedTheme.textColor);
-
+          $sp('--yt-spec-base-background', settings.bgColorPicker);
+          $sp('--yt-spec-text-primary', settings.primaryColorPicker);
+          $sp('--yt-spec-text-secondary', settings.secondaryColorPicker);
+          $sp('--yt-spec-menu-background', settings.menuColorPicker);
+          $sp('--yt-spec-icon-inactive', settings.iconsColorPicker);
+          $sp('--yt-spec-brand-icon-inactive', settings.primaryColorPicker);
+          $sp('--yt-spec-brand-icon-active', settings.primaryColorPicker);
+          $sp('--yt-spec-raised-background', settings.headerColorPicker);
+          $sp('--yt-spec-static-brand-red', settings.lineColorPicker);
+          $sp('--yt-spec-static-brand-white', settings.timeColorPicker);
+          $sp('--ytd-searchbox-background', settings.primaryColorPicker);
+          $sp('--ytd-searchbox-text-color', settings.secondaryColorPicker);
+  
           GM_addStyle(`
-
-            .botones_div {
+  
+             .botones_div {
             background-color: transparent;
             border: none;
-            color: #999999;
+            color: ${settings.iconsColorPicker} !important;
             user-select: none;
           }
+            .ytp-volume-slider-handle:before, .ytp-volume-slider-handle, .ytp-tooltip.ytp-preview:not(.ytp-text-detail){
+              background-color:
+            }
+              #container.ytd-searchbox {
+              color: red !important;
+              }
             .ytp-menuitem[aria-checked=true] .ytp-menuitem-toggle-checkbox {
-            background:  ${selectedTheme.gradient} !important;
+            background:  ${settings.primaryColorPicker} !important;
             }
-          #background.ytd-masthead { background: ${selectedTheme.gradient}  !important; }
-          .ytp-swatch-background-color {
-          background: ${
-             selectedTheme.gradient
-          } !important;
-        }
-   .ytd-shorts, #page-manager.ytd-app {
-       background: ${selectedTheme.gradient};
-       }
-          ytd-engagement-panel-title-header-renderer[shorts-panel] #header.ytd-engagement-panel-title-header-renderer {
-          background: ${selectedTheme.gradient}  !important;}
-          .buttons-tranlate {
-           background: ${selectedTheme.btnTranslate} !important;
+            .yt-spec-icon-shape {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              width: 100%;
+              height: 100%;
+              color: ${settings.iconsColorPicker} !important;
           }
-          .badge-shape-wiz--thumbnail-default {
-          color: ${selectedTheme.videoDuration} !important;
-           background: ${selectedTheme.gradient} !important;
+            .ytp-time-current, .ytp-time-separator, .ytp-time-duration {
+              color: ${settings.iconsColorPicker} !important;
+            }
+            #background.ytd-masthead { background: ${settings.headerColorPicker}  !important; }
+            .ytp-swatch-background-color {
+            background: ${
+              settings.progressbarColorPicker
+            } !important;
           }
-           #logo-icon {
-           color:  ${selectedTheme.textLogo} !important;
+     .ytd-shorts, #page-manager.ytd-app {
+         background: ${settings.bgColorPicker};
+         }
+            ytd-engagement-panel-title-header-renderer[shorts-panel] #header.ytd-engagement-panel-title-header-renderer {
+            background: ${settings.bgColorPicker}  !important;}
+  
+            .badge-shape-wiz--thumbnail-default {
+            color: ${settings.timeColorPicker} !important;
+             background: ${settings.secondaryColor} !important;
+            }
+             #logo-icon {
+             color:  ${settings.primaryColorPicker} !important;
+          }
+          .yt-spec-button-shape-next--overlay.yt-spec-button-shape-next--text {
+            color:  ${settings.iconsColorPicker} !important;
+          }
+          .ytd-topbar-menu-button-renderer #button.ytd-topbar-menu-button-renderer {
+            color:  ${settings.iconsColorPicker} !important;
+          }
+          .yt-spec-icon-badge-shape--style-overlay .yt-spec-icon-badge-shape__icon {
+            color:  ${settings.iconsColorPicker} !important;
+          }
+          .ytp-svg-fill {
+            fill:  ${settings.iconsColorPicker} !important;
+          }
+          #ytp-id-30,#ytp-id-17,#ytp-id-19,#ytp-id-20{
+            fill:  ${settings.iconsColorPicker} !important;
+          }
+            `);
         }
-        .yt-spec-button-shape-next--overlay.yt-spec-button-shape-next--text {
-          color:  ${selectedTheme.iconsColor} !important;
-        }
-        .ytd-topbar-menu-button-renderer #button.ytd-topbar-menu-button-renderer {
-          color:  ${selectedTheme.iconsColor} !important;
-        }
-        .yt-spec-icon-badge-shape--style-overlay .yt-spec-icon-badge-shape__icon {
-          color:  ${selectedTheme.iconsColor} !important;
-        }
-        .ytp-svg-fill {
-          fill:  ${selectedTheme.iconsColor} !important;
-        }
-        #ytp-id-30,#ytp-id-17,#ytp-id-19,#ytp-id-20{
-          fill:  ${selectedTheme.iconsColor} !important;
-        }
-
-
-          `);
-        }
-
       } else {
-        $sp('--yt-spec-base-background', settings.bgColorPicker);
-        $sp('--yt-spec-text-primary', settings.primaryColorPicker);
-        $sp('--yt-spec-text-secondary', settings.secondaryColorPicker);
-        $sp('--yt-spec-menu-background', settings.menuColorPicker);
-        $sp('--yt-spec-icon-inactive', settings.iconsColorPicker);
-        $sp('--yt-spec-brand-icon-inactive', settings.primaryColorPicker);
-        $sp('--yt-spec-brand-icon-active', settings.primaryColorPicker);
-        $sp('--yt-spec-raised-background', settings.headerColorPicker);
-        $sp('--yt-spec-static-brand-red', settings.lineColorPicker);
-        $sp('--yt-spec-static-brand-white', settings.timeColorPicker);
-        $sp('--ytd-searchbox-background', settings.primaryColorPicker);
-        $sp('--ytd-searchbox-text-color', settings.secondaryColorPicker);
-
-        GM_addStyle(`
-
-           .botones_div {
-          background-color: transparent;
-          border: none;
-          color: ${settings.iconsColorPicker} !important;
-          user-select: none;
-        }
-          .ytp-volume-slider-handle:before, .ytp-volume-slider-handle, .ytp-tooltip.ytp-preview:not(.ytp-text-detail){
-            background-color:
+          GM_addStyle(`
+              .botones_div {
+            background-color: transparent;
+            border: none;
+            color: #ccc !important;
+            user-select: none;
           }
-            #container.ytd-searchbox {
-            color: red !important;
-            }
-          .ytp-menuitem[aria-checked=true] .ytp-menuitem-toggle-checkbox {
-          background:  ${settings.primaryColorPicker} !important;
-          }
-          .yt-spec-icon-shape {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-            color: ${settings.iconsColorPicker} !important;
-        }
-          .ytp-time-current, .ytp-time-separator, .ytp-time-duration {
-            color: ${settings.iconsColorPicker} !important;
-          }
-          #background.ytd-masthead { background: ${settings.headerColorPicker}  !important; }
-          .ytp-swatch-background-color {
-          background: ${
-            settings.progressbarColorPicker
-          } !important;
-        }
-   .ytd-shorts, #page-manager.ytd-app {
-       background: ${settings.bgColorPicker};
-       }
-          ytd-engagement-panel-title-header-renderer[shorts-panel] #header.ytd-engagement-panel-title-header-renderer {
-          background: ${settings.bgColorPicker}  !important;}
-
-          .badge-shape-wiz--thumbnail-default {
-          color: ${settings.timeColorPicker} !important;
-           background: ${settings.secondaryColor} !important;
-          }
-           #logo-icon {
-           color:  ${settings.primaryColorPicker} !important;
-        }
-        .yt-spec-button-shape-next--overlay.yt-spec-button-shape-next--text {
-          color:  ${settings.iconsColorPicker} !important;
-        }
-        .ytd-topbar-menu-button-renderer #button.ytd-topbar-menu-button-renderer {
-          color:  ${settings.iconsColorPicker} !important;
-        }
-        .yt-spec-icon-badge-shape--style-overlay .yt-spec-icon-badge-shape__icon {
-          color:  ${settings.iconsColorPicker} !important;
-        }
-        .ytp-svg-fill {
-          fill:  ${settings.iconsColorPicker} !important;
-        }
-        #ytp-id-30,#ytp-id-17,#ytp-id-19,#ytp-id-20{
-          fill:  ${settings.iconsColorPicker} !important;
-        }
-          `);
+            `)
       }
     }
 
