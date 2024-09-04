@@ -902,7 +902,6 @@
   const panelHTML = policy
     ? policy.createHTML(`
       <div style="display: flex;justify-content: space-between;align-items: center;gap: 3px;margin-bottom: 10px;">
-    
       <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.2.90  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
       <svg style="background-color: white; border-radius: 5px;color: #000;" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
       </a></h4>
@@ -1051,7 +1050,153 @@
         </div>
     `)
     : `
-      
+        <div style="display: flex;justify-content: space-between;align-items: center;gap: 3px;margin-bottom: 10px;">
+      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.2.90  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
+      <svg style="background-color: white; border-radius: 5px;color: #000;" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
+      </a></h4>
+      <div style="display: flex; gap: 5px;">
+      <span id="menu-settings-icon">⚙️</span>
+      <a href="https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js" target="_blank" class="checked_updates">🔄️</a>
+      <span style="cursor: pointer" class="close_menu_settings">❎</span>
+      </div>
+      </div>
+        <div class="tab-buttons">
+            <button class="tab-button active" data-tab="general">General</button>
+            <button class="tab-button" data-tab="themes">Themes</button>
+            <button class="tab-button" data-tab="sidebar">Sidebar</button>
+            <button class="tab-button" data-tab="headers">Header</button>
+        </div>
+        <div id="general" class="tab-content active">
+            <div class="enhancement-option">
+                <label>
+                    <input type="checkbox" id="hide-comments-toggle"> Hide Comments
+                </label>
+            </div>
+             <div class="enhancement-option">
+                <label>
+                    <input type="checkbox" id="hide-sidebar-toggle"> Hide Sidebar
+                </label>
+            </div>
+            <div class="enhancement-option">
+                <label>
+                    <input type="checkbox" id="autoplay-toggle"> Disable Autoplay
+                </label>
+            </div>
+            <div class="enhancement-option">
+                <label>
+                    <input type="checkbox" id="subtitles-toggle"> Disable Subtitles
+                </label>
+            </div>
+              <div class="enhancement-option">
+                <label>
+                    <input type="checkbox" id="dislikes-toggle"> Show Dislikes / Reload page
+                </label>
+            </div>
+              <div class="enhancement-option">
+                <label>
+                    <input type="checkbox" id="themes-toggle"> Active Themes / Reload page
+                </label>
+            </div>
+           
+             <div class="enhancement-option">
+                <label>Video Player Size: <span id="player-size-value">100</span>%</label>
+                <input type="range" id="player-size-slider" class="slider" min="50" max="150" value="100">
+            </div>
+        </div>
+
+        <div id="themes" class="tab-content" style="height: auto; max-height: 350px; overflow-y: auto;">
+        <div class="themes-hidden">
+        <h4>Choose a Theme</h4>
+        <p>Disable cinematic Lighting</p>
+              <label>
+          <div class="theme-option">
+          <div class="theme-preview" style="background: dark;"></div>
+          <input type="radio" name="theme" value="custom">
+              <span class="theme-name">Custom</span>
+              </div>
+              </label>
+              <label>
+              <div class="theme-option theme-selected-normal">
+              <div class="theme-preview" style="background: dark;"></div>
+              <input type="radio" name="theme" value="normal">
+                  <span class="theme-name">Selected Themes</span>
+                  </div>
+              </label>
+            <p>${isDarkModeActive ? '' : 'activate dark mode to use themes'}</p>
+            <div class="themes-options">
+              ${themeOptionsHTML}
+            </div>
+            <div class="theme-custom-options">
+            <div class="enhancement-option">
+                <label>Progressbar Video:</label>
+                <input type="color" id="progressbar-color-picker" class="color-picker" value="#ff0000">
+            </div>
+            <div class="enhancement-option">
+                <label>Background Color:</label>
+                <input type="color" id="bg-color-picker" class="color-picker" value="#000000">
+            </div>
+            <div class="enhancement-option">
+                <label>Primary Color:</label>
+                <input type="color" id="primary-color-picker" class="color-picker" value="#ffffff">
+            </div>
+            <div class="enhancement-option">
+                <label>Secondary Color:</label>
+                <input type="color" id="secondary-color-picker" class="color-picker" value="#ffffff">
+            </div>
+            <div class="enhancement-option">
+                <label>Header Color:</label>
+                <input type="color" id="header-color-picker" class="color-picker" value="#000000">
+            </div>
+            <div class="enhancement-option">
+                <label>Icons Color:</label>
+                <input type="color" id="icons-color-picker" class="color-picker" value="#ffffff">
+            </div>
+            <div class="enhancement-option">
+                <label>Menu Color:</label>
+                <input type="color" id="menu-color-picker" class="color-picker" value="#000000">
+            </div>
+            <div class="enhancement-option">
+                <label>Line Color Preview:</label>
+                <input type="color" id="line-color-picker" class="color-picker" value="#ff0000">
+            </div>
+            <div class="enhancement-option">
+                <label>Time Color Preview:</label>
+                <input type="color" id="time-color-picker" class="color-picker" value="#ffffff">
+            </div>
+            </div>
+        </div>
+          
+        </div>
+
+        <div id="sidebar" class="tab-content">
+            <h4>Available in next update</h4>
+        </div>
+        <div id="headers" class="tab-content">
+           <h4>Available in next update</h4>
+        </div>
+        <div id="menu-settings" class="tab-content">
+            <h4 style="margin: 10px 0">Menu Appearance</h4>
+            <div class="enhancement-option">
+                <label>Menu Background Color:</label>
+                <input type="color" id="menu-bg-color-picker" class="color-picker" value="#000000">
+            </div>
+            <div class="enhancement-option">
+                <label>Menu Text Color:</label>
+                <input type="color" id="menu-text-color-picker" class="color-picker" value="#ff0000">
+            </div>
+        
+        </div>
+        <div id="import-export">
+        <div style="display: flex;width: 100%;justify-content: space-between;">
+        <button id="export-config" style="width: 100%;display: flex;align-items: center;justify-content: center;">Export
+        <svg width="20" height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M9 15h6" /><path d="M12.5 17.5l2.5 -2.5l-2.5 -2.5" /></svg>
+        </button>
+       <button id="import-config" style="width: 100%;display: flex;align-items: center;justify-content: center;">Import
+        <svg width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M15 15h-6" /><path d="M11.5 17.5l-2.5 -2.5l2.5 -2.5" /></svg>
+        </button>
+        </div>
+            <textarea id="config-data" placeholder="Paste configuration here to import"></textarea>
+        </div>
     `;
 
   panel.innerHTML = panelHTML;
