@@ -11,6 +11,8 @@
 
 <details>
 <summary>Features:</summary>
+   
+- Custom themes.   
 - Change background image.
 - Change background color.
 - Skip ad video.
