@@ -1394,9 +1394,13 @@
      }
 
     // Hide sidebar
-    const sidebarSection = $id('secondary');
+    const sidebarSection = $e('#secondary > #secondary-inner');
+ 
     if (sidebarSection) {
-      sidebarSection.style.display = settings.hideSidebar ? 'none' : 'block';
+      sidebarSection.classList.add('side-moi');
+    const sidebarSection2 = $e('.side-moi');
+
+    sidebarSection2.style.display = settings.hideSidebar ? 'none' : 'block';
     }
 
     // Disable autoplay
@@ -1465,6 +1469,8 @@
 
 
     function checkDarkMode() {
+      console.log(selectedTheme.gradient);
+      
       if(settings.themes) {
         if (isDarkMode && !isThemeCustom) {
           // Apply theme
@@ -1507,9 +1513,9 @@
                selectedTheme.gradient
             } !important;
           }
-     .ytd-shorts, #page-manager.ytd-app {
-         background: ${selectedTheme.gradient};
-         }
+          #shorts-container, #page-manager.ytd-app {
+            background: ${selectedTheme.gradient.replace(/(#[0-9a-fA-F]{6})/g, `$1${36}`)};
+          }
             ytd-engagement-panel-title-header-renderer[shorts-panel] #header.ytd-engagement-panel-title-header-renderer {
             background: ${selectedTheme.gradient}  !important;}
             .buttons-tranlate {
@@ -1590,9 +1596,9 @@
               settings.progressbarColorPicker
             } !important;
           }
-     .ytd-shorts, #page-manager.ytd-app {
-         background: ${settings.bgColorPicker};
-         }
+        #shorts-container, #page-manager.ytd-app {
+            background: ${settings.bgColorPicker}36;
+            }
             ytd-engagement-panel-title-header-renderer[shorts-panel] #header.ytd-engagement-panel-title-header-renderer {
             background: ${settings.bgColorPicker}  !important;}
   
@@ -1705,7 +1711,7 @@
 
               if(entries[0].isIntersecting) {
 
-                element.style.background = `${selectedTheme.gradient}`;
+                element.style.background = `${selectedTheme.gradient ?? ''}`;
               } else {return}
           })
 
