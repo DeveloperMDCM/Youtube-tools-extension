@@ -1471,8 +1471,6 @@
 
 
     function checkDarkMode() {
-      console.log(selectedTheme.gradient);
-      
       if(settings.themes) {
         if (isDarkMode && !isThemeCustom) {
           // Apply theme
