@@ -70,7 +70,7 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.2.90
+// @version      2.2.91
 // @author       MDCM
 // @match        https://*.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -87,6 +87,8 @@
 // @compatible opera
 // @compatible safari
 // @compatible edge
+// @downloadURL https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js
+// @updateURL https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.meta.js
 // @license MIT
 // @namespace https://github.com/DeveloperMDCM/
 // ==/UserScript==
