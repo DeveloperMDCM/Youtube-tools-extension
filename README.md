@@ -11,9 +11,12 @@
 
 <details>
 <summary>Features:</summary>
+- Change default video player quality.
+- Change video player size.
 - Change background image.
 - Change background color.
-- Skip ad video.
+- Skip ads video.
+- Custom theme.
 - Picture-in-Picture mode.
 - Download profile picture/avatar.
 - Loop/repeat video playback.

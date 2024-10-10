@@ -312,6 +312,12 @@
             background-color: #ff0000;
             color: white;
         }
+        .tab-button-active {
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 2px;
+        }
         .tab-content {
             display: none;
         }
@@ -398,8 +404,10 @@
 
     }
 
-    button:hover {
-      color: #ec3203;
+    .tab-button:hover {
+      background-color: #ec3203 !important;
+      color: #ffffff !important;
+      cursor: pointer;
     }
 
         #eyes {
@@ -504,6 +512,23 @@
       .checked_updates {
       cursor: pointer;
       }
+
+      #export-config, #import-config {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background-color: #ec3203;
+        color: #ffffff;
+        border: none;
+        padding: 5px;
+      }
+        #export-config:hover, #import-config:hover {
+          background-color: #ff0000;
+          color: #ffffff;
+          cursor: pointer;
+        }
     `);
 
   // botons bottom video player
@@ -861,7 +886,7 @@
     {
       name: 'Colombia',
       gradient:
-        'linear-gradient(106deg, #fbf63f  0%, #0000bb 45%, #ff0000 99%)',
+        'linear-gradient(174deg, #fbf63f  0%, #0000bb 45%, #ff0000 99%)',
       textColor: '#ffffff',
       raised: '#303131',
       btnTranslate: '#000',
@@ -904,7 +929,7 @@
   const panelHTML = policy
     ? policy.createHTML(`
       <div style="display: flex;justify-content: space-between;align-items: center;gap: 3px;margin-bottom: 10px;">
-      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.2.90  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
+      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.2.92  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
       <svg style="background-color: white; border-radius: 5px;color: #000;" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
       </a></h4>
       <div style="display: flex; gap: 5px;">
@@ -952,8 +977,21 @@
             </div>
            
              <div class="enhancement-option">
-                <label>Video Player Size: <span id="player-size-value">100</span>%</label>
+                <label>Video Player Size: <span id="player-size-value">100</span>%</label> <button class="tab-button-active" id="reset-player-size">Reset video size</button>
                 <input type="range" id="player-size-slider" class="slider" min="50" max="150" value="100">
+            </div>
+             <div class="enhancement-option">
+                <label>Default video player quality: </label>
+                <select class="tab-button-active" id="select-video-qualitys-select">
+                  <option value="144">144</option>
+                  <option value="240">240</option>
+                  <option value="360">360</option>
+                  <option value="480">480</option>
+                  <option value="720">720</option>
+                  <option value="1080">1080</option>
+                  <option value="1440">1440</option>
+                  <option value="2160">2160</option>
+                </select>
             </div>
         </div>
 
@@ -1041,10 +1079,10 @@
         </div>
         <div id="import-export">
         <div style="display: flex;width: 100%;justify-content: space-between;">
-        <button id="export-config" style="width: 100%;display: flex;align-items: center;justify-content: center;">Export
+        <button id="export-config">Export
         <svg width="20" height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M9 15h6" /><path d="M12.5 17.5l2.5 -2.5l-2.5 -2.5" /></svg>
         </button>
-       <button id="import-config" style="width: 100%;display: flex;align-items: center;justify-content: center;">Import
+       <button id="import-config">Import
         <svg width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M15 15h-6" /><path d="M11.5 17.5l-2.5 -2.5l2.5 -2.5" /></svg>
         </button>
         </div>
@@ -1053,7 +1091,7 @@
     `)
     : `
         <div style="display: flex;justify-content: space-between;align-items: center;gap: 3px;margin-bottom: 10px;">
-      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.2.90  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
+      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.2.92  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
       <svg style="background-color: white; border-radius: 5px;color: #000;" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
       </a></h4>
       <div style="display: flex; gap: 5px;">
@@ -1101,8 +1139,21 @@
             </div>
            
              <div class="enhancement-option">
-                <label>Video Player Size: <span id="player-size-value">100</span>%</label>
+                <label>Video Player Size: <span id="player-size-value">100</span>%</label> <button class="tab-button-active" id="reset-player-size">Reset video size</button>
                 <input type="range" id="player-size-slider" class="slider" min="50" max="150" value="100">
+            </div>
+             <div class="enhancement-option">
+                <label>Default video player quality: </label>
+                <select class="tab-button-active" id="select-video-qualitys-select">
+                  <option value="144">144</option>
+                  <option value="240">240</option>
+                  <option value="360">360</option>
+                  <option value="480">480</option>
+                  <option value="720">720</option>
+                  <option value="1080">1080</option>
+                  <option value="1440">1440</option>
+                  <option value="2160">2160</option>
+                </select>
             </div>
         </div>
 
@@ -1277,6 +1328,7 @@
       disableSubtitles: $id('subtitles-toggle').checked,
       // fontSize: $id('font-size-slider').value,
       playerSize: $id('player-size-slider').value,
+      selectVideoQuality: $id('select-video-qualitys-select').value,
       menuBgColor: $id('menu-bg-color-picker').value,
       menuTextColor: $id('menu-text-color-picker').value,
       // menuFontSize: $id('menu-font-size-slider').value,
@@ -1312,6 +1364,7 @@
     $id('subtitles-toggle').checked = settings.disableSubtitles || false;
     // $id('font-size-slider').value = settings.fontSize || 16;
     $id('player-size-slider').value = settings.playerSize || 100;
+    $id('select-video-qualitys-select').value = settings.selectVideoQuality || '720';
     $id('menu-bg-color-picker').value = settings.menuBgColor || '#000000';
     $id('menu-text-color-picker').value = settings.menuTextColor || '#ffffff';
     // $id('menu-font-size-slider').value = settings.menuFontSize || 14;
@@ -1332,6 +1385,12 @@
     $id('player-size-value').textContent = $id('player-size-slider').value;
     // $id('menu-font-size-value').textContent = $id('menu-font-size-slider').value;
   }
+
+  $id('reset-player-size').addEventListener('click', () => {
+    $id('player-size-slider').value = 100;
+    updateSliderValues();
+    applySettings();
+  });
 
   // Function to apply settings
   function applySettings() {
@@ -1361,6 +1420,7 @@
       disableSubtitles: $id('subtitles-toggle').checked,
       // fontSize: $id('font-size-slider').value,
       playerSize: $id('player-size-slider').value,
+      selectVideoQuality: $id('select-video-qualitys-select').value,
       menuBgColor: $id('menu-bg-color-picker').value,
       menuTextColor: $id('menu-text-color-picker').value,
       // menuFontSize: $id('menu-font-size-slider').value,
@@ -1445,6 +1505,30 @@
     if (player) {
       player.style.transform = `scale(${settings.playerSize / 100})`;
     }
+
+    // selected video quality
+    const video = $e('div#movie_player');
+    let ytPlayerQuality = localStorage.getItem('yt-player-quality');
+    $e('#select-video-qualitys-select').addEventListener('change', () => {
+      applySettings();
+    })
+  
+    if (video != undefined) {
+      if (ytPlayerQuality) {
+        let qualitySettings = JSON.parse(ytPlayerQuality);
+        qualitySettings.data = JSON.stringify({ quality: settings.selectVideoQuality, previousQuality: 240 });
+        localStorage.setItem('yt-player-quality', JSON.stringify(qualitySettings));
+        
+      } else {
+        let defaultQualitySettings = {
+          data: JSON.stringify({ quality: 720, previousQuality: 240 }),
+          expiration: Date.now() + (365 * 24 * 60 * 60 * 1000), 
+          creation: Date.now()
+        };
+        localStorage.setItem('yt-player-quality', JSON.stringify(defaultQualitySettings));
+      }
+      }
+    
 
     // Apply menu appearance settings
     $sp('--yt-enhance-menu-bg', settings.menuBgColor);
@@ -2134,7 +2218,7 @@
 
   console.log(
     '%cYoutube Tools Extension NEW UI\n' +
-      '%cRun %c(v2.2.90)\n' +
+      '%cRun %c(v2.2.92)\n' +
       'By: DeveloperMDCM.',
     HEADER_STYLE,
     CODE_STYLE,
