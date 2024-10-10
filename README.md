@@ -13,6 +13,7 @@
 <summary>Features:</summary>
 - Change default video player quality.
 - Change video player size.
+- Custom themes.   
 - Change background image.
 - Change background color.
 - Skip ads video.
