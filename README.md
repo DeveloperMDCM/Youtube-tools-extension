@@ -11,6 +11,7 @@
 
 <details>
 <summary>Features:</summary>
+   
 - Change default video player quality.
 - Change video player size.
 - Custom themes.   
