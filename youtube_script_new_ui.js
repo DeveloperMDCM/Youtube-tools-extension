@@ -232,14 +232,14 @@
     height: 100vh ;
       }
 
-    .html5-video-player.unstarted-mode {
-    background-image: url('https://avatars.githubusercontent.com/u/54366580?v=4');
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    }
+    // .html5-video-player.unstarted-mode {
+    //  background-image: url('https://avatars.githubusercontent.com/u/54366580?v=4');
+    // background-repeat: no-repeat;
+    // background-position: 50% 50%;
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    // }
         #yt-enhancement-panel {
             position: fixed;
             top: 60px;
@@ -265,6 +265,10 @@
         }
         .color-picker {
             width: 100%;
+            margin: 0;
+            padding: 0;
+            border: none;
+            background: none;
         }
         .slider {
             width: 100%;
@@ -975,6 +979,11 @@
                     <input type="checkbox" id="themes-toggle"> Active Themes / Reload page
                 </label>
             </div>
+              <div class="enhancement-option">
+                <label>
+                    <input type="checkbox" id="translation-toggle"> Translate comments / Reload page
+                </label>
+            </div>
            
              <div class="enhancement-option">
                 <label>Video Player Size: <span id="player-size-value">100</span>%</label> <button class="tab-button-active" id="reset-player-size">Reset video size</button>
@@ -1075,7 +1084,7 @@
                 <label>Menu Text Color:</label>
                 <input type="color" id="menu-text-color-picker" class="color-picker" value="#ff0000">
             </div>
-        
+        "
         </div>
         <div id="import-export">
         <div style="display: flex;width: 100%;justify-content: space-between;">
@@ -1129,12 +1138,17 @@
             </div>
               <div class="enhancement-option">
                 <label>
-                    <input type="checkbox" id="dislikes-toggle"> Show Dislikes / Reload page
+                    <input type="checkbox" id=dislikes-toggle"> Show Dislikes / Reload page
                 </label>
             </div>
               <div class="enhancement-option">
                 <label>
                     <input type="checkbox" id="themes-toggle"> Active Themes / Reload page
+                </label>
+            </div>
+            <div class="enhancement-option">
+                <label>
+                    <input type="checkbox" id="translation-toggle"> Translate comments / Reload page
                 </label>
             </div>
            
@@ -1321,6 +1335,7 @@
       timeColorPicker: $id('time-color-picker').value,
       dislikes: $id('dislikes-toggle').checked,
       themes: $id('themes-toggle').checked,
+      translation: $id('translation-toggle').checked,
       hideComments: $id('hide-comments-toggle').checked,
       hideSidebar: $id('hide-sidebar-toggle').checked,
       disableAutoplay: $id('autoplay-toggle').checked,
@@ -1357,6 +1372,7 @@
     $id('time-color-picker').value = settings.timeColorPicker || '#ffffff';
     $id('dislikes-toggle').checked = settings.dislikes || true;
     $id('themes-toggle').checked = settings.themes || false;
+    $id('translation-toggle').checked = settings.translation || false;
     $id('hide-comments-toggle').checked = settings.hideComments || false;
     $id('hide-sidebar-toggle').checked = settings.hideSidebar || false;
     $id('autoplay-toggle').checked = settings.disableAutoplay || false;
@@ -1413,6 +1429,7 @@
       timeColorPicker: $id('time-color-picker').value,
       dislikes: $id('dislikes-toggle').checked,
       themes: $id('themes-toggle').checked,
+      translation: $id('translation-toggle').checked,
       hideComments: $id('hide-comments-toggle').checked,
       hideSidebar: $id('hide-sidebar-toggle').checked,
       disableAutoplay: $id('autoplay-toggle').checked,
@@ -1779,9 +1796,11 @@
       const divEl2 = $e(
         'ytd-item-section-renderer[static-comments-header] #contents'
       );
+      if(settings.translation) {
       if (divEl != undefined || divEl2 != undefined) {
         limpiarHTML('.buttons-tranlate');
       }
+    }
     };
 
 
