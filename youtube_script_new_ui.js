@@ -70,7 +70,7 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.3.0
+// @version      2.3.1
 // @author       MDCM
 // @match        https://*.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -483,7 +483,7 @@
       display: flex;
       flex: 1;
       align-items: center;
-      gap: 15px;
+      gap: 45px;
       justify-content: end;
     }
       #meta.ytd-playlist-panel-video-renderer {
@@ -2321,7 +2321,7 @@
 
   console.log(
     '%cYoutube Tools Extension NEW UI\n' +
-      '%cRun %c(v2.3.0)\n' +
+      '%cRun %c(v2.3.1)\n' +
       'By: DeveloperMDCM.',
     HEADER_STYLE,
     CODE_STYLE,
