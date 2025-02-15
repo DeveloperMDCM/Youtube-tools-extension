@@ -70,7 +70,7 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.2.92
+// @version      2.3.0
 // @author       MDCM
 // @match        https://*.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -240,6 +240,7 @@
     // justify-content: center;
     // align-items: center;
     // }
+    
         #yt-enhancement-panel {
             position: fixed;
             top: 60px;
@@ -276,7 +277,7 @@
          #toggle-panel {
             position: fixed;
             top: 10px;
-            right: 180px;
+            right: 115px;
             z-index: 10000;
             color: white;
             padding: 5px;
@@ -447,6 +448,44 @@
       flex-wrap: wrap;
       gap: 10px;
     }
+    .containerButtons > button:hover {
+      cursor: pointer;
+    }
+      #container.ytd-masthead {
+      height: 56px;
+      padding: 0 16px;
+      display: flexbox;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: start;
+      }
+      body {
+      padding: 0;
+      margin: 0;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      }
+      .style-scope.ytd-comments {
+      overflow-y: auto;
+      overflow-x: hidden;
+      height: auto;
+      max-height: 100vh;
+      }
+      ytd-item-section-renderer.ytd-watch-next-secondary-results-renderer {
+        --ytd-item-section-item-margin: 8px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        height: auto;
+        max-height: 130vh;
+      }
+      .right-section.ytcp-header {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      gap: 15px;
+      justify-content: end;
+    }
       #meta.ytd-playlist-panel-video-renderer {
     min-width: 0;
     padding: 0 8px;
@@ -553,22 +592,7 @@
   </svg>
 </button>
   `;
-
-  const modeReverse = `
-  <button title="Reverse" class="botones_div" type="button" id="invertir">
-  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrows-diff" width="24"
-    height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-    stroke-linecap="round" stroke-linejoin="round">
-    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-    <path d="M11 16h10"></path>
-    <path d="M11 16l4 4"></path>
-    <path d="M11 16l4 -4"></path>
-    <path d="M13 8h-10"></path>
-    <path d="M13 8l-4 4"></path>
-    <path d="M13 8l-4 -4"></path>
-  </svg>
-</button>
-  `;
+ 
 
   const filterEyes = `
 
@@ -700,6 +724,12 @@
 </button>
   `;
 
+  const bufferVideo = `
+  <button title="Buffer video" type="button" class="buffer_video botones_div">
+ <svg width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-align-box-right-stretch"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 17h2" /><path d="M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14z" /><path d="M11 12h6" /><path d="M13 7h4" /></svg>
+</button>
+  `;
+
 
   const menuBotones = `
 <main>
@@ -707,7 +737,7 @@
 <form>
   <div class="containerButtons">
   ${thumbnailVideo}
-  ${modeReverse}
+  ${bufferVideo}
   ${filterEyes}
   ${resetButton}
   ${repeatVideo}
@@ -984,6 +1014,11 @@
                     <input type="checkbox" id="translation-toggle"> Translate comments / Reload page
                 </label>
             </div>
+              <div class="enhancement-option">
+                <label>
+                    <input type="checkbox" id="reverse-mode-toggle"> Reverse mode
+                </label>
+            </div>
            
              <div class="enhancement-option">
                 <label>Video Player Size: <span id="player-size-value">100</span>%</label> <button class="tab-button-active" id="reset-player-size">Reset video size</button>
@@ -1149,6 +1184,11 @@
             <div class="enhancement-option">
                 <label>
                     <input type="checkbox" id="translation-toggle"> Translate comments / Reload page
+                </label>
+            </div>
+             <div class="enhancement-option">
+                <label>
+                    <input type="checkbox" id="reverse-mode-toggle"> Reverse mode
                 </label>
             </div>
            
@@ -1336,6 +1376,7 @@
       dislikes: $id('dislikes-toggle').checked,
       themes: $id('themes-toggle').checked,
       translation: $id('translation-toggle').checked,
+      reverseMode: $id('reverse-mode-toggle').checked,
       hideComments: $id('hide-comments-toggle').checked,
       hideSidebar: $id('hide-sidebar-toggle').checked,
       disableAutoplay: $id('autoplay-toggle').checked,
@@ -1373,6 +1414,7 @@
     $id('dislikes-toggle').checked = settings.dislikes || true;
     $id('themes-toggle').checked = settings.themes || false;
     $id('translation-toggle').checked = settings.translation || false;
+    $id('reverse-mode-toggle').checked = settings.reverseMode || false;
     $id('hide-comments-toggle').checked = settings.hideComments || false;
     $id('hide-sidebar-toggle').checked = settings.hideSidebar || false;
     $id('autoplay-toggle').checked = settings.disableAutoplay || false;
@@ -1430,6 +1472,7 @@
       dislikes: $id('dislikes-toggle').checked,
       themes: $id('themes-toggle').checked,
       translation: $id('translation-toggle').checked,
+      reverseMode: $id('reverse-mode-toggle').checked,
       hideComments: $id('hide-comments-toggle').checked,
       hideSidebar: $id('hide-sidebar-toggle').checked,
       disableAutoplay: $id('autoplay-toggle').checked,
@@ -1596,7 +1639,7 @@
             $sp('--yt-spec-static-brand-white', selectedTheme.textColor);
             $sp('--ytd-searchbox-background', selectedTheme.gradient);
             $sp('--ytd-searchbox-text-color', selectedTheme.textColor);
-  
+            $sp('--ytcp-text-primary', settings.textColor);
             GM_addStyle(`
   
               .botones_div {
@@ -1662,9 +1705,24 @@
           $sp('--yt-spec-static-brand-white', settings.timeColorPicker);
           $sp('--ytd-searchbox-background', settings.primaryColorPicker);
           $sp('--ytd-searchbox-text-color', settings.secondaryColorPicker);
-  
+          $sp('--ytcp-text-primary', settings.primaryColorPicker);
           GM_addStyle(`
-  
+            .html5-video-player {
+                color: ${settings.primaryColorPicker} !important;
+              }
+              .ytp-volume-slider-handle:before, .ytp-volume-slider-handle, .ytp-tooltip.ytp-preview:not(.ytp-text-detail) {
+                background-color: ${settings.iconsColorPicker} !important;
+              }
+                .ytp-autonav-toggle-button[aria-checked=true] {
+                  background-color: ${settings.iconsColorPicker} !important;
+                }
+                  .tp-yt-iron-icon {
+                   fill: ${settings.iconsColorPicker} !important;
+                  }
+
+            #columns.style-scope.ytd-watch-flexy {
+              flex-direction: ${settings.reverseMode ? 'row-reverse' : 'row'} !important;
+            }
              .botones_div {
             background-color: transparent;
             border: none;
@@ -1941,25 +1999,51 @@
 
       const btnImagen = $e('#imagen');
       const formularioButtons = $e('#eyes');
-      const invertirVista = $e('#invertir');
-
-      const reverse = $e('#columns');
-
-      let countViewRow = 0; // Count
-      if (invertirVista != undefined) {
-        invertirVista.onclick = () => {
-          countViewRow += 1;
-          switch (countViewRow) {
-            case 1:
-              reverse.style.flexDirection = 'row-reverse';
-              break;
-            case 2:
-              reverse.style.flexDirection = 'row';
-              countViewRow = 0;
-              break;
-          }
-        };
+      
+      function initClickEvent() {
+        const bufferVideo = $e('.buffer_video');
+        
+        if (!bufferVideo) {
+          console.log("Botón no encontrado, esperando...");
+          return;
+        }
+      
+        // Evita duplicar el evento
+        if (!bufferVideo.dataset.listenerAdded) {
+          bufferVideo.addEventListener("click", () => {
+            const video = document.querySelector("video");
+      
+            if (!video) {
+              console.log("No se encontró el video en la página.");
+              return;
+            }
+      
+            // Simular clic derecho
+            const event = new MouseEvent("contextmenu", {
+              bubbles: true,
+              cancelable: true
+            });
+      
+            video.dispatchEvent(event);
+    
+            setTimeout(() => {
+              const option = document.querySelector("body > div.ytp-popup.ytp-contextmenu > div > div > div:nth-child(7)");
+              if (option) {
+                option.click();
+              } else {
+                console.log("Opción no encontrada, intenta aumentar el tiempo de espera.");
+              }
+            }, 1000);
+          });
+      
+          bufferVideo.dataset.listenerAdded = "true"; 
+          console.log("Evento registrado con éxito.");
+        }
       }
+      
+      setInterval(initClickEvent, 2000);
+     
+      
 
       // valido modo oscuro y venta de video
       // Repeat video button
@@ -2237,7 +2321,7 @@
 
   console.log(
     '%cYoutube Tools Extension NEW UI\n' +
-      '%cRun %c(v2.2.92)\n' +
+      '%cRun %c(v2.3.0)\n' +
       'By: DeveloperMDCM.',
     HEADER_STYLE,
     CODE_STYLE,
