@@ -963,7 +963,7 @@
   const panelHTML = policy
     ? policy.createHTML(`
       <div style="display: flex;justify-content: space-between;align-items: center;gap: 3px;margin-bottom: 10px;">
-      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.2.92  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
+      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.3.2  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
       <svg style="background-color: white; border-radius: 5px;color: #000;" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
       </a></h4>
       <div style="display: flex; gap: 5px;">
@@ -1173,7 +1173,7 @@
             </div>
               <div class="enhancement-option">
                 <label>
-                    <input type="checkbox" id=dislikes-toggle"> Show Dislikes / Reload page
+                    <input type="checkbox" id="dislikes-toggle"> Show Dislikes / Reload page
                 </label>
             </div>
               <div class="enhancement-option">
@@ -2321,7 +2321,7 @@
 
   console.log(
     '%cYoutube Tools Extension NEW UI\n' +
-      '%cRun %c(v2.3.1)\n' +
+      '%cRun %c(v2.3.2)\n' +
       'By: DeveloperMDCM.',
     HEADER_STYLE,
     CODE_STYLE,
