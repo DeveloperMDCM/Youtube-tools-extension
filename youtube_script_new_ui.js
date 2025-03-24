@@ -70,8 +70,8 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.3.2
-// @author       MDCM
+// @version      2.3.3
+// @author       DeveloperMDCM
 // @match        https://*.youtube.com/*
 // @exclude      *://music.youtube.com/*
 // @exclude      *://*.music.youtube.com/*
@@ -470,14 +470,26 @@
       overflow-y: auto;
       overflow-x: hidden;
       height: auto;
-      max-height: 100vh;
       }
+      ytd-comment-view-model[is-reply] #author-thumbnail.ytd-comment-view-model yt-img-shadow.ytd-comment-view-model, ytd-comment-view-model[is-creator-reply] #author-thumbnail.ytd-comment-view-model yt-img-shadow.ytd-comment-view-model {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+      }
+        img.yt-img-shadow {
+        border-radius: 50% !important;
+        }
+        #author-thumbnail.ytd-comment-view-model yt-img-shadow.ytd-comment-view-model {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          overflow: visible;
+        }
       ytd-item-section-renderer.ytd-watch-next-secondary-results-renderer {
         --ytd-item-section-item-margin: 8px;
         overflow-y: auto;
         overflow-x: hidden;
         height: auto;
-        max-height: 130vh;
       }
       .right-section.ytcp-header {
       display: flex;
@@ -571,6 +583,35 @@
           background-color: #ff0000;
           color: #ffffff;
           cursor: pointer;
+        }
+
+        .yt-image-avatar-download {
+          position: absolute;
+          bottom: -10px;
+          right: -14px;
+          border: none;
+          z-index: 1000;
+          background: transparent;
+          color: var(--ytcp-text-primary);
+          cursor: pointer;
+        }
+
+        #custom-classic-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: rgba(255,255,255,0.1);
+          border-radius: 50%;
+          border: none;
+          width: 48px;
+          height: 48px;
+          color: var(--yt-spec-icon-inactive);
+          font-size: 24px;
+          margin: 0px 8px;
+          cursor: pointer;
+        }
+        #custom-classic-btn:hover {
+          background-color: rgba(255,255,255,0.2);
         }
     `);
 
@@ -963,7 +1004,7 @@
   const panelHTML = policy
     ? policy.createHTML(`
       <div style="display: flex;justify-content: space-between;align-items: center;gap: 3px;margin-bottom: 10px;">
-      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.3.2  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
+      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.3.3  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
       <svg style="background-color: white; border-radius: 5px;color: #000;" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
       </a></h4>
       <div style="display: flex; gap: 5px;">
@@ -1135,7 +1176,7 @@
     `)
     : `
         <div style="display: flex;justify-content: space-between;align-items: center;gap: 3px;margin-bottom: 10px;">
-      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.2.92  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
+      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.3.3  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
       <svg style="background-color: white; border-radius: 5px;color: #000;" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
       </a></h4>
       <div style="display: flex; gap: 5px;">
@@ -1819,6 +1860,7 @@
     let urlLista; // Url lista
     async function traductor() {
       const texto = $m('#content-text');
+      if ($e('.buttons-tranlate')) return;
       let o = `?client=dict-chrome-ex&sl=auto&tl=${navigator.language}&q=`;
       for (let i = 0; i < texto.length; i++) {
         const botonTraducir = $cl('BUTTON');
@@ -1839,34 +1881,164 @@
         };
       }
     }
+ 
+    function limpiarHTML(selector) {
+      $m(selector).forEach((button) => button.remove());
+    }
+ 
+const debounce = (func, delay) => {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), delay);
+  };
+};
 
-    // clean buttoms dom
-    function limpiarHTML(element) {
-      const buttons = $m(`${element}`);
-      [].forEach.call(buttons, function (buttons) {
-        buttons.remove();
-      });
+const detectarScroll = () => {
+  const avatars = $m('#author-thumbnail-button #img.style-scope.yt-img-shadow');
+
+  if (avatars.length > 0) {
+    limpiarHTML('.yt-image-avatar-download');
+    agregarBotonesDescarga();
+  }
+
+  const divEl = $e('#content-text');
+  const divEl2 = $e('ytd-item-section-renderer[static-comments-header] #contents');
+
+  if (settings.translation) {
+    if (divEl !== undefined || divEl2 !== undefined) {
+      limpiarHTML('.buttons-tranlate');
       traductor();
     }
+  }
+};
 
-    window.onscroll = () => {
-      const divEl = $e('#content-text');
-      const divEl2 = $e(
-        'ytd-item-section-renderer[static-comments-header] #contents'
-      );
-      if(settings.translation) {
-      if (divEl != undefined || divEl2 != undefined) {
-        limpiarHTML('.buttons-tranlate');
-      }
+
+const detectarScrollDebounced = debounce(detectarScroll, 500);
+
+
+window.addEventListener('scroll', detectarScrollDebounced, { passive: true });
+
+const observarScrollEnElementos = () => {
+  document.querySelectorAll('*').forEach((el) => {
+    if (el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth) {
+      el.addEventListener('scroll', detectarScrollDebounced, { passive: true });
     }
+  });
+};
+
+observarScrollEnElementos();
+const observer = new MutationObserver(observarScrollEnElementos);
+observer.observe(document.body, { childList: true, subtree: true });
+
+    
+
+    
+    
+    function agregarBotonesDescarga() {
+      const avatars = $m('#author-thumbnail-button #img.style-scope.yt-img-shadow');
+    
+    
+      avatars.forEach((img) => {
+        
+        if (img.parentElement.querySelector('.yt-image-avatar-download')) return;
+       
+        const button = $cl('button');
+        button.innerHTML = '<svg width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-photo-down"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 8h.01" /><path d="M12.5 21h-6.5a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v6.5" /><path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l4 4" /><path d="M14 14l1 -1c.653 -.629 1.413 -.815 2.13 -.559" /><path d="M19 16v6" /><path d="M22 19l-3 3l-3 -3" /></svg>';
+        button.classList.add('yt-image-avatar-download');
+    
+        // Asigna la funcionalidad de descarga
+        button.onclick = async function () {
+          try {
+            const imageUrl = img.src.split('=')[0];
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+    
+            const parentComment = img.closest('ytd-comment-thread-renderer, ytd-comment-renderer');
+            const nameElement = parentComment?.querySelector('#author-text');
+            let authorName = nameElement ? nameElement.textContent.trim() : 'avatar';
+            authorName = authorName.replace(/[\/\\:*?"<>|]/g, '');
+    
+            const link = $cl('a');
+            link.href = blobUrl;
+            link.download = `${authorName}_avatar.jpg` || 'avatar.jpg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(blobUrl);
+          } catch (error) {
+            console.error('Error al descargar la imagen:', error);
+          }
+        };
+    
+        // Agrega el botón al contenedor de la imagen
+        img.parentElement.style.position = 'relative'; // Asegura que el botón se posicione correctamente
+        img.parentElement.appendChild(button);
+      });
+    }
+
+    const BUTTON_ID = 'custom-classic-btn';
+
+   
+    const redirectToClassic = () => {
+      const videoId = window.location.pathname.split('/').pop();
+      const classicUrl = `https://www.youtube.com/watch?v=${videoId}`;
+     
+      window.open(classicUrl, '_blank');
+     
+      const videoElement = document.querySelector('video');
+      if (videoElement) {
+          videoElement.pause();
+      } else {
+          console.warn('No se encontró el elemento de video');
+      }
+  };
+
+
+   
+    const createButton = () => {
+        const button = document.createElement('button');
+        button.id = BUTTON_ID;
+        button.innerHTML = '<svg width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-screen-share"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M21 12v3a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1v-10a1 1 0 0 1 1 -1h9" /><path d="M7 20l10 0" /><path d="M9 16l0 4" /><path d="M15 16l0 4" /><path d="M17 4h4v4" /><path d="M16 9l5 -5" /></svg>'; // Cambia el icono si quieres
+        button.title = 'Classic mode';
+        button.onclick = redirectToClassic;
+        return button;
     };
+
+    
+    const insertButtons = () => {
+        const ShortVisible = document.location.href.split('/')[3] === 'shorts';
+        if(ShortVisible) {
+        document.querySelectorAll('#actions').forEach(actionsContainer => {
+            if (!actionsContainer.querySelector(`#${BUTTON_ID}`)) {
+                actionsContainer.prepend(createButton());
+            }
+        });
+      }
+    };
+    
+    const observeDOM = () => {
+        const observer = new MutationObserver(() => {
+            insertButtons(); 
+        });
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    };
+
+
+    insertButtons(); 
+    observeDOM(); 
+   
 
 
     const targetNode = $e('body');
 
     if (targetNode != undefined) {
       const element = $e('ytd-item-section-renderer[static-comments-header] #contents');
-      if(element != undefined) {
+      if(element != undefined && settings.theme !== 'custom') {
         const observerElementDom = (elem) => {
           const observer = new IntersectionObserver(entries => {
 
@@ -1905,76 +2077,70 @@
     }
 
       // Formulario de botones para descargar
-      const formulariodescarga = $e(
-        '.formulariodescarga'
-      );
-      const formulariodescargaaudio = $e(
-        '.formulariodescargaaudio'
-      );
-      const framedescarga = $e('#descargando');
-      const framedescargamp3 = $e('#descargandomp3');
-      if (formulariodescarga && formulariodescargaaudio) {
-        formulariodescarga.addEventListener('click', (e) => {
-          e.preventDefault();
-        });
-        formulariodescargaaudio.addEventListener('click', (e) => {
-          e.preventDefault();
-        });
-      }
-      const btn1mp4 = $e('.btn1');
-      const btn2mp3 = $e('.btn2');
-      const btn3cancel = $e('.btn3');
-      const selectcalidades = $e('.selectcalidades');
-      const selectcalidadesaudio = $e(
-        '.selectcalidadesaudio'
-      );
+      // Elementos del DOM
+        const formulariodescarga = $e('.formulariodescarga');
+        const formulariodescargaaudio = $e('.formulariodescargaaudio');
+        const framedescarga = $e('#descargando');
+        const framedescargamp3 = $e('#descargandomp3');
+        const btn1mp4 = $e('.btn1');
+        const btn2mp3 = $e('.btn2');
+        const btn3cancel = $e('.btn3');
+        const selectcalidades = $e('.selectcalidades');
+        const selectcalidadesaudio = $e('.selectcalidadesaudio');
 
-      if(selectcalidades != undefined) {
-        selectcalidades.addEventListener('change', (e) => {
+        // Previene el envío de formularios
+        [formulariodescarga, formulariodescargaaudio].forEach((form) => {
+          form?.addEventListener('click', (e) => e.preventDefault());
+        });
+
+        // Manejo del cambio de calidad
+        selectcalidades?.addEventListener('change', (e) => {
           framedescarga.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=0af`;
           framedescarga.classList.remove('ocultarframe');
         });
 
-      }
-
-      if(selectcalidadesaudio != undefined) {
-        selectcalidadesaudio.addEventListener('change', (e) => {
+        selectcalidadesaudio?.addEventListener('change', (e) => {
           framedescargamp3.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=049c16`;
-          // console.log(e.target.value)
           framedescargamp3.classList.remove('ocultarframeaudio');
         });
-      }
 
-      if (btn3cancel != undefined) {
-        btn3cancel.onclick = () => {
+        // Ocultar formularios al cancelar
+        btn3cancel?.addEventListener('click', () => {
           formulariodescarga.style.display = 'none';
           formulariodescargaaudio.style.display = 'none';
-        };
-      }
+        });
 
-      if (btn1mp4 != undefined) {
-        btn1mp4.onclick = () => {
-          selectcalidades.classList.remove('ocultarframe');
-          framedescarga.classList.add('ocultarframe');
-          formulariodescarga.classList.remove('ocultarframe');
-          formulariodescarga.style.display = '';
-          selectcalidadesaudio.classList.add('ocultarframeaudio');
-          formulariodescargaaudio.classList.add('ocultarframe');
-          formulariodescarga.reset();
-        };
-      }
+        // Función para alternar visibilidad de formularios
+        const mostrarFormulario = (formulario, select, frame, otroFormulario, otroSelect, otroFrame) => {
+          formulario.classList.remove('ocultarframe');
+          formulario.style.display = '';
+          select.classList.remove('ocultarframeaudio');
+          frame.classList.add('ocultarframeaudio');
 
-      if (btn2mp3 != undefined) {
-        btn2mp3.onclick = () => {
-          formulariodescargaaudio.classList.remove('ocultarframe');
-          formulariodescarga.classList.add('ocultarframe');
-          framedescargamp3.classList.remove('ocultarframeaudio');
-          formulariodescargaaudio.style.display = '';
-          selectcalidadesaudio.classList.remove('ocultarframeaudio');
-          framedescargamp3.classList.add('ocultarframeaudio');
-          formulariodescargaaudio.reset();
+          // Ocultar el otro formulario y sus elementos
+          otroFormulario.classList.add('ocultarframe');
+          otroSelect.classList.add('ocultarframeaudio');
+          otroFrame.classList.add('ocultarframeaudio');
+
+          // Reiniciar formulario
+          formulario.reset();
         };
-      }
+
+        // Mostrar formulario MP4
+        btn1mp4?.addEventListener('click', () => {
+          mostrarFormulario(
+            formulariodescarga, selectcalidades, framedescarga,
+            formulariodescargaaudio, selectcalidadesaudio, framedescargamp3
+          );
+        });
+
+        // Mostrar formulario MP3
+        btn2mp3?.addEventListener('click', () => {
+          mostrarFormulario(
+            formulariodescargaaudio, selectcalidadesaudio, framedescargamp3,
+            formulariodescarga, selectcalidades, framedescarga
+          );
+        });
 
       // Invertir contenido
 
@@ -2004,7 +2170,7 @@
         const bufferVideo = $e('.buffer_video');
         
         if (!bufferVideo) {
-          console.log("Botón no encontrado, esperando...");
+         
           return;
         }
       
@@ -2321,7 +2487,7 @@
 
   console.log(
     '%cYoutube Tools Extension NEW UI\n' +
-      '%cRun %c(v2.3.2)\n' +
+      '%cRun %c(v2.3.3)\n' +
       'By: DeveloperMDCM.',
     HEADER_STYLE,
     CODE_STYLE,
