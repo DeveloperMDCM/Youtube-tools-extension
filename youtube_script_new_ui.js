@@ -70,7 +70,7 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.3.3
+// @version      2.3.3.1
 // @author       DeveloperMDCM
 // @match        https://*.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -596,7 +596,7 @@
           cursor: pointer;
         }
 
-        #custom-classic-btn {
+        .custom-classic-btn {
           display: flex;
           align-items: center;
           justify-content: center;
@@ -610,7 +610,7 @@
           margin: 0px 8px;
           cursor: pointer;
         }
-        #custom-classic-btn:hover {
+        .custom-classic-btn:hover {
           background-color: rgba(255,255,255,0.2);
         }
     `);
@@ -1004,7 +1004,7 @@
   const panelHTML = policy
     ? policy.createHTML(`
       <div style="display: flex;justify-content: space-between;align-items: center;gap: 3px;margin-bottom: 10px;">
-      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.3.3  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
+      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.3.3.1  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
       <svg style="background-color: white; border-radius: 5px;color: #000;" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
       </a></h4>
       <div style="display: flex; gap: 5px;">
@@ -1176,7 +1176,7 @@
     `)
     : `
         <div style="display: flex;justify-content: space-between;align-items: center;gap: 3px;margin-bottom: 10px;">
-      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.3.3  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
+      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.3.3.1  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
       <svg style="background-color: white; border-radius: 5px;color: #000;" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
       </a></h4>
       <div style="display: flex; gap: 5px;">
@@ -1885,55 +1885,46 @@
     function limpiarHTML(selector) {
       $m(selector).forEach((button) => button.remove());
     }
- 
-const debounce = (func, delay) => {
-  let timeout;
-  return (...args) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), delay);
-  };
-};
 
-const detectarScroll = () => {
-  const avatars = $m('#author-thumbnail-button #img.style-scope.yt-img-shadow');
-
-  if (avatars.length > 0) {
-    limpiarHTML('.yt-image-avatar-download');
-    agregarBotonesDescarga();
-  }
-
-  const divEl = $e('#content-text');
-  const divEl2 = $e('ytd-item-section-renderer[static-comments-header] #contents');
-
-  if (settings.translation) {
-    if (divEl !== undefined || divEl2 !== undefined) {
-      limpiarHTML('.buttons-tranlate');
-      traductor();
-    }
-  }
-};
-
-
-const detectarScrollDebounced = debounce(detectarScroll, 500);
-
-
-window.addEventListener('scroll', detectarScrollDebounced, { passive: true });
-
-const observarScrollEnElementos = () => {
-  document.querySelectorAll('*').forEach((el) => {
-    if (el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth) {
-      el.addEventListener('scroll', detectarScrollDebounced, { passive: true });
-    }
-  });
-};
-
-observarScrollEnElementos();
-const observer = new MutationObserver(observarScrollEnElementos);
-observer.observe(document.body, { childList: true, subtree: true });
-
+    function checkScroll () {
+      const avatars = $m('#author-thumbnail-button #img.style-scope.yt-img-shadow');
+  
+      if (avatars.length > 0) {
+        limpiarHTML('.yt-image-avatar-download');
+        agregarBotonesDescarga();
+      }
     
-
+      const divEl = $e('#content-text');
+      const divEl2 = $e('ytd-item-section-renderer[static-comments-header] #contents');
     
+      if (settings.translation) {
+        if (divEl !== undefined || divEl2 !== undefined) {
+          limpiarHTML('.buttons-tranlate');
+          traductor();
+        }
+      }
+  
+    }
+
+    window.onscroll = () => {
+      checkScroll();
+    }
+
+
+  const contentScrollable = $e('.anchored-panel.style-scope.ytd-shorts #contents.style-scope.ytd-item-section-renderer.style-scope.ytd-item-section-renderer');
+  if (contentScrollable) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          contentScrollable.addEventListener('scroll', () => {
+            checkScroll();          
+          });
+        }
+      });
+    }, { threshold: 0.1 });
+  
+    observer.observe(contentScrollable);
+  } 
     
     function agregarBotonesDescarga() {
       const avatars = $m('#author-thumbnail-button #img.style-scope.yt-img-shadow');
@@ -1978,7 +1969,7 @@ observer.observe(document.body, { childList: true, subtree: true });
       });
     }
 
-    const BUTTON_ID = 'custom-classic-btn';
+    const BUTTON_CLASS = 'custom-classic-btn';
 
    
     const redirectToClassic = () => {
@@ -1997,41 +1988,41 @@ observer.observe(document.body, { childList: true, subtree: true });
 
 
    
-    const createButton = () => {
-        const button = document.createElement('button');
-        button.id = BUTTON_ID;
-        button.innerHTML = '<svg width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-screen-share"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M21 12v3a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1v-10a1 1 0 0 1 1 -1h9" /><path d="M7 20l10 0" /><path d="M9 16l0 4" /><path d="M15 16l0 4" /><path d="M17 4h4v4" /><path d="M16 9l5 -5" /></svg>'; // Cambia el icono si quieres
-        button.title = 'Classic mode';
-        button.onclick = redirectToClassic;
-        return button;
-    };
+  const createButton = () => {
+    const button = document.createElement('button');
+    button.classList.add(BUTTON_CLASS);
+    button.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-screen-share"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M21 12v3a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1v-10a1 1 0 0 1 1 -1h9" /><path d="M7 20l10 0" /><path d="M9 16l0 4" /><path d="M15 16l0 4" /><path d="M17 4h4v4" /><path d="M16 9l5 -5" /></svg>'; 
+    button.title = 'Classic mode';
+    button.onclick = redirectToClassic;
+    return button;
+  };
 
-    
-    const insertButtons = () => {
-        const ShortVisible = document.location.href.split('/')[3] === 'shorts';
-        if(ShortVisible) {
-        document.querySelectorAll('#actions').forEach(actionsContainer => {
-            if (!actionsContainer.querySelector(`#${BUTTON_ID}`)) {
-                actionsContainer.prepend(createButton());
-            }
-        });
+  const insertButtons = () => {
+      const isShortsPage = document.location.pathname.startsWith('/shorts');
+
+      if (isShortsPage) {
+          document.querySelectorAll('#actions').forEach(actionsContainer => {
+              if (!actionsContainer.querySelector(`.${BUTTON_CLASS}`)) {
+                  actionsContainer.prepend(createButton());
+              }
+          });
+      } else {
+          document.querySelectorAll(`.${BUTTON_CLASS}`).forEach(button => button.remove());
       }
-    };
-    
-    const observeDOM = () => {
-        const observer = new MutationObserver(() => {
-            insertButtons(); 
-        });
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
-    };
+  };
 
+  const observeDOM = () => {
+      const observer = new MutationObserver(() => {
+          insertButtons();
+      });
+      observer.observe(document.body, {
+          childList: true,
+          subtree: true
+      });
+  };
 
-    insertButtons(); 
-    observeDOM(); 
-   
+    insertButtons();
+    observeDOM();
 
 
     const targetNode = $e('body');
@@ -2076,72 +2067,55 @@ observer.observe(document.body, { childList: true, subtree: true });
         }
     }
 
-      // Formulario de botones para descargar
-      // Elementos del DOM
-        const formulariodescarga = $e('.formulariodescarga');
-        const formulariodescargaaudio = $e('.formulariodescargaaudio');
-        const framedescarga = $e('#descargando');
-        const framedescargamp3 = $e('#descargandomp3');
-        const btn1mp4 = $e('.btn1');
-        const btn2mp3 = $e('.btn2');
-        const btn3cancel = $e('.btn3');
-        const selectcalidades = $e('.selectcalidades');
-        const selectcalidadesaudio = $e('.selectcalidadesaudio');
+    const formulariodescarga      = $e('.formulariodescarga');
+    const formulariodescargaaudio = $e('.formulariodescargaaudio');
+    const framedescarga         = $e('#descargando');
+    const framedescargamp3      = $e('#descargandomp3');
+    const btn1mp4               = $e('.btn1');
+    const btn2mp3               = $e('.btn2');
+    const btn3cancel            = $e('.btn3');
+    const selectcalidades       = $e('.selectcalidades');
+    const selectcalidadesaudio  = $e('.selectcalidadesaudio');
+    
 
-        // Previene el envío de formularios
-        [formulariodescarga, formulariodescargaaudio].forEach((form) => {
-          form?.addEventListener('click', (e) => e.preventDefault());
-        });
-
-        // Manejo del cambio de calidad
-        selectcalidades?.addEventListener('change', (e) => {
-          framedescarga.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=0af`;
-          framedescarga.classList.remove('ocultarframe');
-        });
-
-        selectcalidadesaudio?.addEventListener('change', (e) => {
-          framedescargamp3.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=049c16`;
-          framedescargamp3.classList.remove('ocultarframeaudio');
-        });
-
-        // Ocultar formularios al cancelar
-        btn3cancel?.addEventListener('click', () => {
-          formulariodescarga.style.display = 'none';
-          formulariodescargaaudio.style.display = 'none';
-        });
-
-        // Función para alternar visibilidad de formularios
-        const mostrarFormulario = (formulario, select, frame, otroFormulario, otroSelect, otroFrame) => {
-          formulario.classList.remove('ocultarframe');
-          formulario.style.display = '';
-          select.classList.remove('ocultarframeaudio');
-          frame.classList.add('ocultarframeaudio');
-
-          // Ocultar el otro formulario y sus elementos
-          otroFormulario.classList.add('ocultarframe');
-          otroSelect.classList.add('ocultarframeaudio');
-          otroFrame.classList.add('ocultarframeaudio');
-
-          // Reiniciar formulario
-          formulario.reset();
-        };
-
-        // Mostrar formulario MP4
-        btn1mp4?.addEventListener('click', () => {
-          mostrarFormulario(
-            formulariodescarga, selectcalidades, framedescarga,
-            formulariodescargaaudio, selectcalidadesaudio, framedescargamp3
-          );
-        });
-
-        // Mostrar formulario MP3
-        btn2mp3?.addEventListener('click', () => {
-          mostrarFormulario(
-            formulariodescargaaudio, selectcalidadesaudio, framedescargamp3,
-            formulariodescarga, selectcalidades, framedescarga
-          );
-        });
-
+    [formulariodescarga, formulariodescargaaudio].forEach(form =>
+      form?.addEventListener('click', e => e.preventDefault())
+    );
+    
+    selectcalidades?.addEventListener('change', e => {
+      framedescarga.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=0af`;
+      framedescarga.classList.remove('ocultarframe');
+    });
+    
+    selectcalidadesaudio?.addEventListener('change', e => {
+      framedescargamp3.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=049c16`;
+      framedescargamp3.classList.remove('ocultarframeaudio');
+    });
+    
+    btn3cancel?.addEventListener('click', () => {
+      formulariodescarga.style.display = 'none';
+      formulariodescargaaudio.style.display = 'none';
+    });
+    
+    btn1mp4?.addEventListener('click', () => {
+      selectcalidades?.classList.remove('ocultarframe');
+      framedescarga?.classList.add('ocultarframe');
+      formulariodescarga?.classList.remove('ocultarframe');
+      formulariodescarga.style.display = '';
+      selectcalidadesaudio?.classList.add('ocultarframeaudio');
+      formulariodescargaaudio?.classList.add('ocultarframe');
+      formulariodescarga?.reset();
+    });
+    
+    btn2mp3?.addEventListener('click', () => {
+      formulariodescargaaudio?.classList.remove('ocultarframe');
+      formulariodescarga?.classList.add('ocultarframe');
+      framedescargamp3?.classList.remove('ocultarframeaudio');
+      formulariodescargaaudio.style.display = '';
+      selectcalidadesaudio?.classList.remove('ocultarframeaudio');
+      framedescargamp3?.classList.add('ocultarframeaudio');
+      formulariodescargaaudio?.reset();
+    });
       // Invertir contenido
 
       // const background_image = $e('#background_image');
@@ -2487,7 +2461,7 @@ observer.observe(document.body, { childList: true, subtree: true });
 
   console.log(
     '%cYoutube Tools Extension NEW UI\n' +
-      '%cRun %c(v2.3.3)\n' +
+      '%cRun %c(v2.3.3.1)\n' +
       'By: DeveloperMDCM.',
     HEADER_STYLE,
     CODE_STYLE,
