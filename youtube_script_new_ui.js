@@ -275,9 +275,6 @@
             width: 100%;
         }
          #toggle-panel {
-            position: fixed;
-            top: 10px;
-            right: 115px;
             z-index: 10000;
             color: white;
             padding: 5px;
@@ -289,14 +286,16 @@
             width: 43px;
             border-radius: 100px;
         }
-             #toggle-panel:hover {
-             background-color: #fff;
-             border-radius: 100px;
+             #toggle-button:hover {
+             background-color: rgba(255,255,255,0.1);
+             border-radius: 50%;
              opacity: 1 !important;
         }
         #icon-menu-settings {
         width: 24px;
         height: 24px;
+        padding: 7px;
+        margin-right: 5px;
         cursor: pointer;
         user-select: none;
         }
@@ -451,15 +450,7 @@
     .containerButtons > button:hover {
       cursor: pointer;
     }
-      #container.ytd-masthead {
-      height: 56px;
-      padding: 0 16px;
-      display: flexbox;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: start;
-      }
+      
       body {
       padding: 0;
       margin: 0;
@@ -1055,6 +1046,11 @@
                     <input type="checkbox" id="translation-toggle"> Translate comments / Reload page
                 </label>
             </div>
+            <div class="enhancement-option">
+                <label>
+                    <input type="checkbox" id="avatars-toggle"> Download avatars / Reload page
+                </label>
+            </div>
               <div class="enhancement-option">
                 <label>
                     <input type="checkbox" id="reverse-mode-toggle"> Reverse mode
@@ -1227,6 +1223,11 @@
                     <input type="checkbox" id="translation-toggle"> Translate comments / Reload page
                 </label>
             </div>
+            <div class="enhancement-option">
+                <label>
+                    <input type="checkbox" id="avatars-toggle"> Download avatars / Reload page
+                </label>
+            </div>
              <div class="enhancement-option">
                 <label>
                     <input type="checkbox" id="reverse-mode-toggle"> Reverse mode
@@ -1349,35 +1350,47 @@
 
   panel.innerHTML = panelHTML;
   $ap(panel);
-  // Create toggle button
-  const toggleButton = $cl('div');
-  toggleButton.id = 'toggle-panel';
-  const icon = $cl('img');
-  icon.id = 'icon-menu-settings';
-  icon.src =
-    'https://cdn.iconscout.com/icon/premium/png-512-thumb/settings-782-1095915.png?f=webp&w=256';
 
-  toggleButton.appendChild(icon);
 
-  // Add panel and toggle button to the page
-  $ap(panel);
-  $ap(toggleButton);
+  function addIcon() {
+    const topBar = $e('ytd-topbar-menu-button-renderer');
+    if (!topBar || $id('icon-menu-settings')) return;
+  
+    const toggleButton = $cl('div');
+    toggleButton.id = 'toggle-button';
+  
+    const icon = $cl('img');
+    icon.id = 'icon-menu-settings';
+    icon.src = 'https://cdn.iconscout.com/icon/premium/png-512-thumb/settings-782-1095915.png?f=webp&w=100';
+  
+    toggleButton.appendChild(icon);
+    topBar.parentElement.insertBefore(toggleButton, topBar);
+      // Toggle panel visibility
+    let openMenu = false;
+    toggleButton.addEventListener('click', () => {
+      openMenu = !openMenu;
+      // openMenu
+      //   ? (toggleButton.style.backgroundColor = '#f00')
+      //   : (toggleButton.style.backgroundColor = 'transparent');
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    });
 
-  // Toggle panel visibility
+    
+    }
+
+  
+  addIcon();
   let openMenu = false;
-  toggleButton.addEventListener('click', () => {
-    openMenu = !openMenu;
-    // openMenu
-    //   ? (toggleButton.style.backgroundColor = '#f00')
-    //   : (toggleButton.style.backgroundColor = 'transparent');
-    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-  });
 
   const close_menu_settings = $e('.close_menu_settings');
-  close_menu_settings.addEventListener('click', () => {
-    openMenu = !openMenu;
-    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-  });
+    close_menu_settings.addEventListener('click', () => {
+      openMenu = !openMenu;
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    });
+
+  // $ap(toggleButton);
+
+
 
 
   // Tab functionality
@@ -1417,6 +1430,7 @@
       dislikes: $id('dislikes-toggle').checked,
       themes: $id('themes-toggle').checked,
       translation: $id('translation-toggle').checked,
+      avatars: $id('avatars-toggle').checked,
       reverseMode: $id('reverse-mode-toggle').checked,
       hideComments: $id('hide-comments-toggle').checked,
       hideSidebar: $id('hide-sidebar-toggle').checked,
@@ -1455,6 +1469,7 @@
     $id('dislikes-toggle').checked = settings.dislikes || true;
     $id('themes-toggle').checked = settings.themes || false;
     $id('translation-toggle').checked = settings.translation || false;
+    $id('avatars-toggle').checked = settings.avatars || false;
     $id('reverse-mode-toggle').checked = settings.reverseMode || false;
     $id('hide-comments-toggle').checked = settings.hideComments || false;
     $id('hide-sidebar-toggle').checked = settings.hideSidebar || false;
@@ -1513,6 +1528,7 @@
       dislikes: $id('dislikes-toggle').checked,
       themes: $id('themes-toggle').checked,
       translation: $id('translation-toggle').checked,
+      avatars: $id('avatars-toggle').checked,
       reverseMode: $id('reverse-mode-toggle').checked,
       hideComments: $id('hide-comments-toggle').checked,
       hideSidebar: $id('hide-sidebar-toggle').checked,
@@ -1889,7 +1905,7 @@
     function checkScroll () {
       const avatars = $m('#author-thumbnail-button #img.style-scope.yt-img-shadow');
   
-      if (avatars.length > 0) {
+      if (avatars.length > 0 && settings.avatars) {
         limpiarHTML('.yt-image-avatar-download');
         agregarBotonesDescarga();
       }
@@ -1978,18 +1994,14 @@
      
       window.open(classicUrl, '_blank');
      
-      const videoElement = document.querySelector('video');
-      if (videoElement) {
-          videoElement.pause();
-      } else {
-          console.warn('No se encontró el elemento de video');
-      }
+     $e('video.video-stream.html5-main-video').pause();
+      
   };
 
 
    
   const createButton = () => {
-    const button = document.createElement('button');
+    const button = $cl('button');
     button.classList.add(BUTTON_CLASS);
     button.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-screen-share"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M21 12v3a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1v-10a1 1 0 0 1 1 -1h9" /><path d="M7 20l10 0" /><path d="M9 16l0 4" /><path d="M15 16l0 4" /><path d="M17 4h4v4" /><path d="M16 9l5 -5" /></svg>'; 
     button.title = 'Classic mode';
@@ -2001,19 +2013,21 @@
       const isShortsPage = document.location.pathname.startsWith('/shorts');
 
       if (isShortsPage) {
-          document.querySelectorAll('#actions').forEach(actionsContainer => {
+         $m('#actions').forEach(actionsContainer => {
               if (!actionsContainer.querySelector(`.${BUTTON_CLASS}`)) {
                   actionsContainer.prepend(createButton());
               }
           });
       } else {
-          document.querySelectorAll(`.${BUTTON_CLASS}`).forEach(button => button.remove());
+          $m(`.${BUTTON_CLASS}`).forEach(button => button.remove());
       }
   };
 
   const observeDOM = () => {
       const observer = new MutationObserver(() => {
           insertButtons();
+          addIcon();
+          // obs.disconnect();
       });
       observer.observe(document.body, {
           childList: true,
@@ -2151,7 +2165,7 @@
         // Evita duplicar el evento
         if (!bufferVideo.dataset.listenerAdded) {
           bufferVideo.addEventListener("click", () => {
-            const video = document.querySelector("video");
+            const video = $e("video.video-stream.html5-main-video");
       
             if (!video) {
               console.log("No se encontró el video en la página.");
@@ -2167,7 +2181,7 @@
             video.dispatchEvent(event);
     
             setTimeout(() => {
-              const option = document.querySelector("body > div.ytp-popup.ytp-contextmenu > div > div > div:nth-child(7)");
+              const option = $e("body > div.ytp-popup.ytp-contextmenu > div > div > div:nth-child(7)");
               if (option) {
                 option.click();
               } else {
