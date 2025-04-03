@@ -70,9 +70,9 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.3.3.1
+// @version      2.3.3.2
 // @author       DeveloperMDCM
-// @match        https://*.youtube.com/*
+// @match        *://www.youtube.com/*
 // @exclude      *://music.youtube.com/*
 // @exclude      *://*.music.youtube.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
@@ -103,7 +103,24 @@
   const $sp = (el, pty) => document.documentElement.style.setProperty(el, pty); // set property variable css
   const $ap = (el) => document.body.appendChild(el); // append element
   const apiDislikes = "https://returnyoutubedislikeapi.com/Votes?videoId="; // Api dislikes
+  const UPDATE_INTERVAL = 1000;
+    const STORAGE = {
+        USAGE: 'YT_TOTAL_USAGE',
+        VIDEO: 'YT_VIDEO_TIME',
+        SHORTS: 'YT_SHORTS_TIME'
+    };
 
+    let usageTime = GM_getValue(STORAGE.USAGE, 0);
+    let videoTime = GM_getValue(STORAGE.VIDEO, 0);
+    let shortsTime = GM_getValue(STORAGE.SHORTS, 0);
+    let lastUpdate = Date.now();
+    let activeVideo = null;
+    let activeType = null;
+
+    // Inicializar almacenamiento
+    GM_setValue(STORAGE.USAGE, usageTime);
+    GM_setValue(STORAGE.VIDEO, videoTime);
+    GM_setValue(STORAGE.SHORTS, shortsTime);
 
   function FormatterNumber(num, digits) {
     const lookup = [
@@ -215,6 +232,44 @@
 
   // Styles for our enhancement panel
   GM_addStyle(`
+      #yt-stats {
+      position: fixed;
+      top: 60px;
+      right: 20px;
+      background: #1a1a1a;
+      color: white;
+      padding: 15px;
+      border-radius: 10px;
+      width: 320px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      font-family: Arial, sans-serif;
+      display: none;
+      }
+  #yt-stats-toggle {
+      font-size: 12px;
+      background: #1e1b1b;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+  .stat-row {
+      margin: 15px 0;
+  }
+  .progress {
+      height: 6px;
+      background: #333;
+      border-radius: 3px;
+      margin: 8px 0;
+  }
+  .progress-bar {
+      height: 100%;
+      transition: width 0.3s;
+  }
+  .total-bar { background: #44aaff; }
+  .video-bar { background: #00ff88; }
+  .shorts-bar { background: #ff4444; }
   #cinematics {
     position: absolute !important;
     width: 90vw !important;
@@ -303,11 +358,13 @@
         .tab-buttons {
             display: flex;
             justify-content: space-between;
+            gap: 10px;
             margin-bottom: 15px;
         }
         .tab-button {
             background-color: #f0f0f0;
             border: none;
+            width: 100%;
             padding: 5px 10px;
             cursor: pointer;
             border-radius: 4px;
@@ -606,6 +663,7 @@
         }
     `);
 
+
   // botons bottom video player
 
   const thumbnailVideo = `
@@ -824,6 +882,8 @@
   </html>
   `;
 
+  
+
   // Define themes
   const themes = [
     {
@@ -995,7 +1055,7 @@
   const panelHTML = policy
     ? policy.createHTML(`
       <div style="display: flex;justify-content: space-between;align-items: center;gap: 3px;margin-bottom: 10px;">
-      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.3.3.1  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
+      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.3.3.2  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
       <svg style="background-color: white; border-radius: 5px;color: #000;" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
       </a></h4>
       <div style="display: flex; gap: 5px;">
@@ -1007,7 +1067,7 @@
         <div class="tab-buttons">
             <button class="tab-button active" data-tab="general">General</button>
             <button class="tab-button" data-tab="themes">Themes</button>
-            <button class="tab-button" data-tab="sidebar">Sidebar</button>
+            <button class="tab-button" data-tab="stats">Stats</button>
             <button class="tab-button" data-tab="headers">Header</button>
         </div>
         <div id="general" class="tab-content active">
@@ -1140,8 +1200,31 @@
           
         </div>
 
-        <div id="sidebar" class="tab-content">
-            <h4>Available in next update</h4>
+        <div id="stats" class="tab-content">
+         <div id="yt-stats-toggle">
+              <h3 style="margin: 0 0 15px">YouTube Stats</h3>
+              <div class="stat-row">
+                  <div>Foreground Time</div>
+                  <div class="progress">
+                      <div class="progress-bar total-bar" id="usage-bar"></div>
+                  </div>
+                  <div id="total-time">0h 0m 0s</div>
+              </div>
+              <div class="stat-row">
+                  <div>Video Time</div>
+                  <div class="progress">
+                      <div class="progress-bar video-bar" id="video-bar"></div>
+                  </div>
+                  <div id="video-time">0h 0m 0s</div>
+              </div>
+              <div class="stat-row">
+                  <div>Shorts Time</div>
+                  <div class="progress">
+                      <div class="progress-bar shorts-bar" id="shorts-bar"></div>
+                  </div>
+                  <div id="shorts-time">0h 0m 0s</div>
+              </div>
+          </div>
         </div>
         <div id="headers" class="tab-content">
            <h4>Available in next update</h4>
@@ -1172,7 +1255,7 @@
     `)
     : `
         <div style="display: flex;justify-content: space-between;align-items: center;gap: 3px;margin-bottom: 10px;">
-      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.3.3.1  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
+      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.3.3.2  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
       <svg style="background-color: white; border-radius: 5px;color: #000;" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
       </a></h4>
       <div style="display: flex; gap: 5px;">
@@ -1184,7 +1267,7 @@
         <div class="tab-buttons">
             <button class="tab-button active" data-tab="general">General</button>
             <button class="tab-button" data-tab="themes">Themes</button>
-            <button class="tab-button" data-tab="sidebar">Sidebar</button>
+            <button class="tab-button" data-tab="stats">Stats</button>
             <button class="tab-button" data-tab="headers">Header</button>
         </div>
         <div id="general" class="tab-content active">
@@ -1317,8 +1400,31 @@
           
         </div>
 
-        <div id="sidebar" class="tab-content">
-            <h4>Available in next update</h4>
+        <div id="stats" class="tab-content">
+             <div id="yt-stats-toggle">
+              <h3 style="margin: 0 0 15px">YouTube Stats</h3>
+              <div class="stat-row">
+                  <div>Foreground Time</div>
+                  <div class="progress">
+                      <div class="progress-bar total-bar" id="usage-bar"></div>
+                  </div>
+                  <div id="total-time">0h 0m 0s</div>
+              </div>
+              <div class="stat-row">
+                  <div>Video Time</div>
+                  <div class="progress">
+                      <div class="progress-bar video-bar" id="video-bar"></div>
+                  </div>
+                  <div id="video-time">0h 0m 0s</div>
+              </div>
+              <div class="stat-row">
+                  <div>Shorts Time</div>
+                  <div class="progress">
+                      <div class="progress-bar shorts-bar" id="shorts-bar"></div>
+                  </div>
+                  <div id="shorts-time">0h 0m 0s</div>
+              </div>
+          </div>
         </div>
         <div id="headers" class="tab-content">
            <h4>Available in next update</h4>
@@ -1350,7 +1456,7 @@
 
   panel.innerHTML = panelHTML;
   $ap(panel);
-
+ 
 
   function addIcon() {
     const topBar = $e('ytd-topbar-menu-button-renderer');
@@ -1779,6 +1885,7 @@
 
             #columns.style-scope.ytd-watch-flexy {
               flex-direction: ${settings.reverseMode ? 'row-reverse' : 'row'} !important;
+               padding-left: ${settings.reverseMode ? '20px' : '0'} !important;
             }
              .botones_div {
             background-color: transparent;
@@ -2333,7 +2440,7 @@
         };
       }
       // for background image file photo higt quality
-      // const fileInput = document.getElementById('background_image');
+      // const fileInput = $id('background_image');
       // const backgroundDiv = $e('ytd-app');
 
       // const storedImage = localStorage.getItem('backgroundImage');
@@ -2475,7 +2582,7 @@
 
   console.log(
     '%cYoutube Tools Extension NEW UI\n' +
-      '%cRun %c(v2.3.3.1)\n' +
+      '%cRun %c(v2.3.3.2)\n' +
       'By: DeveloperMDCM.',
     HEADER_STYLE,
     CODE_STYLE,
@@ -2529,6 +2636,116 @@
     }
   });
   panel.style.display = 'none'; // Ensure panel is hidden on load
+
+   // Stats 
+
+     // Format time
+     function formatTime(seconds) {
+      if (isNaN(seconds)) return '0h 0m 0s';
+      seconds = Math.floor(seconds);
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = seconds % 60;
+      return `${h}h ${m}m ${s}s`;
+  }
+  
+  function updateUI() {
+      $id('total-time').textContent = formatTime(usageTime);
+      $id('video-time').textContent = formatTime(videoTime);
+      $id('shorts-time').textContent = formatTime(shortsTime);
+
+      const maxTime = 86400; // 24 hours
+      $id('usage-bar').style.width =
+          `${(usageTime / maxTime) * 100}%`;
+      $id('video-bar').style.width =
+          `${(videoTime / maxTime) * 100}%`;
+      $id('shorts-bar').style.width =
+          `${(shortsTime / maxTime) * 100}%`;
+  }
+
+  function detectContentType(videoElement) {
+      if (/\/shorts\//.test(window.location.pathname)) return 'shorts';
+     
+      let parent = videoElement;
+      while ((parent = parent.parentElement) !== null) { 
+          if (parent.classList.contains('shorts-container') ||
+              parent.classList.contains('reel-video') ||
+              parent.tagName === 'YTD-REEL-VIDEO-RENDERER') {
+              return 'shorts';
+          }
+      }
+
+     
+      if (videoElement.closest('ytd-watch-flexy') ||
+          videoElement.closest('#primary-inner')) {
+          return 'video';
+      }
+      if (videoElement.closest('ytd-thumbnail') ||
+          videoElement.closest('ytd-rich-item-renderer')) {
+          return 'video';
+      }
+
+      return null;
+  }
+  
+  function findActiveVideo() {
+      const videos = document.querySelectorAll('video');
+      for (const video of videos) {
+          if (!video.paused && !video.ended && video.readyState > 2) {
+              return video;
+          }
+      }
+      return null;
+  }
+  
+  const observer = new MutationObserver(() => {
+      const newVideo = findActiveVideo();
+      if (newVideo !== activeVideo) {
+          activeVideo = newVideo;
+          if (activeVideo) {
+              activeType = detectContentType(activeVideo);
+              console.log('Contenido detectado:', activeType);
+          }
+      }
+  });
+
+  
+  setInterval(() => {
+      const now = Date.now();
+      const delta = (now - lastUpdate) / 1000;
+      if (document.visibilityState === 'visible') {
+          usageTime += delta;
+      }
+     
+      if (activeVideo && !activeVideo.paused) {
+          if (activeType === 'video') {
+              videoTime += delta;
+          } else if (activeType === 'shorts') {
+              shortsTime += delta;
+          }
+      }
+
+      lastUpdate = now;
+      updateUI();
+  }, UPDATE_INTERVAL);
+
+
+
+  window.addEventListener('beforeunload', () => {
+      GM_setValue(STORAGE.USAGE, Math.floor(usageTime));
+      GM_setValue(STORAGE.VIDEO, Math.floor(videoTime));
+      GM_setValue(STORAGE.SHORTS, Math.floor(shortsTime));
+  });
+
+  // Inicialización
+  observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true
+  });
+  updateUI();
+
+  // end stats
 
   // Load saved settings
   // Visible element DOM
