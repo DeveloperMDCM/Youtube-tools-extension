@@ -13,6 +13,8 @@
 <summary>Features:</summary>
    
 - Change default video player quality.
+- Stats video playback.
+- Download avatars comments.
 - Change video player size.
 - Custom themes.   
 - Change background image.
