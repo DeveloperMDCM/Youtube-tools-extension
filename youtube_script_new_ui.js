@@ -1887,6 +1887,20 @@
               flex-direction: ${settings.reverseMode ? 'row-reverse' : 'row'} !important;
                padding-left: ${settings.reverseMode ? '20px' : '0'} !important;
             }
+                #secondary.style-scope.ytd-watch-flexy {
+                display: ${settings.hideSidebar ? 'none' : 'block'} !important;
+                }
+                .html5-video-container video {
+                width: ${settings.hideSidebar ? '100%' : ''} !important;
+                height: ${settings.hideSidebar ? 'fit-content' : ''} !important;
+                }
+                .ytp-chrome-bottom {
+                  width: ${settings.hideSidebar ? '100%' : ''} !important;
+                  left: ${settings.hideSidebar ? 'auto' : ''} !important;
+                }
+                  .ytp-progress-bar-container {
+                   left: ${settings.hideSidebar ? '4px' : ''} !important;
+                  }
              .botones_div {
             background-color: transparent;
             border: none;
