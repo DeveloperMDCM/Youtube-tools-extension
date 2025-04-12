@@ -70,7 +70,7 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.3.3.2
+// @version      2.3.4
 // @author       DeveloperMDCM
 // @match        *://www.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -82,6 +82,7 @@
 // @grant        GM_getValue
 // @grant        unsafeWindow
 // @run-at       document-end
+// @require      https://cdn.jsdelivr.net/npm/izitoast@1.4.0/dist/js/iziToast.min.js
 // @compatible chrome
 // @compatible firefox
 // @compatible opera
@@ -103,6 +104,46 @@
   const $sp = (el, pty) => document.documentElement.style.setProperty(el, pty); // set property variable css
   const $ap = (el) => document.body.appendChild(el); // append element
   const apiDislikes = "https://returnyoutubedislikeapi.com/Votes?videoId="; // Api dislikes
+  let selectedBgColor = "#252525"; // Background color menu default
+  let selectedTextColor = "#ffffff"; // Text color menu default
+  let selectedBgAccentColor = "#ff0000"; // Accent color menu default
+  const urlSharedCode = "https://greasyfork.org/es/scripts/460680-youtube-tools-all-in-one-local-download-mp3-mp4-higt-quality-return-dislikes-and-more";
+
+  function isFullscreen() {
+    return document.fullscreenElement !== null;
+  }
+
+
+
+  function hideCanvas() {
+   
+    const canvas = $id('wave-visualizer-canvas');
+    if (canvas) {
+        canvas.style.opacity = '0';
+        if (controlPanel) {
+            controlPanel.style.opacity = '0';
+        }
+    }
+  }
+
+
+
+  function Notify(type = 'info', message = '', title = '') {
+    const defaultTitles = {
+        success: 'Success',
+        error: 'Error',
+        info: 'Information',
+        warning: 'Warning',
+    };
+   
+    iziToast[type]({
+        title: title || defaultTitles[type] || 'Notification',
+        message: message,
+        position: 'bottomLeft',
+      });
+  }
+
+
   const UPDATE_INTERVAL = 1000;
     const STORAGE = {
         USAGE: 'YT_TOTAL_USAGE',
@@ -232,6 +273,510 @@
 
   // Styles for our enhancement panel
   GM_addStyle(`
+       @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css");
+      @import url("https://cdn.jsdelivr.net/npm/izitoast@1.4.0/dist/css/iziToast.min.css");
+      :root {
+              --primary-custom: #ff0000 !important;
+              --bg-dark-custom: #1a1a1a !important;
+              --bg-card-custom: #252525 !important;
+              --text-custom: #ffffff !important;
+              --text-custom-secondary: #9e9e9e !important;
+              --accent-custom: #ff4444 !important;
+          }
+        body .container-mdcm {
+              font-family: "Inter", -apple-system, sans-serif;
+              color: var(--yt-enhance-menu-text, --text-custom);
+        }
+        #toggle-button:hover {
+          background-color: rgba(255,255,255,0.1);
+          border-radius: 50%;
+          opacity: 1 !important;
+          }
+        .container-mdcm {
+            width: 420px;
+            max-width: 420px;
+            background-color: var(--yt-enhance-menu-bg, #252525);
+            border-radius: 16px 16px 0 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            max-height: 80vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            height: auto;
+        }
+
+        #shareDropdown {
+        display: block;
+        position: absolute;
+        top: 50px;
+        right: 100px;
+        background-color: var(--yt-enhance-menu-bg, #252525);
+        border-radius: 6px;
+        padding: 10px;
+        box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 12px;
+        z-index: 11;
+        }
+        #shareDropdown a {
+        color: var(--text-custom);
+        text-decoration: none;
+        line-height: 2;
+        font-size: 14px;
+        }
+        #shareDropdown a:hover {
+        color: var(--primary-custom);
+        }
+        .header-mdcm {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: sticky;
+            top: 0;
+            background-color: var(--yt-enhance-menu-bg, #252525);
+            border-radius: 16px 16px 0 0;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-mdcm h1 {
+            font-size: 16px; 
+            margin: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+
+        .header-mdcm i {
+         color: var(--primary-custom)
+        }
+        
+
+        .icons-mdcm {
+            display: flex;
+            gap: 4px;
+        }
+        .icons-mdcm i {
+          color: var(--yh-enhance-menu-accent, var(--text-custom));
+        }
+            
+
+        .icon-btn-mdcm {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: var(--text-custom);
+            width: 28px; 
+            height: 28px; 
+            border-radius: 6px; 
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .icon-btn-mdcm:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .icon-btn-mdcm i {
+         color: var(--text-custom);
+         outline: none;
+         text-decoration: none;
+        }
+
+        .tabs-mdcm {
+            padding: 10px 12px;
+            margin: 10px 0;
+            position: sticky;
+            top: 50px;
+            background-color: var(--yt-enhance-menu-bg, #252525);
+            z-index: 10;
+            display: flex;
+            gap: 8px;
+            -ms-overflow-style: none; 
+            padding-bottom: 8px; 
+        }
+
+        
+
+        .tabs-mdcm::-webkit-scrollbar {
+            height: 0px;
+            background-color: transparent;
+        }
+
+        .tabs-mdcm:hover::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .tabs-mdcm::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 0, 0, 0.5);
+            border-radius: 3px;
+        }
+
+        .tabs-mdcm::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+
+        .tab-mdcm {
+            padding: 6px 10px;
+            border: none;
+            background: rgba(255,255,255,0.05);
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--text-custom-secondary);
+            border-radius: 6px;
+            transition: all 0.3s;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .tab-mdcm svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+
+        .tab-mdcm.active {
+            background: var(--yt-enhance-menu-accent, --primary-custom) !important;
+            color: var(--text-custom);
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(255,0,0,0.2);
+        }
+
+        .tab-mdcm:hover:not(.active) {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-1px);
+        }
+
+        .options-mdcm {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 16px 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-custom) var(--bg-dark-custom);
+            max-height: 300px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+            gap: 8px;
+        }
+
+        .options-settings-mdcm {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 16px 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-custom) var(--bg-dark-custom);
+            max-height: 300px;
+            display: grid;
+            gap: 8px;
+        }
+
+         .card-items-end {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          width: 175px;
+        }
+
+         .radio-mdcm {
+            width: 14px;
+            height: 14px;
+            accent-color: var(--primary-custom);
+        }
+       
+        .color-picker-mdcm {
+            width: 50px;
+            height: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .color-picker-mdcm:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .options-mdcm::-webkit-scrollbar, .options-settings-mdcm::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .options-mdcm::-webkit-scrollbar-track, .options-settings-mdcm::-webkit-scrollbar-track {
+            background: var(--bg-dark-custom);
+            border-radius: 3px;
+        }
+
+        .options-mdcm::-webkit-scrollbar-thumb, .options-settings-mdcm::-webkit-scrollbar-thumb {
+            background: var(--primary-custom);
+            border-radius: 3px;
+        }
+
+        .options-mdcm::-webkit-scrollbar-thumb:hover, .options-settings-mdcm::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-custom);
+        }
+
+        .options-mdcm::after, .options-settings-mdcm::after {
+            content: '';
+            display: block;
+        }
+
+        .option-mdcm {
+            display: grid;
+            grid-template-columns: auto 1fr; 
+            align-items: center;
+            margin-bottom: 0; 
+            padding: 5px; 
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px; 
+            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.05);
+            color: var(--yt-)
+            gap: 6px;
+        }
+
+        .option-mdcm:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.1);
+        }
+        .option-settings-mdcm {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 0;
+          padding: 6px;
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 6px;
+          transition: all 0.3s;
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          gap: 6px;
+        }
+
+        .option-settings-mdcm:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.1);
+        }
+            .tab-content {
+            display: none;
+        }
+            .tab-content.active {
+                display: block;
+                margin-bottom: 10px;
+            }
+
+        .checkbox-mdcm {
+            width: 14px; 
+            height: 14px; 
+            accent-color: var(--yt-enhance-menu-accent, --primary-custom) !important;
+        }
+
+        label {
+            font-size: 12px; 
+            color: var(--text-custom);
+        }
+
+        .slider-container-mdcm {
+            background: rgba(255,255,255,0.05);
+            padding: 10px; 
+            border-radius: 6px; 
+        }
+
+        .slider-mdcm {
+            width: 100%;
+            height: 3px;
+            accent-color: var(--yt-enhance-menu-accent, --primary-custom) !important;
+            margin: 10px 0; 
+        }
+
+        .reset-btn-mdcm {
+            padding: 5px 10px; 
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: var(--text-custom);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px; 
+            transition: all 0.3s;
+        }
+
+        .reset-btn-mdcm:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .quality-selector-mdcm select {
+            position: relative;
+            padding: 3px; 
+            outline: none;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: var(--yt-enhance-menu-accent, --primary-custom) !important;
+            color: var(--text-custom);
+            width: fit-content;
+            appearance: none;
+            cursor: pointer;
+            font-size: 11px; 
+        }
+       
+
+        .quality-selector-mdcm {
+            background: rgba(255,255,255,0.05);
+            padding: 10px; 
+            border-radius: 6px; 
+        }
+
+        .select-wrapper-mdcm {
+          position: relative;
+          display: inline-block;
+        }
+
+        .select-wrapper-mdcm select {
+          -webkit-appearance: auto;
+          -moz-appearance: auto;
+        }
+        
+        .actions-mdcm {
+            position: sticky;
+            top: 0;
+            padding: 12px 16px;
+            backdrop-filter: blur(15px);
+            background-color: var(--yt-enhance-menu-bg, #252525);
+            display: flex;
+            gap: 6px;
+            width: 390px;
+            border-radius: 0 0 16px 16px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .action-buttons-mdcm {
+            display: flex;
+            gap: 6px;
+        }
+
+        .action-btn-mdcm {
+            flex: 1;
+            padding: 8px; 
+            border: none;
+            border-radius: 6px; 
+            background: var(--primary-custom);
+            color: var(--text-custom);
+            cursor: pointer;
+            font-size: 12px; 
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px; 
+            box-shadow: 0 4px 12px rgba(255,0,0,0.2);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255,0,0,0.3);
+        }
+
+        textarea.textarea-mdcm {
+            width: 100%;
+            height: 50px; 
+            margin-top: 10px; 
+            margin-bottom: 12px; 
+            padding: 8px; 
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 6px;
+            color: var(--text-custom);
+            font-size: 11px; 
+            resize: none;
+            transition: all 0.3s;
+        }
+
+        textarea.textarea-mdcm:focus {
+            outline: none;
+            border-color: var(--primary-custom);
+            background: rgba(255,255,255,0.08);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container-mdcm {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .developer-mdcm {
+            font-size: 10px;
+            color: var(--text-custom-secondary);
+        }
+
+        .developer-mdcm a {
+            color: var(--primary-custom);
+            text-decoration: none;
+        }
+
+        /* Styles for the import/export area */
+        #importExportArea {
+            display: none;
+            padding: 16px;
+            margin: 0px;
+            background-color: var(--yt-enhance-menu-bg, #252525);
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        #importExportArea.active {
+            display: block;
+            margin-top: 10px;
+        }
+
+        /* Style the textarea */
+        #importExportArea textarea {
+            width: 370px;
+            height: 20px;
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-custom);
+            font-size: 12px;
+            resize: vertical;
+        }
+
+        /* Style the buttons */
+        #importExportArea .action-buttons-mdcm  {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        #importExportArea .action-btn-mdcm {
+            flex: 1;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            background-color: var(--primary-custom);
+            color: var(--text-custom);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #importExportArea .action-btn-mdcm:hover {
+            background-color: var(--accent-custom);
+        }
+           
       #yt-stats {
       position: fixed;
       top: 60px;
@@ -247,12 +792,10 @@
       }
   #yt-stats-toggle {
       font-size: 12px;
-      background: #1e1b1b;
       color: #fff;
       padding: 12px 20px;
       border-radius: 5px;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   }
   .stat-row {
       margin: 15px 0;
@@ -300,25 +843,9 @@
             position: fixed;
             top: 60px;
             right: 20px;
-            background-color: var(--yt-enhance-menu-bg, #ffffff);
-            color: var(--yt-enhance-menu-text, #000000);
-            border: 1px solid #cccccc;
-            border-radius: 8px;
-            padding: 15px;
             z-index: 9999;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            width: 300px;
-            max-height: 80vh;
-            overflow-y: auto;
-            font-size: var(--yt-enhance-menu-font-size, 14px);
         }
-        #yt-enhancement-panel h3 {
-            margin-top: 0;
-            color: #ff0000;
-        }
-        .enhancement-option {
-            margin-bottom: 10px;
-        }
+       
         .color-picker {
             width: 100%;
             margin: 0;
@@ -341,62 +868,21 @@
             width: 43px;
             border-radius: 100px;
         }
-             #toggle-button:hover {
-             background-color: rgba(255,255,255,0.1);
-             border-radius: 50%;
-             opacity: 1 !important;
-        }
+            
         #icon-menu-settings {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: 24px;
         height: 24px;
         padding: 7px;
-        margin-right: 5px;
+        font-size: 20px;
+        color: var(--yt-spec-icon-inactive);
         cursor: pointer;
         user-select: none;
+        filter: drop-shadow(2px 4px 6px black);
         }
-
-        .tab-buttons {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .tab-button {
-            background-color: #f0f0f0;
-            border: none;
-            width: 100%;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        .tab-button.active {
-            background-color: #ff0000;
-            color: white;
-        }
-        .tab-button-active {
-            background-color: #ff0000;
-            color: white;
-            border: none;
-            border-radius: 2px;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        #import-export {
-            margin-top: 15px;
-        }
-        #import-export textarea {
-            width: 100%;
-            height: 100px;
-        }
-        #menu-settings-icon {
-            cursor: pointer;
-            float: right;
-            font-size: 20px;
-        }
+    
         .theme-option {
             margin-bottom: 15px;
         }
@@ -495,6 +981,22 @@
     ::-webkit-scrollbar-thumb {
       background: #000;
 
+    }
+
+    .color-boxes {
+      display: flex;
+      gap: 8px;
+    }
+    .color-box {
+      width: 20px;
+      height: 20px;
+      border: 1px solid rgb(221 221 221 / 60%);
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .color-box.selected {
+      border: 2px solid var(--primary-custom); 
+      filter: drop-shadow(0px 1px 6px red);
     }
 
     .containerButtons {
@@ -622,7 +1124,7 @@
         align-items: center;
         justify-content: center;
         gap: 10px;
-        background-color: #ec3203;
+        background-color: var(--yt-enhance-menu-accent, --primary-custom) !important;;
         color: #ffffff;
         border: none;
         padding: 5px;
@@ -640,6 +1142,7 @@
           border: none;
           z-index: 1000;
           background: transparent;
+          filter: drop-shadow(1px 0 6px red);
           color: var(--ytcp-text-primary);
           cursor: pointer;
         }
@@ -685,7 +1188,6 @@
  
 
   const filterEyes = `
-
   <div style="position:relative; ">
   <button title="Filter eyes" class="botones_div" type="button">
     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brightness-half"
@@ -822,64 +1324,63 @@
 
 
   const menuBotones = `
-<main>
-<div class="container">
-<form>
-  <div class="containerButtons">
-  ${thumbnailVideo}
-  ${bufferVideo}
-  ${filterEyes}
-  ${resetButton}
-  ${repeatVideo}
-  ${downloadMp4Mp3}
-  ${donwloadExternal}
-  ${viewExternalVideo}
-  ${pictureToPicture}
-  ${screenShot}
-  ${checkUpdates}
-  </div>
-  <div>
-  </div>
-</form>
+    <main>
+    <div class="container">
+    <form>
+      <div class="containerButtons">
+      ${thumbnailVideo}
+      ${bufferVideo}
+      ${filterEyes}
+      ${resetButton}
+      ${repeatVideo}
+      ${downloadMp4Mp3}
+      ${donwloadExternal}
+      ${viewExternalVideo}
+      ${pictureToPicture}
+      ${screenShot}
+      ${checkUpdates}
+      </div>
+      <div>
+      </div>
+    </form>
 
-</div>
-<div class="content_collapsible_colors" style="margin-top: 10px">
+    </div>
+    <div class="content_collapsible_colors" style="margin-top: 10px">
 
-<form class="formulariodescarga" action="">
-<div class="containerall">
-<select class="selectcalidades  ocultarframe" required>
-  <option selected disabled>Calidad del video / Quality video</option>
-  <option value="360">360p Mp4</option>
-  <option value="480">480p Mp4</option>
-  <option value="720">720p HD Mp4 Default</option>
-  <option value="1080">1080p FULL HD Mp4</option>
-  <option value="4k">2160p 4K WEBM</option>
-  <option value="8k">4320p 8K WEBM</option>
-  </select>
-  <iframe id="descargando"  style="z-index: 99; border: none; height: 27.4px; width: 50%;"  class="containerall ocultarframe" src="" frameborder="0"></iframe>
+    <form class="formulariodescarga" action="">
+    <div class="containerall">
+    <select class="selectcalidades  ocultarframe" required>
+      <option selected disabled>Calidad del video / Quality video</option>
+      <option value="360">360p Mp4</option>
+      <option value="480">480p Mp4</option>
+      <option value="720">720p HD Mp4 Default</option>
+      <option value="1080">1080p FULL HD Mp4</option>
+      <option value="4k">2160p 4K WEBM</option>
+      <option value="8k">4320p 8K WEBM</option>
+      </select>
+      <iframe id="descargando"  style="z-index: 99; border: none; height: 27.4px; width: 50%;"  class="containerall ocultarframe" src="" frameborder="0"></iframe>
 
-</div>
-</form>
-<form class="formulariodescargaaudio" action="">
-<div class="containerall">
-<select class="selectcalidadesaudio ocultarframeaudio" required>
-  <option selected disabled>Calidad del Audio / Quality Audio</option>
-  <option value="flac">Audio FLAC UHQ</option>
-  <option value="wav">Audio WAV UHQ</option>
-  <option value="mp3">Audio MP3 Default</option>
-  <option value="m4a">Audio M4A</option>
-  <option value="aac">Audio AAC</option>
-  <option value="opus">Audio OPUS</option>
-  <option value="ogg">Audio OGG</option>
-  </select>
-  <iframe id="descargandomp3"  style="z-index: 99; border: none; height: 27.4px; width: 50%;"  class="containerall ocultarframeaudio" src="" frameborder="0"></iframe>
+    </div>
+    </form>
+    <form class="formulariodescargaaudio" action="">
+    <div class="containerall">
+    <select class="selectcalidadesaudio ocultarframeaudio" required>
+      <option selected disabled>Calidad del Audio / Quality Audio</option>
+      <option value="flac">Audio FLAC UHQ</option>
+      <option value="wav">Audio WAV UHQ</option>
+      <option value="mp3">Audio MP3 Default</option>
+      <option value="m4a">Audio M4A</option>
+      <option value="aac">Audio AAC</option>
+      <option value="opus">Audio OPUS</option>
+      <option value="ogg">Audio OGG</option>
+      </select>
+      <iframe id="descargandomp3"  style="z-index: 99; border: none; height: 27.4px; width: 50%;"  class="containerall ocultarframeaudio" src="" frameborder="0"></iframe>
 
-  </iframe>
+      </iframe>
 
-</div>
-</form>
-  </main>
-  </html>
+    </div>
+    </form>
+      </main>
   `;
 
   
@@ -887,7 +1388,7 @@
   // Define themes
   const themes = [
     {
-      name: 'Default / Reload Page',
+      name: 'Default / Reload',
       gradient: '',
       textColor: '',
       raised: '',
@@ -1045,413 +1546,376 @@
     )
     .join('');
 
-  // find atribute dark in dom
-  const htmlElement = $e('html');
-  const isDarkMode = htmlElement.hasAttribute('dark');
-  let isDarkModeActive = isDarkMode;
+  function checkDarkModeActive() {
+    const prefCookie = document.cookie.split('; ').find(row => row.startsWith('PREF='));
+    let theme = 'light'; 
+    if (prefCookie) {
+        const params = new URLSearchParams(prefCookie.split('&').join('&'));
+        const f1Value = params.get('f6');
+        // themes dark active os or youtube
+        // - 4000000
+        // - 40000400
+        // - 400
+          if (f1Value === '4000000' || f1Value === '40000400' || f1Value === '400') {
+            theme = 'dark';
+          }
+    } 
+    return theme;
+}
+  let isDarkModeActive = checkDarkModeActive();
 
 
   // Use Trusted Types to set innerHTML
+  const menuHTML = `
+   <div class="container-mdcm">
+    <div class="header-mdcm">
+      <h1> <i class="fa-brands fa-youtube"></i> YouTube Tools</h1>
+      <div class="icons-mdcm">
+        <a href="https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js"
+          target="_blank">
+          <button class="icon-btn-mdcm">
+            <i class="fa-solid fa-arrows-rotate"></i>
+          </button>
+        </a>
+        <a href="https://github.com/DeveloperMDCM" target="_blank">
+          <button class="icon-btn-mdcm">
+            <i class="fa-brands fa-github"></i>
+          </button>
+        </a>
+        <button class="icon-btn-mdcm" id="shareBtn-mdcm">
+          <i class="fa-solid fa-share-alt"></i>
+        </button>
+        <button class="icon-btn-mdcm" id="importExportBtn">
+          <i class="fa-solid fa-file-import"></i>
+        </button>
+        <button id="menu-settings-icon" class="icon-btn-mdcm tab-mdcm" data-tab="menu-settings">
+          <i class="fa-solid fa-gear"></i>
+        </button>
+        <button class="icon-btn-mdcm close_menu_settings">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="tabs-mdcm">
+      <button class="tab-mdcm active" data-tab="general">
+        <i class="fa-solid fa-shield-halved"></i>
+        General
+      </button>
+      <button class="tab-mdcm" data-tab="themes">
+        <i class="fa-solid fa-palette"></i>
+        Themes
+      </button>
+      <button class="tab-mdcm" data-tab="stats">
+        <i class="fa-solid fa-square-poll-vertical"></i>
+        Stats
+      </button>
+      <button class="tab-mdcm" data-tab="headers">
+        <i class="fa-regular fa-newspaper"></i>
+        Header
+      </button>
+    </div>
+
+
+    <div id="general" class="tab-content active">
+
+      <div class="options-mdcm">
+        <label>
+          <div class="option-mdcm">
+            <input type="checkbox" class="checkbox-mdcm" id="hide-comments-toggle"> Hide Comments
+          </div>
+        </label>
+        <label>
+          <div class="option-mdcm">
+            <input type="checkbox" class="checkbox-mdcm" id="hide-sidebar-toggle"> Hide Sidebar
+          </div>
+        </label>
+        <label>
+          <div class="option-mdcm">
+            <input type="checkbox" class="checkbox-mdcm" id="autoplay-toggle"> Disable Autoplay
+          </div>
+        </label>
+        <label>
+          <div class="option-mdcm">
+            <input type="checkbox" class="checkbox-mdcm" id="subtitles-toggle"> Disable Subtitles
+          </div>
+        </label>
+        <label>
+          <div class="option-mdcm">
+            <input type="checkbox" class="checkbox-mdcm" checked id="dislikes-toggle"> Show Dislikes
+          </div>
+        </label>
+        <label>
+          <div class="option-mdcm">
+            <input type="checkbox" class="checkbox-mdcm" id="themes-toggle"> Active Themes
+          </div>
+        </label>
+        <label>
+          <div class="option-mdcm">
+            <input type="checkbox" class="checkbox-mdcm" id="translation-toggle"> Translate comments
+          </div>
+        </label>
+        <label>
+          <div class="option-mdcm">
+            <input type="checkbox" class="checkbox-mdcm" id="avatars-toggle"> Download avatars
+          </div>
+        </label>
+        <label>
+          <div class="option-mdcm">
+            <input type="checkbox" class="checkbox-mdcm" id="reverse-mode-toggle"> Reverse mode
+          </div>
+        </label>
+        <label>
+          <div class="option-mdcm">
+            <input type="checkbox" class="checkbox-mdcm" checked id="wave-visualizer-toggle"> Wave visualizer Beta
+          </div>
+        </label>
+        <div class="quality-selector-mdcm" style="grid-column: span 2;">
+          <div class="select-wrapper-mdcm">
+            <label>Effect wave visualizer:
+              <select class="tab-button-active" id="select-wave-visualizer-select">
+                <option value="linea">Line smooth</option>
+                <option value="barras">Vertical bars</option>
+                <option value="curva">Curved</option>
+                <option value="picos">Smooth peaks</option>
+                <option value="solida">Solid wave</option>
+                <option value="dinamica">Dynamic wave</option>
+                <option value="montana">Smooth mountain</option>
+              </select>
+            </label>
+          </div>
+        </div>
+        <div class="quality-selector-mdcm" style="grid-column: span 2;">
+          <div class="select-wrapper-mdcm">
+            <label>Default video player quality:
+              <select class="tab-button-active" id="select-video-qualitys-select">
+                <option value="144">144</option>
+                <option value="240">240</option>
+                <option value="360">360</option>
+                <option value="480">480</option>
+                <option value="720">720</option>
+                <option value="1080">1080</option>
+                <option value="1440">1440</option>
+                <option value="2160">2160</option>
+              </select>
+            </label>
+          </div>
+        </div>
+        <div class="slider-container-mdcm" style="grid-column: span 2;">
+          <label>Video Player Size: <span id="player-size-value">100</span>%</label>
+          <input type="range" id="player-size-slider" class="slider-mdcm" min="50" max="150" value="100">
+          <button class="reset-btn-mdcm" id="reset-player-size">Reset video size</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="themes" class="tab-content">
+      <div class="themes-hidden">
+        <div class="options-mdcm" style="margin-bottom: 10px;">
+          <div>
+            <h4>Choose a Theme</h4>
+            <p>Disable cinematic Lighting</p>
+          </div>
+        </div>
+        <div class="options-mdcm">
+          <label>
+            <div class="theme-option option-mdcm">
+              <input type="radio" class="radio-mdcm" name="theme" value="custom" checked>
+              <span class="theme-name">Custom</span>
+            </div>
+          </label>
+          <label>
+            <div class="theme-option option-mdcm theme-selected-normal">
+              <input type="radio" class="radio-mdcm" name="theme" value="normal">
+              <span class="theme-name">Selected Themes</span>
+            </div>
+          </label>
+        </div>
+        <p>${isDarkModeActive ? '' : 'activate dark mode to use themes'}</p>
+        <div class="themes-options">
+          <div class="options-mdcm">
+            ${themeOptionsHTML}
+          </div>
+        </div>
+        <div class="theme-custom-options">
+          <div class="options-mdcm">
+            <div class="option-mdcm">
+              <div class="card-items-end">
+                <label>Progressbar Video:</label>
+                <input type="color" id="progressbar-color-picker" class="color-picker-mdcm" value="#ff0000">
+              </div>
+            </div>
+            <div class="option-mdcm">
+              <div class="card-items-end">
+                <label>Background Color:</label>
+                <input type="color" id="bg-color-picker" class="color-picker-mdcm" value="#000000">
+              </div>
+            </div>
+            <div class="option-mdcm">
+              <div class="card-items-end">
+                <label>Primary Color:</label>
+                <input type="color" id="primary-color-picker" class="color-picker-mdcm" value="#ffffff">
+              </div>
+            </div>
+            <div class="option-mdcm">
+              <div class="card-items-end">
+                <label>Secondary Color:</label>
+                <input type="color" id="secondary-color-picker" class="color-picker-mdcm" value="#ffffff">
+              </div>
+            </div>
+            <div class="option-mdcm">
+              <div class="card-items-end">
+                <label>Header Color:</label>
+                <input type="color" id="header-color-picker" class="color-picker-mdcm" value="#000000">
+              </div>
+            </div>
+            <div class="option-mdcm">
+              <div class="card-items-end">
+                <label>Icons Color:</label>
+                <input type="color" id="icons-color-picker" class="color-picker-mdcm" value="#ffffff">
+              </div>
+            </div>
+            <div class="option-mdcm">
+              <div class="card-items-end">
+                <label>Menu Color:</label>
+                <input type="color" id="menu-color-picker" class="color-picker-mdcm" value="#000000">
+              </div>
+            </div>
+            <div class="option-mdcm">
+              <div class="card-items-end">
+                <label>Line Color Preview:</label>
+                <input type="color" id="line-color-picker" class="color-picker-mdcm" value="#ff0000">
+              </div>
+            </div>
+            <div class="option-mdcm">
+              <div class="card-items-end">
+                <label>Time Color Preview:</label>
+                <input type="color" id="time-color-picker" class="color-picker-mdcm" value="#ffffff">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="stats" class="tab-content">
+      <div id="yt-stats-toggle">
+        <div class="stat-row">
+          <div>Foreground Time</div>
+          <div class="progress">
+            <div class="progress-bar total-bar" id="usage-bar"></div>
+          </div>
+          <div id="total-time">0h 0m 0s</div>
+        </div>
+        <div class="stat-row">
+          <div>Video Time</div>
+          <div class="progress">
+            <div class="progress-bar video-bar" id="video-bar"></div>
+          </div>
+          <div id="video-time">0h 0m 0s</div>
+        </div>
+        <div class="stat-row">
+          <div>Shorts Time</div>
+          <div class="progress">
+            <div class="progress-bar shorts-bar" id="shorts-bar"></div>
+          </div>
+          <div id="shorts-time">0h 0m 0s</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="headers" class="tab-content">
+      <div class="options-mdcm">
+        <label>Available in next update</label>
+      </div>
+    </div>
+
+
+    <div id="menu-settings" class="tab-content">
+      <div class="options-mdcm">
+        <h4 style="margin: 10px 0">Menu Appearance</h4>
+      </div>
+      <div class="options-settings-mdcm">
+        <div class="option-settings-mdcm">
+          <label>Backgrounds:</label>
+          <div class="color-boxes" id="bg-color-options">
+            <div class="color-box" data-type="bg" data-value="#252525" style="background-color: #252525;"></div>
+            <div class="color-box" data-type="bg" data-value="#1e1e1e" style="background-color: #1e1e1e;"></div>
+            <div class="color-box" data-type="bg" data-value="#3a3a3a" style="background-color: #3a3a3a;"></div>
+            <div class="color-box" data-type="bg" data-value="#4a4a4a" style="background-color: #4a4a4a;"></div>
+            <div class="color-box" data-type="bg" data-value="#000000" style="background-color: #000000;"></div>
+            <div class="color-box" data-type="bg" data-value="#00000000" style="background-color: #00000000;"></div>
+            <div class="color-box" data-type="bg" data-value="#2d2d2d" style="background-color: #2d2d2d;"></div>
+            <div class="color-box" data-type="bg" data-value="#444" style="background-color: #444;"></div>
+          </div>
+        </div>
+
+        <div class="option-settings-mdcm">
+          <label>Accent Colors:</label>
+          <div class="color-boxes" id="bg-accent-color-options">
+            <div class="color-box" data-type="accent" data-value="#ff0000" style="background-color: #ff0000;"></div>
+            <div class="color-box" data-type="accent" data-value="#000000" style="background-color: #000000;"></div>
+            <div class="color-box" data-type="accent" data-value="#009c37 " style="background-color: #009c37 ;"></div>
+            <div class="color-box" data-type="accent" data-value="#0c02a0 " style="background-color: #0c02a0 ;"></div>
+          </div>
+        </div>
+
+        <div class="option-settings-mdcm">
+          <label>Titles Colors:</label>
+          <div class="color-boxes" id="text-color-options">
+            <div class="color-box" data-type="color" data-value="#ffffff" style="background-color: #ffffff;"></div>
+            <div class="color-box" data-type="color" data-value="#cccccc" style="background-color: #cccccc;"></div>
+            <div class="color-box" data-type="color" data-value="#b3b3b3" style="background-color: #b3b3b3;"></div>
+            <div class="color-box" data-type="color" data-value="#00ffff" style="background-color: #00ffff;"></div>
+            <div class="color-box" data-type="color" data-value="#00ff00" style="background-color: #00ff00;"></div>
+            <div class="color-box" data-type="color" data-value="#ffff00" style="background-color: #ffff00;"></div>
+            <div class="color-box" data-type="color" data-value="#ffcc00" style="background-color: #ffcc00;"></div>
+            <div class="color-box" data-type="color" data-value="#ff66cc" style="background-color: #ff66cc;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="importExportArea">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h3>Import / Export Settings</h3>
+        <button class="icon-btn-mdcm" id="closeImportExportBtn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <textarea id="config-data" placeholder="Paste configuration here to import"></textarea>
+      <div class="action-buttons-mdcm">
+        <button id="export-config" class="action-btn-mdcm">Export</button>
+        <button id="import-config" class="action-btn-mdcm">Import</button>
+      </div>
+    </div>
+
+    <div id="shareDropdown">
+      <a href="https://www.facebook.com/sharer/sharer.php?u=${urlSharedCode}" target="_blank" data-network="facebook"
+        class="share-link"><i class="fa-brands fa-facebook"></i> Facebook</a><br>
+      <a href="https://twitter.com/intent/tweet?url=${urlSharedCode}" target="_blank" data-network="twitter"
+        class="share-link"><i class="fa-brands fa-twitter"></i> Twitter</a><br>
+      <a href="https://api.whatsapp.com/send?text=${urlSharedCode}" target="_blank" data-network="whatsapp"
+        class="share-link"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a><br>
+      <a href="https://www.linkedin.com/sharing/share-offsite/?url=${urlSharedCode}" target="_blank"
+        data-network="linkedin" class="share-link"><i class="fa-brands fa-linkedin"></i> LinkedIn</a><br>
+    </div>
+
+
+  </div>
+  <div class="actions-mdcm">
+    <div class="developer-mdcm">
+      Developed by <a href="https://github.com/DeveloperMDCM" target="_blank">DeveloperMDCM</a>
+    </div>
+    <span style="color: #fff" ;>v2.3.4</span>
+  </div>
+  `;
   const panelHTML = policy
     ? policy.createHTML(`
-      <div style="display: flex;justify-content: space-between;align-items: center;gap: 3px;margin-bottom: 10px;">
-      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.3.3.2  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
-      <svg style="background-color: white; border-radius: 5px;color: #000;" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
-      </a></h4>
-      <div style="display: flex; gap: 5px;">
-      <span id="menu-settings-icon">⚙️</span>
-      <a href="https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js" target="_blank" class="checked_updates">🔄️</a>
-      <span style="cursor: pointer" class="close_menu_settings">❎</span>
-      </div>
-      </div>
-        <div class="tab-buttons">
-            <button class="tab-button active" data-tab="general">General</button>
-            <button class="tab-button" data-tab="themes">Themes</button>
-            <button class="tab-button" data-tab="stats">Stats</button>
-            <button class="tab-button" data-tab="headers">Header</button>
-        </div>
-        <div id="general" class="tab-content active">
-            <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="hide-comments-toggle"> Hide Comments
-                </label>
-            </div>
-             <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="hide-sidebar-toggle"> Hide Sidebar
-                </label>
-            </div>
-            <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="autoplay-toggle"> Disable Autoplay
-                </label>
-            </div>
-            <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="subtitles-toggle"> Disable Subtitles
-                </label>
-            </div>
-              <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="dislikes-toggle"> Show Dislikes / Reload page
-                </label>
-            </div>
-              <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="themes-toggle"> Active Themes / Reload page
-                </label>
-            </div>
-              <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="translation-toggle"> Translate comments / Reload page
-                </label>
-            </div>
-            <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="avatars-toggle"> Download avatars / Reload page
-                </label>
-            </div>
-              <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="reverse-mode-toggle"> Reverse mode
-                </label>
-            </div>
-           
-             <div class="enhancement-option">
-                <label>Video Player Size: <span id="player-size-value">100</span>%</label> <button class="tab-button-active" id="reset-player-size">Reset video size</button>
-                <input type="range" id="player-size-slider" class="slider" min="50" max="150" value="100">
-            </div>
-             <div class="enhancement-option">
-                <label>Default video player quality: </label>
-                <select class="tab-button-active" id="select-video-qualitys-select">
-                  <option value="144">144</option>
-                  <option value="240">240</option>
-                  <option value="360">360</option>
-                  <option value="480">480</option>
-                  <option value="720">720</option>
-                  <option value="1080">1080</option>
-                  <option value="1440">1440</option>
-                  <option value="2160">2160</option>
-                </select>
-            </div>
-        </div>
-
-        <div id="themes" class="tab-content" style="height: auto; max-height: 350px; overflow-y: auto;">
-        <div class="themes-hidden">
-        <h4>Choose a Theme</h4>
-        <p>Disable cinematic Lighting</p>
-              <label>
-          <div class="theme-option">
-          <div class="theme-preview" style="background: dark;"></div>
-          <input type="radio" name="theme" value="custom">
-              <span class="theme-name">Custom</span>
-              </div>
-              </label>
-              <label>
-              <div class="theme-option theme-selected-normal">
-              <div class="theme-preview" style="background: dark;"></div>
-              <input type="radio" name="theme" value="normal">
-                  <span class="theme-name">Selected Themes</span>
-                  </div>
-              </label>
-            <p>${isDarkModeActive ? '' : 'activate dark mode to use themes'}</p>
-            <div class="themes-options">
-              ${themeOptionsHTML}
-            </div>
-            <div class="theme-custom-options">
-            <div class="enhancement-option">
-                <label>Progressbar Video:</label>
-                <input type="color" id="progressbar-color-picker" class="color-picker" value="#ff0000">
-            </div>
-            <div class="enhancement-option">
-                <label>Background Color:</label>
-                <input type="color" id="bg-color-picker" class="color-picker" value="#000000">
-            </div>
-            <div class="enhancement-option">
-                <label>Primary Color:</label>
-                <input type="color" id="primary-color-picker" class="color-picker" value="#ffffff">
-            </div>
-            <div class="enhancement-option">
-                <label>Secondary Color:</label>
-                <input type="color" id="secondary-color-picker" class="color-picker" value="#ffffff">
-            </div>
-            <div class="enhancement-option">
-                <label>Header Color:</label>
-                <input type="color" id="header-color-picker" class="color-picker" value="#000000">
-            </div>
-            <div class="enhancement-option">
-                <label>Icons Color:</label>
-                <input type="color" id="icons-color-picker" class="color-picker" value="#ffffff">
-            </div>
-            <div class="enhancement-option">
-                <label>Menu Color:</label>
-                <input type="color" id="menu-color-picker" class="color-picker" value="#000000">
-            </div>
-            <div class="enhancement-option">
-                <label>Line Color Preview:</label>
-                <input type="color" id="line-color-picker" class="color-picker" value="#ff0000">
-            </div>
-            <div class="enhancement-option">
-                <label>Time Color Preview:</label>
-                <input type="color" id="time-color-picker" class="color-picker" value="#ffffff">
-            </div>
-            </div>
-        </div>
-          
-        </div>
-
-        <div id="stats" class="tab-content">
-         <div id="yt-stats-toggle">
-              <h3 style="margin: 0 0 15px">YouTube Stats</h3>
-              <div class="stat-row">
-                  <div>Foreground Time</div>
-                  <div class="progress">
-                      <div class="progress-bar total-bar" id="usage-bar"></div>
-                  </div>
-                  <div id="total-time">0h 0m 0s</div>
-              </div>
-              <div class="stat-row">
-                  <div>Video Time</div>
-                  <div class="progress">
-                      <div class="progress-bar video-bar" id="video-bar"></div>
-                  </div>
-                  <div id="video-time">0h 0m 0s</div>
-              </div>
-              <div class="stat-row">
-                  <div>Shorts Time</div>
-                  <div class="progress">
-                      <div class="progress-bar shorts-bar" id="shorts-bar"></div>
-                  </div>
-                  <div id="shorts-time">0h 0m 0s</div>
-              </div>
-          </div>
-        </div>
-        <div id="headers" class="tab-content">
-           <h4>Available in next update</h4>
-        </div>
-        <div id="menu-settings" class="tab-content">
-            <h4 style="margin: 10px 0">Menu Appearance</h4>
-            <div class="enhancement-option">
-                <label>Menu Background Color:</label>
-                <input type="color" id="menu-bg-color-picker" class="color-picker" value="#000000">
-            </div>
-            <div class="enhancement-option">
-                <label>Menu Text Color:</label>
-                <input type="color" id="menu-text-color-picker" class="color-picker" value="#ff0000">
-            </div>
-        "
-        </div>
-        <div id="import-export">
-        <div style="display: flex;width: 100%;justify-content: space-between;">
-        <button id="export-config">Export
-        <svg width="20" height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M9 15h6" /><path d="M12.5 17.5l2.5 -2.5l-2.5 -2.5" /></svg>
-        </button>
-       <button id="import-config">Import
-        <svg width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M15 15h-6" /><path d="M11.5 17.5l-2.5 -2.5l2.5 -2.5" /></svg>
-        </button>
-        </div>
-            <textarea id="config-data" placeholder="Paste configuration here to import"></textarea>
-        </div>
+      ${menuHTML}
     `)
     : `
-        <div style="display: flex;justify-content: space-between;align-items: center;gap: 3px;margin-bottom: 10px;">
-      <h4 style="display: flex;align-items: center;gap: 10px;">YouTube Tools v2.3.3.2  <a target="_blank" href="https://github.com/DeveloperMDCM/Youtube-tools-extension">
-      <svg style="background-color: white; border-radius: 5px;color: #000;" width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
-      </a></h4>
-      <div style="display: flex; gap: 5px;">
-      <span id="menu-settings-icon">⚙️</span>
-      <a href="https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js" target="_blank" class="checked_updates">🔄️</a>
-      <span style="cursor: pointer" class="close_menu_settings">❎</span>
-      </div>
-      </div>
-        <div class="tab-buttons">
-            <button class="tab-button active" data-tab="general">General</button>
-            <button class="tab-button" data-tab="themes">Themes</button>
-            <button class="tab-button" data-tab="stats">Stats</button>
-            <button class="tab-button" data-tab="headers">Header</button>
-        </div>
-        <div id="general" class="tab-content active">
-            <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="hide-comments-toggle"> Hide Comments
-                </label>
-            </div>
-             <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="hide-sidebar-toggle"> Hide Sidebar
-                </label>
-            </div>
-            <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="autoplay-toggle"> Disable Autoplay
-                </label>
-            </div>
-            <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="subtitles-toggle"> Disable Subtitles
-                </label>
-            </div>
-              <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="dislikes-toggle"> Show Dislikes / Reload page
-                </label>
-            </div>
-              <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="themes-toggle"> Active Themes / Reload page
-                </label>
-            </div>
-            <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="translation-toggle"> Translate comments / Reload page
-                </label>
-            </div>
-            <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="avatars-toggle"> Download avatars / Reload page
-                </label>
-            </div>
-             <div class="enhancement-option">
-                <label>
-                    <input type="checkbox" id="reverse-mode-toggle"> Reverse mode
-                </label>
-            </div>
-           
-             <div class="enhancement-option">
-                <label>Video Player Size: <span id="player-size-value">100</span>%</label> <button class="tab-button-active" id="reset-player-size">Reset video size</button>
-                <input type="range" id="player-size-slider" class="slider" min="50" max="150" value="100">
-            </div>
-             <div class="enhancement-option">
-                <label>Default video player quality: </label>
-                <select class="tab-button-active" id="select-video-qualitys-select">
-                  <option value="144">144</option>
-                  <option value="240">240</option>
-                  <option value="360">360</option>
-                  <option value="480">480</option>
-                  <option value="720">720</option>
-                  <option value="1080">1080</option>
-                  <option value="1440">1440</option>
-                  <option value="2160">2160</option>
-                </select>
-            </div>
-        </div>
-
-        <div id="themes" class="tab-content" style="height: auto; max-height: 350px; overflow-y: auto;">
-        <div class="themes-hidden">
-        <h4>Choose a Theme</h4>
-        <p>Disable cinematic Lighting</p>
-              <label>
-          <div class="theme-option">
-          <div class="theme-preview" style="background: dark;"></div>
-          <input type="radio" name="theme" value="custom">
-              <span class="theme-name">Custom</span>
-              </div>
-              </label>
-              <label>
-              <div class="theme-option theme-selected-normal">
-              <div class="theme-preview" style="background: dark;"></div>
-              <input type="radio" name="theme" value="normal">
-                  <span class="theme-name">Selected Themes</span>
-                  </div>
-              </label>
-            <p>${isDarkModeActive ? '' : 'activate dark mode to use themes'}</p>
-            <div class="themes-options">
-              ${themeOptionsHTML}
-            </div>
-            <div class="theme-custom-options">
-            <div class="enhancement-option">
-                <label>Progressbar Video:</label>
-                <input type="color" id="progressbar-color-picker" class="color-picker" value="#ff0000">
-            </div>
-            <div class="enhancement-option">
-                <label>Background Color:</label>
-                <input type="color" id="bg-color-picker" class="color-picker" value="#000000">
-            </div>
-            <div class="enhancement-option">
-                <label>Primary Color:</label>
-                <input type="color" id="primary-color-picker" class="color-picker" value="#ffffff">
-            </div>
-            <div class="enhancement-option">
-                <label>Secondary Color:</label>
-                <input type="color" id="secondary-color-picker" class="color-picker" value="#ffffff">
-            </div>
-            <div class="enhancement-option">
-                <label>Header Color:</label>
-                <input type="color" id="header-color-picker" class="color-picker" value="#000000">
-            </div>
-            <div class="enhancement-option">
-                <label>Icons Color:</label>
-                <input type="color" id="icons-color-picker" class="color-picker" value="#ffffff">
-            </div>
-            <div class="enhancement-option">
-                <label>Menu Color:</label>
-                <input type="color" id="menu-color-picker" class="color-picker" value="#000000">
-            </div>
-            <div class="enhancement-option">
-                <label>Line Color Preview:</label>
-                <input type="color" id="line-color-picker" class="color-picker" value="#ff0000">
-            </div>
-            <div class="enhancement-option">
-                <label>Time Color Preview:</label>
-                <input type="color" id="time-color-picker" class="color-picker" value="#ffffff">
-            </div>
-            </div>
-        </div>
-          
-        </div>
-
-        <div id="stats" class="tab-content">
-             <div id="yt-stats-toggle">
-              <h3 style="margin: 0 0 15px">YouTube Stats</h3>
-              <div class="stat-row">
-                  <div>Foreground Time</div>
-                  <div class="progress">
-                      <div class="progress-bar total-bar" id="usage-bar"></div>
-                  </div>
-                  <div id="total-time">0h 0m 0s</div>
-              </div>
-              <div class="stat-row">
-                  <div>Video Time</div>
-                  <div class="progress">
-                      <div class="progress-bar video-bar" id="video-bar"></div>
-                  </div>
-                  <div id="video-time">0h 0m 0s</div>
-              </div>
-              <div class="stat-row">
-                  <div>Shorts Time</div>
-                  <div class="progress">
-                      <div class="progress-bar shorts-bar" id="shorts-bar"></div>
-                  </div>
-                  <div id="shorts-time">0h 0m 0s</div>
-              </div>
-          </div>
-        </div>
-        <div id="headers" class="tab-content">
-           <h4>Available in next update</h4>
-        </div>
-        <div id="menu-settings" class="tab-content">
-            <h4 style="margin: 10px 0">Menu Appearance</h4>
-            <div class="enhancement-option">
-                <label>Menu Background Color:</label>
-                <input type="color" id="menu-bg-color-picker" class="color-picker" value="#000000">
-            </div>
-            <div class="enhancement-option">
-                <label>Menu Text Color:</label>
-                <input type="color" id="menu-text-color-picker" class="color-picker" value="#ff0000">
-            </div>
-        
-        </div>
-        <div id="import-export">
-        <div style="display: flex;width: 100%;justify-content: space-between;">
-        <button id="export-config" style="width: 100%;display: flex;align-items: center;justify-content: center;">Export
-        <svg width="20" height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M9 15h6" /><path d="M12.5 17.5l2.5 -2.5l-2.5 -2.5" /></svg>
-        </button>
-       <button id="import-config" style="width: 100%;display: flex;align-items: center;justify-content: center;">Import
-        <svg width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M15 15h-6" /><path d="M11.5 17.5l-2.5 -2.5l2.5 -2.5" /></svg>
-        </button>
-        </div>
-            <textarea id="config-data" placeholder="Paste configuration here to import"></textarea>
-        </div>
+      ${menuHTML}
     `;
 
   panel.innerHTML = panelHTML;
@@ -1465,9 +1929,9 @@
     const toggleButton = $cl('div');
     toggleButton.id = 'toggle-button';
   
-    const icon = $cl('img');
+    const icon = $cl('i');
     icon.id = 'icon-menu-settings';
-    icon.src = 'https://cdn.iconscout.com/icon/premium/png-512-thumb/settings-782-1095915.png?f=webp&w=100';
+    icon.classList.add('fa-solid', 'fa-gear');
   
     toggleButton.appendChild(icon);
     topBar.parentElement.insertBefore(toggleButton, topBar);
@@ -1500,7 +1964,7 @@
 
 
   // Tab functionality
-  const tabButtons = $m('.tab-button');
+  const tabButtons = $m('.tab-mdcm');
   const tabContents = $m('.tab-content');
 
   tabButtons.forEach((button) => {
@@ -1512,14 +1976,7 @@
       $id(tabName).classList.add('active');
     });
   });
-
-  // Menu settings icon functionality
-  $id('menu-settings-icon').addEventListener('click', () => {
-    tabButtons.forEach((btn) => btn.classList.remove('active'));
-    tabContents.forEach((content) => content.classList.remove('active'));
-    $id('menu-settings').classList.add('active');
-  });
-
+  
   // Function to save settings
   function saveSettings() {
     const settings = {
@@ -1538,6 +1995,8 @@
       translation: $id('translation-toggle').checked,
       avatars: $id('avatars-toggle').checked,
       reverseMode: $id('reverse-mode-toggle').checked,
+      waveVisualizer: $id('wave-visualizer-toggle').checked,
+      waveVisualizerSelected: $id('select-wave-visualizer-select').value,
       hideComments: $id('hide-comments-toggle').checked,
       hideSidebar: $id('hide-sidebar-toggle').checked,
       disableAutoplay: $id('autoplay-toggle').checked,
@@ -1546,23 +2005,33 @@
       // fontSize: $id('font-size-slider').value,
       playerSize: $id('player-size-slider').value,
       selectVideoQuality: $id('select-video-qualitys-select').value,
-      menuBgColor: $id('menu-bg-color-picker').value,
-      menuTextColor: $id('menu-text-color-picker').value,
+      // menuBgColor: $id('menu-bg-color-picker').value,
+      // menuTextColor: $id('menu-text-color-picker').value,
+      menu_developermdcm: {
+        bg: selectedBgColor, 
+        color: selectedTextColor, 
+        accent: selectedBgAccentColor
+      }
       // menuFontSize: $id('menu-font-size-slider').value,
     };
 
-    GM_setValue('ytSettingsMDCM', JSON.stringify(settings));
+    GM_setValue('ytSettingsMDCM', JSON.stringify(settings));    
   }
 
-
+  
 
   // Function to load settings
   function loadSettings() {
     const settings = JSON.parse(GM_getValue('ytSettingsMDCM', '{}'));
+    
     if (settings.theme) {
       $e(`input[name="theme"][value="${settings.theme}"]`).checked = true;
     }
-
+    settings.menu_developermdcm = settings.menu_developermdcm || {
+      bg: "#252525",
+      color: "#ffffff",
+      accent: "#ff0000"
+    };
     $id('bg-color-picker').value = settings.bgColorPicker || '#000000';
     $id('progressbar-color-picker').value = settings.progressbarColorPicker || '#ff0000';
     $id('primary-color-picker').value = settings.primaryColorPicker || '#ffffff';
@@ -1572,11 +2041,13 @@
     $id('menu-color-picker').value = settings.menuColorPicker || '#000';
     $id('line-color-picker').value = settings.lineColorPicker || '#ff0000';
     $id('time-color-picker').value = settings.timeColorPicker || '#ffffff';
-    $id('dislikes-toggle').checked = settings.dislikes || true;
+    $id('dislikes-toggle').checked = settings.dislikes || false;
     $id('themes-toggle').checked = settings.themes || false;
     $id('translation-toggle').checked = settings.translation || false;
     $id('avatars-toggle').checked = settings.avatars || false;
     $id('reverse-mode-toggle').checked = settings.reverseMode || false;
+    $id('wave-visualizer-toggle').checked = settings.waveVisualizer || false;
+    $id('select-wave-visualizer-select').value = settings.waveVisualizerSelected || 'dinamica';
     $id('hide-comments-toggle').checked = settings.hideComments || false;
     $id('hide-sidebar-toggle').checked = settings.hideSidebar || false;
     $id('autoplay-toggle').checked = settings.disableAutoplay || false;
@@ -1585,9 +2056,33 @@
     // $id('font-size-slider').value = settings.fontSize || 16;
     $id('player-size-slider').value = settings.playerSize || 100;
     $id('select-video-qualitys-select').value = settings.selectVideoQuality || '720';
-    $id('menu-bg-color-picker').value = settings.menuBgColor || '#000000';
-    $id('menu-text-color-picker').value = settings.menuTextColor || '#ffffff';
+    // $id('menu-bg-color-picker').value = settings.menuBgColor || '#000000';
+    // $id('menu-text-color-picker').value = settings.menuTextColor || '#ffffff';
     // $id('menu-font-size-slider').value = settings.menuFontSize || 14;
+    // Asegurar existencia de menu_developermdcm
+    
+   
+    selectedBgColor = settings.menu_developermdcm.bg;
+    selectedTextColor = settings.menu_developermdcm.color;
+    selectedBgAccentColor = settings.menu_developermdcm.accent;
+    
+ 
+    $m('#bg-color-options .color-box').forEach(el => {
+      el.classList.toggle('selected', el.dataset.value === selectedBgColor);
+    });
+
+    $m('#text-color-options .color-box').forEach(el => {
+      el.classList.toggle('selected', el.dataset.value === selectedTextColor);
+    });
+
+    $m('#bg-accent-color-options .color-box').forEach(el => {
+      el.classList.toggle('selected', el.dataset.value === selectedBgAccentColor);
+    });
+
+    // Apply menu colors
+    $sp('--yt-enhance-menu-bg', selectedBgColor);
+    $sp('--yt-enhance-menu-text', selectedTextColor);
+    $sp('--yt-enhance-menu-accent', selectedBgAccentColor);
     updateSliderValues();
 
     setTimeout(() => {
@@ -1599,11 +2094,43 @@
       }
     }, 500);
   }
-  // Function to update slider values
+
+  $m('.color-box').forEach(box => {
+    box.addEventListener('click', () => {
+      const type = box.dataset.type;
+      const value = box.dataset.value;
+  
+      if (type === 'bg') {
+        selectedBgColor = value; 
+        $sp('--yt-enhance-menu-bg', value);
+        $m('#bg-color-options .color-box').forEach(el => {
+          el.classList.remove('selected');
+        });
+        box.classList.add('selected');
+      } else if (type === 'color') {
+        selectedTextColor = value;
+        $sp('--yt-enhance-menu-text', value);
+        $m('#text-color-options .color-box').forEach(el => {
+          el.classList.remove('selected');
+        });
+        box.classList.add('selected');
+      }
+       else if (type === 'accent') {
+        selectedBgAccentColor = value;
+        $sp('--yt-enhance-menu-accent', value);
+        $m('#bg-accent-color-options .color-box').forEach(el => {
+          el.classList.remove('selected');
+        });
+        box.classList.add('selected');
+      }
+      saveSettings();
+    });
+  });
+  
+  
   function updateSliderValues() {
-    // $id('font-size-value').textContent = $id('font-size-slider').value;
     $id('player-size-value').textContent = $id('player-size-slider').value;
-    // $id('menu-font-size-value').textContent = $id('menu-font-size-slider').value;
+    
   }
 
   $id('reset-player-size').addEventListener('click', () => {
@@ -1636,6 +2163,8 @@
       translation: $id('translation-toggle').checked,
       avatars: $id('avatars-toggle').checked,
       reverseMode: $id('reverse-mode-toggle').checked,
+      waveVisualizer: $id('wave-visualizer-toggle').checked,
+      waveVisualizerSelected: $id('select-wave-visualizer-select').value,
       hideComments: $id('hide-comments-toggle').checked,
       hideSidebar: $id('hide-sidebar-toggle').checked,
       disableAutoplay: $id('autoplay-toggle').checked,
@@ -1644,26 +2173,45 @@
       // fontSize: $id('font-size-slider').value,
       playerSize: $id('player-size-slider').value,
       selectVideoQuality: $id('select-video-qualitys-select').value,
-      menuBgColor: $id('menu-bg-color-picker').value,
-      menuTextColor: $id('menu-text-color-picker').value,
+      // menuBgColor: $id('menu-bg-color-picker').value,
+      // menuTextColor: $id('menu-text-color-picker').value,
+      menu_developermdcm: {
+        bg: selectedBgColor,
+        color: selectedTextColor,
+        accent: selectedBgAccentColor
+      }
       // menuFontSize: $id('menu-font-size-slider').value,
     };
-
-
+    $sp('--yt-enhance-menu-bg', settings.menu_developermdcm.bg);
+    $sp('--yt-enhance-menu-text', settings.menu_developermdcm.color);
+    $sp('--yt-enhance-menu-accent', settings.menu_developermdcm.accent);
+   
     renderizarButtons();
-    function isFullscreen() {
-      return document.fullscreenElement !== null;
-  }
+   
   
-  
-  document.addEventListener("fullscreenchange", () => {
-    let panel = $e('#toggle-panel');
-      if (isFullscreen()) {
-        panel.style.opacity = 0;
-      } else {
-        panel.style.opacity = 1;
-      }
-  });
+    $id('shareBtn-mdcm').addEventListener('click', function(event) {
+      event.stopPropagation(); 
+      const dropdown = $id('shareDropdown');
+      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    });
+    
+    $id('importExportBtn').addEventListener('click', function() {
+      $id('importExportArea').classList.toggle('active');
+    });
+
+    $id('closeImportExportBtn').addEventListener('click', function() {
+        $id('importExportArea').classList.remove('active');
+    });
+
+    document.addEventListener('click', function(event) {
+        event.stopPropagation();
+        const dropdown = $id('shareDropdown');
+        const shareButton = $id('shareBtn-mdcm');
+        if (event.target !== shareButton) {
+            dropdown.style.display = 'none';
+        }
+    });
+
   
 
     // Hide comments
@@ -1754,20 +2302,23 @@
     
 
     // Apply menu appearance settings
-    $sp('--yt-enhance-menu-bg', settings.menuBgColor);
-    $sp('--yt-enhance-menu-text', settings.menuTextColor);
+    // $sp('--yt-enhance-menu-bg', settings.menuBgColor);
+    // $sp('--yt-enhance-menu-text', settings.menuTextColor);
     // $sp('--yt-enhance-menu-font-size', `${settings.menuFontSize}px`);
 
     // Apply theme
     const selectedTheme = themes[settings.theme];
+    console.log(settings);
+    
+    
 
     const isThemeCustom = $e(`input[name="theme"][value="custom"]`).checked;
     const isThemeNormal = $e(`input[name="theme"][value="normal"]`).checked;
     const themeCustomOptions = $e('.theme-custom-options');
     const themeNormal = $e('.theme-selected-normal');
     if(isThemeCustom != undefined) {
-      themeNormal.style.display = "block"
-      themeCustomOptions.style.display = "block";
+      themeNormal.style.display = "flex"
+      themeCustomOptions.style.display = "flex";
       $e('.themes-options').style.display = "none";
     }
     if(isThemeNormal) {
@@ -1778,17 +2329,27 @@
 
 
     function checkDarkMode() {
+      
       if(settings.themes) {
-        if (isDarkMode && !isThemeCustom) {
+        
+        if (isDarkModeActive === 'dark' && !isThemeCustom) {
           // Apply theme
           $e('.themes-options').style.display = "block";
           themeNormal.style.display = "none";
           themeCustomOptions.style.display = "none";
-          if(settings.theme === 'normal') {
-            $e(`input[name="theme"][value="0"]`).checked = true;
-            // applySettings();
-          } else {
-  
+
+          if(settings.theme === '0') {
+            GM_addStyle(`
+              .botones_div {
+               background-color: transparent;
+               border: none;
+               color: #ccc !important;
+               user-select: none;
+             }
+               `);
+            return;
+          } 
+            
             $sp('--yt-spec-base-background', selectedTheme.gradient);
             $sp('--yt-spec-text-primary', selectedTheme.textColor);
             $sp('--yt-spec-text-secondary', selectedTheme.textColor);
@@ -1817,7 +2378,7 @@
             #background.ytd-masthead { background: ${selectedTheme.gradient}  !important; }
             .ytp-swatch-background-color {
             background: ${
-               selectedTheme.gradient
+              selectedTheme.gradient
             } !important;
           }
           #shorts-container, #page-manager.ytd-app {
@@ -1826,14 +2387,14 @@
             ytd-engagement-panel-title-header-renderer[shorts-panel] #header.ytd-engagement-panel-title-header-renderer {
             background: ${selectedTheme.gradient}  !important;}
             .buttons-tranlate {
-             background: ${selectedTheme.btnTranslate} !important;
+            background: ${selectedTheme.btnTranslate} !important;
             }
             .badge-shape-wiz--thumbnail-default {
             color: ${selectedTheme.videoDuration} !important;
-             background: ${selectedTheme.gradient} !important;
+            background: ${selectedTheme.gradient} !important;
             }
-             #logo-icon {
-             color:  ${selectedTheme.textLogo} !important;
+            #logo-icon {
+            color:  ${selectedTheme.textLogo} !important;
           }
           .yt-spec-button-shape-next--overlay.yt-spec-button-shape-next--text {
             color:  ${selectedTheme.iconsColor} !important;
@@ -1853,9 +2414,8 @@
   
   
             `);
-          }
-  
-        } else {
+          
+        } else if(isDarkModeActive === 'dark' && isThemeCustom) {
           $sp('--yt-spec-base-background', settings.bgColorPicker);
           $sp('--yt-spec-text-primary', settings.primaryColorPicker);
           $sp('--yt-spec-text-secondary', settings.secondaryColorPicker);
@@ -1882,34 +2442,13 @@
                   .tp-yt-iron-icon {
                    fill: ${settings.iconsColorPicker} !important;
                   }
-
-            #columns.style-scope.ytd-watch-flexy {
-              flex-direction: ${settings.reverseMode ? 'row-reverse' : 'row'} !important;
-               padding-left: ${settings.reverseMode ? '20px' : '0'} !important;
-            }
-                #secondary.style-scope.ytd-watch-flexy {
-                display: ${settings.hideSidebar ? 'none' : 'block'} !important;
-                }
-                .html5-video-container video {
-                width: ${settings.hideSidebar ? '100%' : ''} !important;
-                height: ${settings.hideSidebar ? 'fit-content' : ''} !important;
-                }
-                .ytp-chrome-bottom {
-                  width: ${settings.hideSidebar ? '100%' : ''} !important;
-                  left: ${settings.hideSidebar ? 'auto' : ''} !important;
-                }
-                  .ytp-progress-bar-container {
-                   left: ${settings.hideSidebar ? '4px' : ''} !important;
-                  }
+          
              .botones_div {
             background-color: transparent;
             border: none;
             color: ${settings.iconsColorPicker} !important;
             user-select: none;
           }
-            .ytp-volume-slider-handle:before, .ytp-volume-slider-handle, .ytp-tooltip.ytp-preview:not(.ytp-text-detail){
-              background-color:
-            }
               #container.ytd-searchbox {
               color: red !important;
               }
@@ -1963,21 +2502,68 @@
           }
             `);
         }
+       
       } else {
-          GM_addStyle(`
-              .botones_div {
-            background-color: transparent;
-            border: none;
-            color: #ccc !important;
-            user-select: none;
-          }
-            `)
+        GM_addStyle(`
+          .botones_div {
+           background-color: transparent;
+           border: none;
+           color: #ccc !important;
+           user-select: none;
+         }
+           `);
       }
+        
     }
 
+       
+    GM_addStyle(`
+      #columns.style-scope.ytd-watch-flexy {
+        flex-direction: ${settings.reverseMode ? 'row-reverse' : 'row'} !important;
+        padding-left: ${settings.reverseMode ? '20px' : '0'} !important;
+        }
+        #secondary.style-scope.ytd-watch-flexy {display: ${settings.hideSidebar ? 'none' : 'block'} !important;}
 
+
+        #icon-menu-settings {
+         color: ${settings.iconsColorPicker} !important;
+        }
+        .ytp-chrome-bottom {
+          width: ${settings.hideSidebar ? '100%' : ''} !important;
+          ${settings.hideSidebar ? 'left: 0;' : ''}
+        }
+          .ytp-progress-bar-container {
+            left: ${settings.hideSidebar ? '4px' : ''} !important;
+          }
+      `);
 
     checkDarkMode();
+
+    function checkForVideo() {
+      if(!settings.waveVisualizer) {
+        cleanup(false);
+        return;
+      }
+      const video = $e('video');
+      const miniPlayer = $e('.ytp-miniplayer-ui');
+      if ((video && document.location.href.includes('watch')) || miniPlayer) {
+          if (isFullscreen()) {
+              hideCanvas();
+              return;
+          }
+          if (video === currentVideo && isSetup) {
+              if (controlPanel && video.paused === false) {
+                  showCanvas();
+              }
+          } else {
+              cleanup(true)
+              setupAudioAnalyzer(video);
+          }
+      }
+  }
+
+  // checkForVideo();
+   
     let currentUrl = window.location.href;
     let urlCheckInterval = setInterval(function () {
       if (window.location.href !== currentUrl) {
@@ -2072,10 +2658,9 @@
         if (img.parentElement.querySelector('.yt-image-avatar-download')) return;
        
         const button = $cl('button');
-        button.innerHTML = '<svg width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-photo-down"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 8h.01" /><path d="M12.5 21h-6.5a3 3 0 0 1 -3 -3v-12a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v6.5" /><path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l4 4" /><path d="M14 14l1 -1c.653 -.629 1.413 -.815 2.13 -.559" /><path d="M19 16v6" /><path d="M22 19l-3 3l-3 -3" /></svg>';
+        button.innerHTML = '<i class="fa fa-download"></i>';
         button.classList.add('yt-image-avatar-download');
-    
-        // Asigna la funcionalidad de descarga
+      
         button.onclick = async function () {
           try {
             const imageUrl = img.src.split('=')[0];
@@ -2099,9 +2684,8 @@
             console.error('Error al descargar la imagen:', error);
           }
         };
-    
-        // Agrega el botón al contenedor de la imagen
-        img.parentElement.style.position = 'relative'; // Asegura que el botón se posicione correctamente
+        
+        img.parentElement.style.position = 'relative'; 
         img.parentElement.appendChild(button);
       });
     }
@@ -2180,7 +2764,402 @@
         observerElementDom('ytd-item-section-renderer[static-comments-header] #contents')
       }
     }
-    saveSettings();
+    
+    // Stats 
+    
+    function formatTime(seconds) {
+      if (isNaN(seconds)) return '0h 0m 0s';
+      seconds = Math.floor(seconds);
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = seconds % 60;
+      return `${h}h ${m}m ${s}s`;
+    }
+
+  function updateUI() {
+      $id('total-time').textContent = formatTime(usageTime);
+      $id('video-time').textContent = formatTime(videoTime);
+      $id('shorts-time').textContent = formatTime(shortsTime);
+
+      const maxTime = 86400; // 24 hours
+      $id('usage-bar').style.width =
+          `${(usageTime / maxTime) * 100}%`;
+      $id('video-bar').style.width =
+          `${(videoTime / maxTime) * 100}%`;
+      $id('shorts-bar').style.width =
+          `${(shortsTime / maxTime) * 100}%`;
+  }
+
+  function detectContentType(videoElement) {
+      if (/\/shorts\//.test(window.location.pathname)) return 'shorts';
+    
+      let parent = videoElement;
+      while ((parent = parent.parentElement) !== null) { 
+          if (parent.classList.contains('shorts-container') ||
+              parent.classList.contains('reel-video') ||
+              parent.tagName === 'YTD-REEL-VIDEO-RENDERER') {
+              return 'shorts';
+          }
+      }
+
+    
+      if (videoElement.closest('ytd-watch-flexy') ||
+          videoElement.closest('#primary-inner')) {
+          return 'video';
+      }
+      if (videoElement.closest('ytd-thumbnail') ||
+          videoElement.closest('ytd-rich-item-renderer')) {
+          return 'video';
+      }
+
+      return null;
+    }
+
+    function findActiveVideo() {
+        const videos = $m('video');
+        for (const video of videos) {
+            if (!video.paused && !video.ended && video.readyState > 2) {
+                return video;
+            }
+        }
+        return null;
+    }
+    
+
+    function cleanup(fullCleanup = false) {
+      if (fullCleanup && animationId) { 
+          cancelAnimationFrame(animationId);
+          animationId = null;
+      }
+      
+      // Remueve los event listeners que afectan la UI
+      if (currentVideo) {
+          currentVideo.removeEventListener('play', showCanvas);
+          currentVideo.removeEventListener('pause', hideCanvas);
+          currentVideo.removeEventListener('ended', hideCanvas);
+      }
+      
+      if (fullCleanup) {
+          // Remueve  UI and disconnect from video
+          if (canvas && canvas.parentNode) {
+              canvas.parentNode.removeChild(canvas);
+              canvas = null;
+              ctx = null;
+          }
+          if (controlPanel && controlPanel.parentNode) {
+              controlPanel.parentNode.removeChild(controlPanel);
+              controlPanel = null;
+          }
+          if (source) {
+              try {
+                  source.disconnect();
+              } catch (err) {
+                  console.error("Error desconectando el source:", err);
+              }
+              source = null;
+          }
+          if (audioCtx) {
+              try {
+                  audioCtx.close();
+              } catch (err) {
+                  console.error("Error cerrando AudioContext:", err);
+              }
+              audioCtx = null;
+          }
+          if (currentVideo && currentVideo[PROCESSED_FLAG]) {
+              delete currentVideo[PROCESSED_FLAG];
+          }
+          currentVideo = null;
+          isSetup = false;
+      } else {
+          if (canvas) {
+              canvas.style.opacity = '0';
+          }
+          if (controlPanel) {
+              controlPanel.style.opacity = '0';
+          }
+      }
+  }
+  
+
+    function createCanvasOverlay() {
+        if (canvas) return; 
+        const parent = document.body;
+        canvas = document.createElement('canvas');
+        canvas.id = 'wave-visualizer-canvas';
+        canvas.width = window.innerWidth; 
+        canvas.height = canvasHeight;
+        canvas.style.position = 'fixed';
+        canvas.style.left = '0';
+        canvas.style.top = '0';
+        canvas.style.width = '100%';
+        canvas.style.pointerEvents = 'none';
+        canvas.style.backgroundColor = 'transparent';
+        canvas.style.zIndex = '10000';
+        canvas.style.opacity = '0';
+        canvas.style.transition = 'opacity 0.3s';
+
+        parent.appendChild(canvas);
+        ctx = canvas.getContext('2d');
+    }
+  
+  
+    function createControlPanelWave() {
+      if (controlPanel) return; 
+
+      controlPanel = $cl('div');
+      controlPanel.id = 'wave-visualizer-control';
+      const selectAppend = $id('select-wave-visualizer-select');      
+      waveStyle = settings.waveVisualizerSelected;
+      
+      selectAppend.addEventListener('change', (e) => {
+          waveStyle = e.target.value;
+          selectAppend.value = e.target.value;
+          saveSettings();
+      });
+
+  }
+
+
+  function showCanvas() {    
+    const canvas = $id('wave-visualizer-canvas');
+    if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    } 
+    if (canvas) {
+        canvas.style.opacity = '1';
+        if (controlPanel) controlPanel.style.opacity = '1';
+    }
+}
+
+    // setting Audio y Analyser
+    function setupAudioAnalyzer(video) {
+        if (video[PROCESSED_FLAG]) {
+            Notify('error', "This video already has a MediaElementSource, skipping setup");
+            return;
+        }
+        video[PROCESSED_FLAG] = true;
+        cleanup(false);
+        currentVideo = video;
+        createCanvasOverlay();
+        createControlPanelWave();
+    
+        
+      
+        if (!audioCtx) {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContext();
+        }
+        
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 2048;
+        analyser.smoothingTimeConstant = 0.85;
+        bufferLength = analyser.fftSize;
+        dataArray = new Uint8Array(bufferLength);
+        smoothedData = new Array(bufferLength).fill(128);
+        try {
+            source = audioCtx.createMediaElementSource(video);
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+        } catch (e) {
+            Notify('error', "MediaElementSource or error:", e);
+            cleanup(true);
+            return setupAudioAnalyzer(video); // clean full
+        }
+        video.removeEventListener('play', showCanvas);
+        video.removeEventListener('pause', hideCanvas);
+        video.removeEventListener('ended', hideCanvas);
+
+        video.addEventListener('play', showCanvas);
+        video.addEventListener('pause', hideCanvas);
+        video.addEventListener('ended', hideCanvas);
+      
+        const updateCanvasSize = () => {
+            if (canvas) {
+                canvas.width = window.innerWidth;
+                canvas.height = canvasHeight;
+            }
+        };
+
+        window.removeEventListener('resize', updateCanvasSize);
+        window.addEventListener('resize', updateCanvasSize);
+      
+        draw();
+        isSetup = true;
+      }
+      function draw() {
+          animationId = requestAnimationFrame(draw);
+          
+          if (parseFloat(canvas.style.opacity) <= 0) return;
+
+          analyser.getByteTimeDomainData(dataArray);
+          for (let i = 0; i < bufferLength; i++) {
+              smoothedData[i] += smoothingFactor * (dataArray[i] - smoothedData[i]);
+          }
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          
+          let sliceWidth = canvas.width / bufferLength;
+
+          switch(waveStyle) {
+            
+          case 'linea': {
+              ctx.lineWidth = 2;
+              ctx.strokeStyle = 'lime';
+              ctx.beginPath();
+              let x = 0;
+              for (let i = 0; i < bufferLength; i++) {
+                  let amplitude = Math.max(0, smoothedData[i] - 128) * scale;
+                  if (i === 0) ctx.moveTo(x, amplitude);
+                  else ctx.lineTo(x, amplitude);
+                  x += sliceWidth;
+              }
+              ctx.stroke();
+              break;
+          }
+          case 'barras': {
+              let x = 0;
+              for (let i = 0; i < bufferLength; i += 5) {
+                  let amplitude = Math.max(0, smoothedData[i] - 128) * scale;
+                  ctx.fillStyle = 'cyan';
+                  ctx.fillRect(x, 0, sliceWidth * 4, amplitude);
+                  x += sliceWidth * 5;
+              }
+              break;
+          }
+          case 'curva': {
+              ctx.lineWidth = 2;
+              ctx.strokeStyle = 'yellow';
+              ctx.beginPath();
+              ctx.moveTo(0, Math.max(0, smoothedData[0] - 128) * scale);
+              for (let i = 0; i < bufferLength - 1; i++) {
+                  let x0 = i * sliceWidth;
+                  let x1 = (i + 1) * sliceWidth;
+                  let y0 = Math.max(0, smoothedData[i] - 128) * scale;
+                  let y1 = Math.max(0, smoothedData[i + 1] - 128) * scale;
+                  let cp1x = x0 + sliceWidth / 3;
+                  let cp1y = y0;
+                  let cp2x = x1 - sliceWidth / 3;
+                  let cp2y = y1;
+                  ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x1, y1);
+              }
+              ctx.stroke();
+              break;
+          }
+          case 'picos': {
+              ctx.fillStyle = 'magenta';
+              let x = 0;
+              for (let i = 0; i < bufferLength; i += 5) {
+                  let amplitude = Math.max(0, smoothedData[i] - 128) * scale;
+                  ctx.beginPath();
+                  ctx.arc(x, amplitude, 2, 0, Math.PI * 2);
+                  ctx.fill();
+                  x += sliceWidth * 5;
+              }
+              break;
+          }
+          case 'solida': {
+              ctx.beginPath();
+              let x = 0;
+              ctx.moveTo(0, 0);
+              for (let i = 0; i < bufferLength; i++) {
+                  let amplitude = Math.max(0, smoothedData[i] - 128) * scale;
+                  ctx.lineTo(x, amplitude);
+                  x += sliceWidth;
+              }
+              ctx.lineTo(canvas.width, 0);
+              ctx.closePath();
+              ctx.fillStyle = 'rgba(0,255,0,0.3)';
+              ctx.fill();
+              break;
+          }
+          case 'dinamica': {
+              let gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+              gradient.addColorStop(0, 'red');
+              gradient.addColorStop(0.5, 'purple');
+              gradient.addColorStop(1, 'blue');
+              ctx.lineWidth = 3;
+              ctx.strokeStyle = gradient;
+              ctx.beginPath();
+              let x = 0;
+              for (let i = 0; i < bufferLength; i++) {
+                  let amplitude = Math.max(0, smoothedData[i] - 128) * scale;
+                  if (i === 0) ctx.moveTo(x, amplitude);
+                  else ctx.lineTo(x, amplitude); 
+                  x += sliceWidth;
+              }
+              ctx.stroke();
+              break;
+          }
+          case 'montana': {
+              ctx.beginPath();
+              let x = 0;
+              ctx.moveTo(0, 0);
+              for (let i = 0; i < bufferLength; i++) {
+                  let amp = (smoothedData[i] - 128) * scale * 0.8;
+                  ctx.lineTo(x, amp);
+                  x += sliceWidth;
+              }
+              ctx.lineTo(canvas.width, 0);
+              ctx.closePath();
+              ctx.fillStyle = 'rgba(128,128,255,0.4)';
+              ctx.fill();
+              break;
+          }
+            
+          default:
+              break;
+          }
+      }
+   
+     
+
+  const observer = new MutationObserver(() => {
+      const newVideo = findActiveVideo();
+      if (newVideo !== activeVideo) {
+          activeVideo = newVideo;
+          if (activeVideo) {
+              activeType = detectContentType(activeVideo);     
+              
+          }
+      }
+  });
+
+        checkForVideo();
+ 
+  setInterval(() => {
+        const now = Date.now();
+        // checkForVideo();
+        const delta = (now - lastUpdate) / 1000;
+        if (document.visibilityState === 'visible') {
+            usageTime += delta;
+        }
+      
+        if (activeVideo && !activeVideo.paused) {
+            if (activeType === 'video') {
+                videoTime += delta;
+            } else if (activeType === 'shorts') {
+                shortsTime += delta;
+            }
+        }
+        lastUpdate = now;
+        updateUI();
+  }, UPDATE_INTERVAL);
+
+
+
+
+
+
+  observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true
+  });
+  updateUI();
+
+  // end stats
+  saveSettings();
+  
   }
 
   let validoBotones = true;
@@ -2293,7 +3272,6 @@
               return;
             }
       
-            // Simular clic derecho
             const event = new MouseEvent("contextmenu", {
               bubbles: true,
               cancelable: true
@@ -2312,7 +3290,6 @@
           });
       
           bufferVideo.dataset.listenerAdded = "true"; 
-          console.log("Evento registrado con éxito.");
         }
       }
       
@@ -2401,11 +3378,9 @@
           ) {
             const parametrosURL = new URLSearchParams(window.location.search);
             let enlace = parametrosURL.get('v');
-
-            // Construir la URL de la imagen
+            
             const imageUrl = `https://i.ytimg.com/vi/${enlace}/maxresdefault.jpg`;
-
-            // Realizar la solicitud para obtener la imagen
+            
             fetch(imageUrl)
               .then((response) => {
                 if (!response.ok) {
@@ -2414,31 +3389,24 @@
                 return response.blob();
               })
               .then((blob) => {
-                // Obtener el tamaño de la imagen en kilobytes
                 const imageSizeKB = blob.size / 1024;
-
-                // Verificar si el tamaño de la imagen es menor o igual a 20 KB
+               
                 if (imageSizeKB >= 20) {
                   window.open(
                     `https://i.ytimg.com/vi/${enlace}/maxresdefault.jpg`,
                     'popUpWindow',
                     'height=500,width=400,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes'
                   );
-                  // Crear una URL para la imagen
                   const imageUrlObject = URL.createObjectURL(blob);
-
-                  // Crear un enlace para descargar la imagen
+                 
                   const enlaceDescarga = $cl('a');
                   enlaceDescarga.href = imageUrlObject;
                   const titleVideo = $e(
                     'h1.style-scope.ytd-watch-metadata'
                   ).innerText;
                   enlaceDescarga.download = `${titleVideo}_maxresdefault.jpg`;
-
-                  // Simular un clic en el enlace para iniciar la descarga
                   enlaceDescarga.click();
-
-                  // Limpiar la URL del objeto después de la descarga
+                  
                   URL.revokeObjectURL(imageUrlObject);
                 } else {
                   console.log(
@@ -2507,15 +3475,12 @@
       if (viewPictureToPicture != undefined) {
         viewPictureToPicture.onclick = () => {
           const video = $e('video');
-          // Verifica si el navegador admite Picture-in-Picture
           if ('pictureInPictureEnabled' in document) {
-            // Verifica si el video aún no está en modo Picture-in-Picture
             if (!document.pictureInPictureElement) {
-              // Intenta activar el modo Picture-in-Picture
+        
               video
                 .requestPictureInPicture()
                 .then(() => {
-                  // El video está ahora en modo Picture-in-Picture
                 })
                 .catch((error) => {
                   console.error(
@@ -2589,19 +3554,25 @@
 
 
 
-  console.log('Scrip en ejecución by: DeveloperMDCM  MDCM');
+  console.log('Script en ejecución by: DeveloperMDCM');
   const HEADER_STYLE = 'color: #F00; font-size: 24px; font-family: sans-serif;';
   const MESSAGE_STYLE = 'color: #00aaff; font-size: 16px; font-family: sans-serif;';
   const CODE_STYLE = 'font-size: 14px; font-family: monospace;';
 
   console.log(
     '%cYoutube Tools Extension NEW UI\n' +
-      '%cRun %c(v2.3.3.2)\n' +
+      '%cRun %c(v2.3.4)\n' +
       'By: DeveloperMDCM.',
     HEADER_STYLE,
     CODE_STYLE,
     MESSAGE_STYLE
   );
+
+  if (!localStorage.getItem('notification-developerMDCM')) {
+    Notify('info', 'Youtube Tools by: DeveloperMDCM :)');
+    localStorage.setItem('notification-developerMDCM', true);
+  }
+
 
 
 
@@ -2632,9 +3603,11 @@
     try {
       JSON.parse(configData); // Validate JSON
       GM_setValue('ytSettingsMDCM', configData);
-      alert('Configuration export successfully!');
+      setTimeout(() => {
+        Notify('success', 'Configuration export successfully!');
+      }, 1000);
     } catch (e) {
-      alert('Invalid configuration data. Please check and try again.');
+      Notify('error', 'Invalid configuration data. Please check and try again.');
     }
   });
   // Import configuration
@@ -2643,136 +3616,67 @@
     try {
       JSON.parse(configData); // Validate JSON
       GM_setValue('ytSettingsMDCM', configData);
-      alert('Configuration imported successfully!');
+      setTimeout(() => {
+        Notify('success', 'Configuration imported successfully!');
+        window.location.reload();
+      }, 1000);
       window.location.reload();
     } catch (e) {
-      alert('Invalid configuration data. Please check and try again.');
+      Notify('error', 'Invalid configuration data. Please check and try again.');
     }
   });
-  panel.style.display = 'none'; // Ensure panel is hidden on load
+  panel.style.display = 'none';
 
-   // Stats 
-
-     // Format time
-     function formatTime(seconds) {
-      if (isNaN(seconds)) return '0h 0m 0s';
-      seconds = Math.floor(seconds);
-      const h = Math.floor(seconds / 3600);
-      const m = Math.floor((seconds % 3600) / 60);
-      const s = seconds % 60;
-      return `${h}h ${m}m ${s}s`;
-  }
+  // var for wave
+  let currentVideo = null;
   
-  function updateUI() {
-      $id('total-time').textContent = formatTime(usageTime);
-      $id('video-time').textContent = formatTime(videoTime);
-      $id('shorts-time').textContent = formatTime(shortsTime);
-
-      const maxTime = 86400; // 24 hours
-      $id('usage-bar').style.width =
-          `${(usageTime / maxTime) * 100}%`;
-      $id('video-bar').style.width =
-          `${(videoTime / maxTime) * 100}%`;
-      $id('shorts-bar').style.width =
-          `${(shortsTime / maxTime) * 100}%`;
-  }
-
-  function detectContentType(videoElement) {
-      if (/\/shorts\//.test(window.location.pathname)) return 'shorts';
-     
-      let parent = videoElement;
-      while ((parent = parent.parentElement) !== null) { 
-          if (parent.classList.contains('shorts-container') ||
-              parent.classList.contains('reel-video') ||
-              parent.tagName === 'YTD-REEL-VIDEO-RENDERER') {
-              return 'shorts';
-          }
-      }
-
-     
-      if (videoElement.closest('ytd-watch-flexy') ||
-          videoElement.closest('#primary-inner')) {
-          return 'video';
-      }
-      if (videoElement.closest('ytd-thumbnail') ||
-          videoElement.closest('ytd-rich-item-renderer')) {
-          return 'video';
-      }
-
-      return null;
-  }
+  let waveStyle = 'dinamica';
+  let audioCtx = null;
+  let analyser = null;
+  let source = null;
+  let animationId = null;
+  let canvas = null;
+  let ctx = null;
+  let controlPanel = null;
+  let bufferLength = 0;
+  let dataArray = null;
+  let smoothedData = [];
+  let isSetup = false;
+  const smoothingFactor = 0.05;
+  const canvasHeight = 240;
+  const scale = canvasHeight / 90;
   
-  function findActiveVideo() {
-      const videos = document.querySelectorAll('video');
-      for (const video of videos) {
-          if (!video.paused && !video.ended && video.readyState > 2) {
-              return video;
-          }
-      }
-      return null;
-  }
-  
-  const observer = new MutationObserver(() => {
-      const newVideo = findActiveVideo();
-      if (newVideo !== activeVideo) {
-          activeVideo = newVideo;
-          if (activeVideo) {
-              activeType = detectContentType(activeVideo);
-              console.log('Contenido detectado:', activeType);
-          }
-      }
-  });
-
-  
-  setInterval(() => {
-      const now = Date.now();
-      const delta = (now - lastUpdate) / 1000;
-      if (document.visibilityState === 'visible') {
-          usageTime += delta;
-      }
-     
-      if (activeVideo && !activeVideo.paused) {
-          if (activeType === 'video') {
-              videoTime += delta;
-          } else if (activeType === 'shorts') {
-              shortsTime += delta;
-          }
-      }
-
-      lastUpdate = now;
-      updateUI();
-  }, UPDATE_INTERVAL);
-
-
-
-  window.addEventListener('beforeunload', () => {
-      GM_setValue(STORAGE.USAGE, Math.floor(usageTime));
-      GM_setValue(STORAGE.VIDEO, Math.floor(videoTime));
-      GM_setValue(STORAGE.SHORTS, Math.floor(shortsTime));
-  });
-
-  // Inicialización
-  observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: true
-  });
-  updateUI();
-
-  // end stats
-
+  const PROCESSED_FLAG = 'wave_visualizer_processed';
   // Load saved settings
   // Visible element DOM
   function checkElement(selector, callback) {
     const interval = setInterval(() => {
       if ($e(selector)) {
         clearInterval(interval);
-
         callback();
       }
     }, 100);
   }
 
-  checkElement('ytd-topbar-menu-button-renderer', loadSettings);
+  const checkActiveWave = $id('wave-visualizer-toggle');
+  checkActiveWave.addEventListener('change', () => {
+    const waveVisualizer = $e('#wave-visualizer-toggle');
+    if (waveVisualizer.checked) {
+      Notify('success', 'Wave visualizer enabled');
+    } else {
+      hideCanvas();
+      Notify('success', 'Wave visualizer disabled realod page');
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    }
+  });
 
+  checkElement('ytd-topbar-menu-button-renderer', loadSettings);
+  // validate change url SPA youtube
+  document.addEventListener('yt-navigate-finish', () => {
+    if (!document.location.href.includes('watch')) {    
+      hideCanvas();
+    }
+    });
 })();
