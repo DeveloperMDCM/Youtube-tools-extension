@@ -14,6 +14,14 @@
    
 - Change default video player quality.
 - Stats video playback.
+- Hide comments.
+- Hide sidebar.
+- Disable autoplay.
+- Disable subtitles.
+- Effect wave visualizer.
+- Download avatars.
+- Select video quality.
+- Stast video playback.
 - Download avatars comments.
 - Change video player size.
 - Custom themes.   
@@ -33,6 +41,7 @@
 - Download thumbnail image.
 - Capture video screenshot.
 - Translate comments in videos and shorts.
+- Translate individual comments.
 - Filter screen display.
 - Mirror mode enabled.
 - Adapt background color to match video.
