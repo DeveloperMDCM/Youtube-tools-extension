@@ -13,6 +13,7 @@
 <summary>Features:</summary>
    
 - Change default video player quality.
+- Copy description video.
 - Stats video playback.
 - Hide comments.
 - Hide sidebar.
