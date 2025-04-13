@@ -70,7 +70,7 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.3.4
+// @version      2.3.4.1
 // @author       DeveloperMDCM
 // @match        *://www.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -104,6 +104,7 @@
   const $sp = (el, pty) => document.documentElement.style.setProperty(el, pty); // set property variable css
   const $ap = (el) => document.body.appendChild(el); // append element
   const apiDislikes = "https://returnyoutubedislikeapi.com/Votes?videoId="; // Api dislikes
+  const apiGoogleTranslate = "https://translate.googleapis.com/translate_a/t"; // Api google translate
   let selectedBgColor = "#252525"; // Background color menu default
   let selectedTextColor = "#ffffff"; // Text color menu default
   let selectedBgAccentColor = "#ff0000"; // Accent color menu default
@@ -112,9 +113,114 @@
   function isFullscreen() {
     return document.fullscreenElement !== null;
   }
-
-
-
+  // for translate comments video
+  const languagesTranslate = {
+    "af": "Afrikaans",
+    "sq": "Albanian",
+    "am": "Amharic",
+    "ar": "Arabic",
+    "hy": "Armenian",
+    "az": "Azerbaijani",
+    "eu": "Basque",
+    "be": "Belarusian",
+    "bn": "Bengali",
+    "bs": "Bosnian",
+    "bg": "Bulgarian",
+    "ca": "Catalan",
+    "ceb": "Cebuano",
+    "zh-CN": "Chinese (Simplified)",
+    "zh-TW": "Chinese (Traditional)",
+    "co": "Corsican",
+    "hr": "Croatian",
+    "cs": "Czech",
+    "da": "Danish",
+    "nl": "Dutch",
+    "en": "English",
+    "eo": "Esperanto",
+    "et": "Estonian",
+    "fi": "Finnish",
+    "fr": "French",
+    "fy": "Frisian",
+    "gl": "Galician",
+    "ka": "Georgian",
+    "de": "German",
+    "el": "Greek",
+    "gu": "Gujarati",
+    "ht": "Haitian Creole",
+    "ha": "Hausa",
+    "haw": "Hawaiian",
+    "iw": "Hebrew",
+    "hi": "Hindi",
+    "hmn": "Hmong",
+    "hu": "Hungarian",
+    "is": "Icelandic",
+    "ig": "Igbo",
+    "id": "Indonesian",
+    "ga": "Irish",
+    "it": "Italian",
+    "ja": "Japanese",
+    "jw": "Javanese",
+    "kn": "Kannada",
+    "kk": "Kazakh",
+    "km": "Khmer",
+    "ko": "Korean",
+    "ku": "Kurdish",
+    "ky": "Kyrgyz",
+    "lo": "Lao",
+    "la": "Latin",
+    "lv": "Latvian",
+    "lt": "Lithuanian",
+    "lb": "Luxembourgish",
+    "mk": "Macedonian",
+    "mg": "Malagasy",
+    "ms": "Malay",
+    "ml": "Malayalam",
+    "mt": "Maltese",
+    "mi": "Maori",
+    "mr": "Marathi",
+    "mn": "Mongolian",
+    "my": "Myanmar (Burmese)",
+    "ne": "Nepali",
+    "no": "Norwegian",
+    "ny": "Nyanja (Chichewa)",
+    "ps": "Pashto",
+    "fa": "Persian",
+    "pl": "Polish",
+    "pt": "Portuguese",
+    "pa": "Punjabi",
+    "ro": "Romanian",
+    "ru": "Russian",
+    "sm": "Samoan",
+    "gd": "Scots Gaelic",
+    "sr": "Serbian",
+    "st": "Sesotho",
+    "sn": "Shona",
+    "sd": "Sindhi",
+    "si": "Sinhala",
+    "sk": "Slovak",
+    "sl": "Slovenian",
+    "so": "Somali",
+    "es": "Spanish",
+    "su": "Sundanese",
+    "sw": "Swahili",
+    "sv": "Swedish",
+    "tl": "Tagalog (Filipino)",
+    "tg": "Tajik",
+    "ta": "Tamil",
+    "te": "Telugu",
+    "th": "Thai",
+    "tr": "Turkish",
+    "uk": "Ukrainian",
+    "ur": "Urdu",
+    "uz": "Uzbek",
+    "vi": "Vietnamese",
+    "cy": "Welsh",
+    "xh": "Xhosa",
+    "yi": "Yiddish",
+    "yo": "Yoruba",
+    "zu": "Zulu"
+  }
+  
   function hideCanvas() {
    
     const canvas = $id('wave-visualizer-canvas');
@@ -212,7 +318,7 @@
         if (dislikes_content !== undefined) {
           dislikes_content.style = 'width: 90px';
           dislikes_content.innerHTML = `
-            <svg class="svg-dislike-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 13v-8a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v7a1 1 0 0 0 1 1h3a4 4 0 0 1 4 4v1a2 2 0 0 0 4 0v-5h3a2 2 0 0 0 2 -2l-1 -5a2 3 0 0 0 -2 -2h-7a3 3 0 0 0 -3 3" /></svg>
+            <svg class="svg-dislike-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 13v-8a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v7a1 1 0 0 0 1 1h3a4 4 0 0 1 4 4v1a2 2 0 0 0 4 0v-5h3a2 2 0 0 0 2 -2l-1 -5a2 3 0 0 0 -2 -2h-7a3 3 0 0 0 -3 3" /></svg>
             ${FormatterNumber(dislikes, 0)}`;
         }
 
@@ -309,7 +415,7 @@
         }
 
         #shareDropdown {
-        display: block;
+        display: none;
         position: absolute;
         top: 50px;
         right: 100px;
@@ -932,7 +1038,7 @@
     z-index: 2;
 }
 
-  .buttons-tranlate {
+  .buttons-tranlate, .select-traductor {
         background: #000;
         font-size: 10px;
         border: none;
@@ -940,23 +1046,30 @@
         padding: 3px 0;
         margin-left: 10px;
         width: 70px;
-        border-radius: 10px;}
+        border-radius: 10px;
+        }
         .buttons-tranlate:hover {
         cursor: pointer;
-        background-color: #6b6b6b;}
-
+        background-color: #6b6b6b;
+        }
          button.botones_div {
-      margin: 0;
-      padding: 0;
+         margin: 0;
+         padding: 0;
+         }
 
-    }
+        .tab-button:hover {
+          background-color: #ec3203 !important;
+          color: #ffffff !important;
+          cursor: pointer;
+        }
 
-    .tab-button:hover {
-      background-color: #ec3203 !important;
-      color: #ffffff !important;
-      cursor: pointer;
-    }
-
+        .traductor-container {
+            display: inline-block;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+          }
+         
         #eyes {
       opacity: 0;
       position: absolute;
@@ -1089,6 +1202,8 @@
       color: #000;
       font-size: 25px;
       text-align: center;
+      border: 1px solid black;
+      border-radius: 10px;
       border: none;
       font-size: 20px;
       margin: 2px 2px;
@@ -1546,6 +1661,15 @@
     )
     .join('');
 
+    const languageOptionsHTML = Object.entries(languagesTranslate)
+    .map(([code, name]) => {
+      const selected = code === languagesTranslate ? 'selected' : '';
+      return `<option value="${code}" ${selected}>${name}</option>`;
+    })
+    .join('');
+
+
+
   function checkDarkModeActive() {
     const prefCookie = document.cookie.split('; ').find(row => row.startsWith('PREF='));
     let theme = 'light'; 
@@ -1701,6 +1825,15 @@
             </label>
           </div>
         </div>
+        <div class="quality-selector-mdcm" style="grid-column: span 2;">
+          <div class="select-wrapper-mdcm">
+            <label>Language for translate comments: 
+              <select class="tab-button-active" id="select-languages-comments-select">
+              ${languageOptionsHTML}
+              </select>
+            </label>
+          </div>
+        </div>
         <div class="slider-container-mdcm" style="grid-column: span 2;">
           <label>Video Player Size: <span id="player-size-value">100</span>%</label>
           <input type="range" id="player-size-slider" class="slider-mdcm" min="50" max="150" value="100">
@@ -1715,6 +1848,7 @@
           <div>
             <h4>Choose a Theme</h4>
             <p>Disable cinematic Lighting</p>
+            ${isDarkModeActive === 'dark' ? '' : '<p style="color: red; margin: 10px 0;font-size: 11px;">Activate dark mode to use this option</p>'}
           </div>
         </div>
         <div class="options-mdcm">
@@ -1731,7 +1865,6 @@
             </div>
           </label>
         </div>
-        <p>${isDarkModeActive ? '' : 'activate dark mode to use themes'}</p>
         <div class="themes-options">
           <div class="options-mdcm">
             ${themeOptionsHTML}
@@ -1907,7 +2040,7 @@
     <div class="developer-mdcm">
       Developed by <a href="https://github.com/DeveloperMDCM" target="_blank">DeveloperMDCM</a>
     </div>
-    <span style="color: #fff" ;>v2.3.4</span>
+    <span style="color: #fff" ;>v2.3.4.1</span>
   </div>
   `;
   const panelHTML = policy
@@ -2005,6 +2138,7 @@
       // fontSize: $id('font-size-slider').value,
       playerSize: $id('player-size-slider').value,
       selectVideoQuality: $id('select-video-qualitys-select').value,
+      languagesComments: $id('select-languages-comments-select').value,
       // menuBgColor: $id('menu-bg-color-picker').value,
       // menuTextColor: $id('menu-text-color-picker').value,
       menu_developermdcm: {
@@ -2056,6 +2190,7 @@
     // $id('font-size-slider').value = settings.fontSize || 16;
     $id('player-size-slider').value = settings.playerSize || 100;
     $id('select-video-qualitys-select').value = settings.selectVideoQuality || '720';
+    $id('select-languages-comments-select').value = settings.languagesComments || 'en';
     // $id('menu-bg-color-picker').value = settings.menuBgColor || '#000000';
     // $id('menu-text-color-picker').value = settings.menuTextColor || '#ffffff';
     // $id('menu-font-size-slider').value = settings.menuFontSize || 14;
@@ -2173,6 +2308,7 @@
       // fontSize: $id('font-size-slider').value,
       playerSize: $id('player-size-slider').value,
       selectVideoQuality: $id('select-video-qualitys-select').value,
+      languagesComments: $id('select-languages-comments-select').value,
       // menuBgColor: $id('menu-bg-color-picker').value,
       // menuTextColor: $id('menu-text-color-picker').value,
       menu_developermdcm: {
@@ -2195,6 +2331,15 @@
       dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
     });
     
+    document.addEventListener('click', function(event) {
+      event.stopPropagation();
+      const dropdown = $id('shareDropdown');
+      const shareButton = $id('shareBtn-mdcm');
+      if (event.target !== shareButton) {
+          dropdown.style.display = 'none';
+      }
+    });
+
     $id('importExportBtn').addEventListener('click', function() {
       $id('importExportArea').classList.toggle('active');
     });
@@ -2203,15 +2348,7 @@
         $id('importExportArea').classList.remove('active');
     });
 
-    document.addEventListener('click', function(event) {
-        event.stopPropagation();
-        const dropdown = $id('shareDropdown');
-        const shareButton = $id('shareBtn-mdcm');
-        if (event.target !== shareButton) {
-            dropdown.style.display = 'none';
-        }
-    });
-
+   
   
 
     // Hide comments
@@ -2280,9 +2417,14 @@
     // selected video quality
     const video = $e('div#movie_player');
     let ytPlayerQuality = localStorage.getItem('yt-player-quality');
-    $e('#select-video-qualitys-select').addEventListener('change', () => {
-      applySettings();
-    })
+    $m('#select-video-qualitys-select, #select-languages-comments-select').forEach(el => {
+      el.addEventListener('change', () => {
+        applySettings();
+      });
+    });
+    // $e('#select-languages-comments-select').addEventListener('change', () => {
+    //   applySettings();
+    // })
   
     if (video != undefined) {
       if (ytPlayerQuality) {
@@ -2308,10 +2450,6 @@
 
     // Apply theme
     const selectedTheme = themes[settings.theme];
-    console.log(settings);
-    
-    
-
     const isThemeCustom = $e(`input[name="theme"][value="custom"]`).checked;
     const isThemeNormal = $e(`input[name="theme"][value="normal"]`).checked;
     const themeCustomOptions = $e('.theme-custom-options');
@@ -2501,6 +2639,15 @@
             fill:  ${settings.iconsColorPicker} !important;
           }
             `);
+        } else {
+          GM_addStyle(`
+            .botones_div {
+             background-color: transparent;
+             border: none;
+             color: #000 !important;
+             user-select: none;
+           }
+             `);
         }
        
       } else {
@@ -2579,31 +2726,57 @@
       clearInterval(urlCheckInterval);
     }
 
-    let traducido; // Texto traducido
-    let urlLista; // Url lista
+   
     async function traductor() {
       const texto = $m('#content-text');
       if ($e('.buttons-tranlate')) return;
-      let o = `?client=dict-chrome-ex&sl=auto&tl=${navigator.language}&q=`;
+    
+      const languages = languagesTranslate;
+      const idiomaDestino = $id('select-languages-comments-select').value;
+    
       for (let i = 0; i < texto.length; i++) {
-        const botonTraducir = $cl('BUTTON');
-        botonTraducir.classList.add('buttons-tranlate');
-        botonTraducir.textContent = 'Translate';
-        botonTraducir.setAttribute('id', `btn${i}`);
-        texto[i].insertAdjacentElement('afterend', botonTraducir);
-        const mdcm = $m(`.buttons-tranlate`);
-        mdcm[i].onclick = function () {
-          traducido = o;
-          urlLista = traducido + texto[i].textContent;
-          fetch('https://translate.googleapis.com/translate_a/t' + urlLista) //API
+       
+        const optionsHTML = Object.entries(languages)
+          .map(([code, name]) => {
+            const selected = code === idiomaDestino ? 'selected' : '';
+            return `<option value="${code}" ${selected}>${name}</option>`;
+          })
+          .join('');
+    
+        const controlsHTML = `
+          <div class="traductor-container" data-index="${i}">
+          <button class="buttons-tranlate" id="btn${i}"> Translate <i class="fa-solid fa-language"></i></button>
+          <select class="select-traductor" id="select${i}">
+           ${optionsHTML}
+          </select>
+          </div>
+        `;
+     
+        texto[i].insertAdjacentHTML('afterend', controlsHTML);
+      }
+      
+      const botones = $m('.buttons-tranlate');
+      const selects = $m('.select-traductor');
+    
+      botones.forEach((boton, i) => {
+        boton.addEventListener('click', () => {
+          const selectedLang = selects[i].value;
+          const urlLista = `?client=dict-chrome-ex&sl=auto&tl=${selectedLang}&q=` + texto[i].textContent;
+    
+          fetch(apiGoogleTranslate + urlLista)
             .then((response) => response.json())
             .then((datos) => {
               texto[i].textContent = datos[0][0];
-              mdcm[i].textContent = 'Translated';
+              botones[i].textContent = 'Translated';
+            })
+            .catch((err) => {
+              console.error('Error en la traducción:', err);
             });
-        };
-      }
+        });
+      });
     }
+    
+
  
     function limpiarHTML(selector) {
       $m(selector).forEach((button) => button.remove());
@@ -2623,6 +2796,7 @@
       if (settings.translation) {
         if (divEl !== undefined || divEl2 !== undefined) {
           limpiarHTML('.buttons-tranlate');
+          limpiarHTML('.select-traductor');
           traductor();
         }
       }
@@ -3561,7 +3735,7 @@
 
   console.log(
     '%cYoutube Tools Extension NEW UI\n' +
-      '%cRun %c(v2.3.4)\n' +
+      '%cRun %c(v2.3.4.1)\n' +
       'By: DeveloperMDCM.',
     HEADER_STYLE,
     CODE_STYLE,
