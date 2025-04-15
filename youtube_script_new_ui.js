@@ -70,7 +70,7 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.3.4.1
+// @version      2.3.4.3
 // @author       DeveloperMDCM
 // @match        *://www.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -1670,22 +1670,15 @@
 
 
 
-  function checkDarkModeActive() {
-    const prefCookie = document.cookie.split('; ').find(row => row.startsWith('PREF='));
-    let theme = 'light'; 
-    if (prefCookie) {
-        const params = new URLSearchParams(prefCookie.split('&').join('&'));
-        const f1Value = params.get('f6');
-        // themes dark active os or youtube
-        // - 4000000
-        // - 40000400
-        // - 400
-          if (f1Value === '4000000' || f1Value === '40000400' || f1Value === '400') {
-            theme = 'dark';
-          }
-    } 
-    return theme;
-}
+    function checkDarkModeActive() {
+      const pref = document.cookie.split('; ').find(c => c.startsWith('PREF='));
+      if (!pref) return 'light';
+    
+      const params = new URLSearchParams(pref.split('&').join('&'));
+      const darkModes = ['400', '4000000', '40000400', '40000000'];
+      return darkModes.includes(params.get('f6')) ? 'dark' : 'light';
+    }
+
   let isDarkModeActive = checkDarkModeActive();
 
 
@@ -2040,7 +2033,7 @@
     <div class="developer-mdcm">
       Developed by <a href="https://github.com/DeveloperMDCM" target="_blank">DeveloperMDCM</a>
     </div>
-    <span style="color: #fff" ;>v2.3.4.1</span>
+    <span style="color: #fff" ;>v2.3.4.2</span>
   </div>
   `;
   const panelHTML = policy
@@ -3776,7 +3769,7 @@
 
   console.log(
     '%cYoutube Tools Extension NEW UI\n' +
-      '%cRun %c(v2.3.4.1)\n' +
+      '%cRun %c(v2.3.4.2)\n' +
       'By: DeveloperMDCM.',
     HEADER_STYLE,
     CODE_STYLE,
