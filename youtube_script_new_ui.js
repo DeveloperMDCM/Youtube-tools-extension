@@ -2720,45 +2720,50 @@
     }
 
     function downloadDescriptionVideo() {
-      if($e('#button_copy_description')) return;
-      const buttomHTML = `
-      <div id="button_copy_description" style="display: flex; justify-content: end; align-items: center;margin-top: 10px;" >
-        <button id="copy-description" class="botones_div" type="button" style="cursor: pointer;">
-         <i style="font-size: 20px;" class="fa-solid fa-copy"></i>     
-        </button>
-      </div>
-    `;
-     const containerDescription = $e('#bottom-row.style-scope.ytd-watch-metadata');
-     containerDescription.insertAdjacentHTML('beforebegin', buttomHTML);
-     $id('copy-description').addEventListener('click', () => {
-      const ldJson = [...document.querySelectorAll('script[type="application/ld+json"]')];
-      for (let script of ldJson) {
-        try {
-          const data = JSON.parse(script.innerText);
-          
-          if (data['@type'] === 'VideoObject') {
-            const description = 
-              `📅 Date published: ${data.uploadDate || 'No available'}\n` +
-              `Author: ${data.author || 'No available'}\n` +
-              `🎬 Name video: ${data.name || 'No available'}\n` +
-              `🖼️ Thumbnail: ${Array.isArray(data.thumbnailUrl) ? data.thumbnailUrl.join(', ') : data.thumbnailUrl || 'No available'}\n` +
-              `📝 description: ${data.description || 'No available'}\n\n\n` +
-              `🎭 Category: ${data.genre || 'No available'}\n`;
-              
-              navigator.clipboard.writeText(`${description}`)
-          }
-        } catch (e) {
-          Notify('error', 'Error data JSON');
-        } finally {
-          Notify('success', 'Description video copied');
-        }
-      }
-    });
+      if ($e('#button_copy_description')) return;
     
+      const containerDescription = $e('#bottom-row.style-scope.ytd-watch-metadata');
+      if (!containerDescription) {
+        console.warn('No se encontró el contenedor de descripción. No se insertará el botón.');
+        return;
+      }
+    
+      const buttomHTML = `
+        <div id="button_copy_description" style="display: flex; justify-content: end; align-items: center;margin-top: 10px;" >
+          <button id="copy-description" class="botones_div" type="button" style="cursor: pointer;">
+            <i style="font-size: 20px;" class="fa-solid fa-copy"></i>     
+          </button>
+        </div>
+      `;
+    
+      containerDescription.insertAdjacentHTML('beforebegin', buttomHTML);
+    
+      $id('copy-description').addEventListener('click', () => {
+        const ldJson = [...document.querySelectorAll('script[type="application/ld+json"]')];
+        for (let script of ldJson) {
+          try {
+            const data = JSON.parse(script.innerText);
+            if (data['@type'] === 'VideoObject') {
+              const description =
+                `📅 Date published: ${data.uploadDate || 'No disponible'}\n` +
+                `Author: ${data.author || 'No disponible'}\n` +
+                `🎬 Name video: ${data.name || 'No disponible'}\n` +
+                `🖼️ Thumbnail: ${Array.isArray(data.thumbnailUrl) ? data.thumbnailUrl.join(', ') : data.thumbnailUrl || 'No disponible'}\n` +
+                `📝 Description: ${data.description || 'No disponible'}\n\n\n` +
+                `🎭 Category: ${data.genre || 'No disponible'}\n`;
+    
+              navigator.clipboard.writeText(description);
+            }
+          } catch (e) {
+            Notify('error', 'Error parsing JSON-LD');
+          } finally {
+            Notify('success', 'Descripción copiada');
+          }
+        }
+      });
     }
-
+    
     downloadDescriptionVideo();
-
 
 
     async function traductor() {
