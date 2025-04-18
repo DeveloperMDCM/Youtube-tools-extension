@@ -3355,6 +3355,10 @@
             }
         }
         lastUpdate = now;
+        // save stats
+        GM_setValue(STORAGE.USAGE, usageTime);
+        GM_setValue(STORAGE.VIDEO, videoTime);
+        GM_setValue(STORAGE.SHORTS, shortsTime);
         updateUI();
   }, UPDATE_INTERVAL);
 
