@@ -12,6 +12,8 @@
 <details>
 <summary>Features:</summary>
    
+- Download Audio Flac, WAV, WebM, MP3, M4A, AAC, OPUS, OGG audio.
+- Download MP4, MP3 up to 8K with high quality.
 - Change default video player quality.
 - Copy description video.
 - Stats video playback.
@@ -33,8 +35,6 @@
 - Picture-in-Picture mode.
 - Download profile picture/avatar.
 - Loop/repeat video playback.
-- Download audio as MP3.
-- Download video in MP4 up to 8K with high quality.
 - Display dislikes on videos.
 - Display dislikes on shorts.
 - Rate video with stars.

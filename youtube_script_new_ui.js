@@ -70,7 +70,7 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.3.4.3
+// @version      2.4
 // @author       DeveloperMDCM
 // @match        *://www.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -82,6 +82,7 @@
 // @grant        GM_getValue
 // @grant        unsafeWindow
 // @run-at       document-end
+// @grant        GM_registerMenuCommand
 // @require      https://cdn.jsdelivr.net/npm/izitoast@1.4.0/dist/js/iziToast.min.js
 // @compatible chrome
 // @compatible firefox
@@ -109,10 +110,15 @@
   let selectedTextColor = "#ffffff"; // Text color menu default
   let selectedBgAccentColor = "#ff0000"; // Accent color menu default
   const urlSharedCode = "https://greasyfork.org/es/scripts/460680-youtube-tools-all-in-one-local-download-mp3-mp4-higt-quality-return-dislikes-and-more";
-
+  const API_URL_AUDIO_VIDEO = "https://p.oceansaver.in/ajax/download.php?copyright=0&" // API URL AUDIO VIDEO
+  const API_KEY_DEVELOPERMDCM = 'dfcb6d76f2f6a9894gjkege8a4ab232222';  // API KEY FOR DOWNLOAD AUDIO VIDEO
+  
   function isFullscreen() {
     return document.fullscreenElement !== null;
   }
+
+
+
   // for translate comments video
   const languagesTranslate = {
     "af": "Afrikaans",
@@ -248,6 +254,108 @@
         position: 'bottomLeft',
       });
   }
+
+  async function startDownloadVideoOrAudio(format, container) {
+    const videoURL = window.location.href;
+    // Notify('info', 'Starting download...');
+    
+    // Check if already downloading
+    if (container.dataset.downloading === 'true') {
+      return;
+    }
+    
+    // Get UI elements from the container
+    const downloadBtn = container.querySelector('.download-btn');
+    const retryBtn = container.querySelector('.retry-btn');
+    const progressRetryBtn = container.querySelector('.progress-retry-btn');
+    const progressContainer = container.querySelector('.progress-container');
+    const progressFill = container.querySelector('.progress-fill');
+    const progressText = container.querySelector('.progress-text');
+    const downloadText = container.querySelector('.download-text');
+    
+    // Set downloading flag
+    container.dataset.downloading = 'true';
+    container.dataset.urlOpened = 'false';
+    
+    // Update UI to show progress
+    downloadBtn.style.display = 'none';
+    retryBtn.style.display = 'none';
+    progressRetryBtn.style.display = 'block';
+    progressContainer.style.display = 'flex';
+    progressFill.style.width = '0%';
+    progressText.textContent = '0%';
+    
+    try {
+        const response = await fetch(`${API_URL_AUDIO_VIDEO}format=${format}&url=${encodeURIComponent(videoURL)}&api=${API_KEY_DEVELOPERMDCM}`);
+        const data = await response.json();
+         
+        if (!data.success) {
+            // Notify('error', 'Error starting download. Try again');
+            // Show retry button
+            retryBtn.style.display = 'block';
+            progressContainer.style.display = 'none';
+            progressRetryBtn.style.display = 'none';
+            // Clear downloading flag
+            container.dataset.downloading = 'false';
+            container.dataset.urlOpened = 'false';
+            return;
+        }
+
+        const progressURL = data.progress_url;
+
+        // 3 seconds
+        const checkProgress = setInterval(async () => {
+            try {
+                const progressResponse = await fetch(progressURL);
+                const progressData = await progressResponse.json();
+
+                // Update progress in UI
+                const progress = Math.min(progressData.progress / 10, 100);
+                progressFill.style.width = `${progress}%`;
+                progressText.textContent = `${Math.round(progress)}%`;
+
+                if (progressData.progress >= 1000 && progressData.download_url) {
+                    clearInterval(checkProgress);
+                    // Check if URL was already opened
+                    if (container.dataset.urlOpened === 'true') {
+                        return;
+                    }
+                    // Mark URL as opened
+                    container.dataset.urlOpened = 'true';
+                    // Update UI to show completion
+                    container.classList.add('completed');
+                    container.classList.remove('video', 'audio');
+                    downloadText.textContent = 'Download Complete!';
+                    progressFill.style.width = '100%';
+                    progressText.textContent = '100%';
+                    progressRetryBtn.style.display = 'none';
+                    container.dataset.downloading = 'false';
+                    window.open(progressData.download_url);
+                }
+            } catch (e) {
+                console.error('❌ Error in progress:', e);
+                clearInterval(checkProgress);
+                // Show retry button
+                retryBtn.style.display = 'block';
+                progressContainer.style.display = 'none';
+                progressRetryBtn.style.display = 'none';
+                // Clear downloading flag
+                container.dataset.downloading = 'false';
+                container.dataset.urlOpened = 'false';
+            }
+        }, 3000);
+
+    } catch (error) {
+        // Notify('error', 'Error starting download. Try again');
+        retryBtn.style.display = 'block';
+        progressContainer.style.display = 'none';
+        progressRetryBtn.style.display = 'none';
+        // Clear downloading flag
+        container.dataset.downloading = 'false';
+        container.dataset.urlOpened = 'false';
+        console.error('❌ Error starting download:', error);
+    }
+}
 
 
   const UPDATE_INTERVAL = 1000;
@@ -908,6 +1016,7 @@
   }
   .progress {
       height: 6px;
+      overflow: hidden;
       background: #333;
       border-radius: 3px;
       margin: 8px 0;
@@ -916,9 +1025,9 @@
       height: 100%;
       transition: width 0.3s;
   }
-  .total-bar { background: #44aaff; }
-  .video-bar { background: #00ff88; }
-  .shorts-bar { background: #ff4444; }
+  .total-bar { background: #44aaff !important; }
+  .video-bar { background: #00ff88 !important; }
+  .shorts-bar { background: #ff4444 !important; }
   #cinematics {
     position: absolute !important;
     width: 90vw !important;
@@ -1056,6 +1165,10 @@
          margin: 0;
          padding: 0;
          }
+         button.botones_div:hover {
+         cursor: pointer;
+         color: #6b6b6b !important;
+         }
 
         .tab-button:hover {
           background-color: #ec3203 !important;
@@ -1122,6 +1235,171 @@
     .containerButtons > button:hover {
       cursor: pointer;
     }
+
+        /* Download Container Styles */
+        .download-container {
+          width: 50%;
+          padding: 12px;
+          border-radius: 8px;
+          margin-top: 8px;
+          transition: all 0.3s ease;
+        }
+
+        .download-container.video {
+          background: linear-gradient(135deg, #ff4444, #cc0000);
+          color: white;
+        }
+
+        .download-container.audio {
+          background: linear-gradient(135deg, #00cc44, #009933);
+          color: white;
+        }
+
+        .download-info {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 8px;
+        }
+
+        .download-text {
+          font-weight: 600;
+          font-size: 14px;
+        }
+
+        .download-quality {
+          font-size: 12px;
+          opacity: 0.9;
+        }
+
+        .progress-container {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 6px;
+        }
+
+        .progress-bar {
+          flex: 1;
+          height: 6px;
+          background: rgba(255, 255, 255, 0.3);
+          border-radius: 3px;
+          overflow: hidden;
+        }
+
+        .progress-fill {
+          height: 100%;
+          background: rgba(255, 255, 255, 0.8);
+          border-radius: 3px;
+          width: 0%;
+          transition: width 0.3s ease;
+        }
+
+        .progress-text {
+          font-size: 12px;
+          font-weight: 500;
+          min-width: 30px;
+        }
+
+        .download-footer {
+          font-size: 10px;
+          opacity: 0.7;
+          text-align: center;
+        }
+        .download-footer a {
+          text-decoration: none;
+          color: #fff;
+        }
+
+        .download-container.completed {
+          color: #fff;
+          background: linear-gradient(135deg, #00cc44, #009933) !important;
+        }
+
+        .download-container.completed .download-text {
+          font-weight: 700;
+        }
+
+        .progress-retry-btn {
+          position: absolute;
+          top: 95px;
+          right: 50%;
+          width: 24px;
+          height: 24px;
+          border: none;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.2);
+          color: white;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px;
+          transition: all 0.3s ease;
+        }
+
+        .progress-retry-btn:hover {
+          background: rgba(255, 255, 255, 0.3);
+          transform: scale(1.1);
+        }
+
+        .download-container {
+          position: relative;
+        }
+
+        .download-actions {
+          display: flex;
+          gap: 8px;
+          margin-bottom: 8px;
+        }
+
+        .download-btn {
+          flex: 1;
+          padding: 8px 16px;
+          border: none;
+          border-radius: 4px;
+          font-weight: 600;
+          font-size: 12px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          color: white;
+        }
+
+        .download-btn.video-btn {
+          background: linear-gradient(135deg, #ff6666, #ff4444);
+        }
+
+        .download-btn.audio-btn {
+          background: linear-gradient(135deg, #00dd55, #00cc44);
+        }
+
+        .download-btn:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .download-btn:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          transform: none;
+        }
+
+        .retry-btn {
+          padding: 8px 16px;
+          border: none;
+          border-radius: 4px;
+          font-weight: 600;
+          font-size: 12px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          background: linear-gradient(135deg, #ffaa00, #ff8800);
+          color: white;
+        }
+
+        .retry-btn:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
       
       body {
       padding: 0;
@@ -1172,12 +1450,14 @@
 }
 
     .containerall {
-        display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 50%;
-    margin: auto;
-}
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding-bottom: 30px;
+      max-width: 800px;
+      margin: auto;
+    }
     }
     .container .botoncalidades {
       margin: 3px 2px;
@@ -1462,10 +1742,12 @@
     </div>
     <div class="content_collapsible_colors" style="margin-top: 10px">
 
-    <form class="formulariodescarga" action="">
+    <form class="formulariodescarga ocultarframe" action="">
     <div class="containerall">
-    <select class="selectcalidades  ocultarframe" required>
+    <select class="selectcalidades ocultarframe" required>
       <option selected disabled>Calidad del video / Quality video</option>
+      <option value="144">144p Mp4</option>
+      <option value="240">240p Mp4</option>
       <option value="360">360p Mp4</option>
       <option value="480">480p Mp4</option>
       <option value="720">720p HD Mp4 Default</option>
@@ -1473,26 +1755,65 @@
       <option value="4k">2160p 4K WEBM</option>
       <option value="8k">4320p 8K WEBM</option>
       </select>
-      <iframe id="descargando"  style="z-index: 99; border: none; height: 27.4px; width: 50%;"  class="containerall ocultarframe" src="" frameborder="0"></iframe>
-
+      <div id="descargando" class="download-container ocultarframe">
+        <button class="progress-retry-btn" title="Retry" style="display: none;">
+        <i class="fa-solid fa-rotate-right"></i>
+        </button>
+        <div class="download-info">
+          <span class="download-text">Download Video And Please Wait...</span>
+          <span class="download-quality"></span>
+        </div>
+        <div class="download-actions">
+          <button class="download-btn video-btn">Download</button>
+          <button class="retry-btn" style="display: none;">Retry</button>
+        </div>
+        <div class="progress-container" style="display: none;">
+          <div class="progress-bar">
+            <div class="progress-fill"></div>
+          </div>
+          <span class="progress-text">0%</span>
+        </div>
+        <div class="download-footer">
+          <a href="https://github.com/DeveloperMDCM/" target="_blank"> <i class="fa-brands fa-github"></i> by: DeveloperMDCM</a>
+        </div>
+      </div>
     </div>
     </form>
-    <form class="formulariodescargaaudio" action="">
+    <form class="formulariodescargaaudio ocultarframe" action="">
     <div class="containerall">
     <select class="selectcalidadesaudio ocultarframeaudio" required>
       <option selected disabled>Calidad del Audio / Quality Audio</option>
       <option value="flac">Audio FLAC UHQ</option>
       <option value="wav">Audio WAV UHQ</option>
+      <option value="webm">Audio WEBM UHQ</option>
       <option value="mp3">Audio MP3 Default</option>
       <option value="m4a">Audio M4A</option>
       <option value="aac">Audio AAC</option>
       <option value="opus">Audio OPUS</option>
       <option value="ogg">Audio OGG</option>
       </select>
-      <iframe id="descargandomp3"  style="z-index: 99; border: none; height: 27.4px; width: 50%;"  class="containerall ocultarframeaudio" src="" frameborder="0"></iframe>
-
-      </iframe>
-
+      <div id="descargandomp3" class="download-container ocultarframeaudio">
+        <button class="progress-retry-btn" title="Retry" style="display: none;">
+        <i class="fa-solid fa-rotate-right"></i>
+        </button>
+        <div class="download-info">
+          <span class="download-text">Download Audio And Please Wait...</span>
+          <span class="download-quality"></span>
+        </div>
+        <div class="download-actions">
+          <button class="download-btn audio-btn">Download</button>
+          <button class="retry-btn" style="display: none;">Retry</button>
+        </div>
+        <div class="progress-container" style="display: none;">
+          <div class="progress-bar">
+            <div class="progress-fill"></div>
+          </div>
+          <span class="progress-text">0%</span>
+        </div>
+         <div class="download-footer">
+          <a href="https://github.com/DeveloperMDCM/" target="_blank"><i class="fa-brands fa-github"></i> by: DeveloperMDCM</a>
+        </div>
+      </div>
     </div>
     </form>
       </main>
@@ -2031,9 +2352,9 @@
   </div>
   <div class="actions-mdcm">
     <div class="developer-mdcm">
-      Developed by <a href="https://github.com/DeveloperMDCM" target="_blank">DeveloperMDCM</a>
+      Developed by <a href="https://github.com/DeveloperMDCM" target="_blank"> <i class="fa-brands fa-github"></i> DeveloperMDCM</a>
     </div>
-    <span style="color: #fff" ;>v2.3.4.2</span>
+    <span style="color: #fff" ;>v2.4</span>
   </div>
   `;
   const panelHTML = policy
@@ -2267,6 +2588,44 @@
     applySettings();
   });
 
+   // Initialize header buttons once
+  function initializeHeaderButtons() {
+    const shareBtn = $id('shareBtn-mdcm');
+    const importExportBtn = $id('importExportBtn');
+    const closeImportExportBtn = $id('closeImportExportBtn');
+    
+    if (shareBtn && !shareBtn.dataset.initialized) {
+      shareBtn.dataset.initialized = 'true';
+      shareBtn.addEventListener('click', function(event) {
+        event.stopPropagation(); 
+        const dropdown = $id('shareDropdown');
+        if (dropdown) {
+          dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+      });
+    }
+    
+    if (importExportBtn && !importExportBtn.dataset.initialized) {
+      importExportBtn.dataset.initialized = 'true';
+      importExportBtn.addEventListener('click', function() {
+        const importExportArea = $id('importExportArea');
+        if (importExportArea) {
+          importExportArea.classList.toggle('active');
+        }
+      });
+    }
+    
+    if (closeImportExportBtn && !closeImportExportBtn.dataset.initialized) {
+      closeImportExportBtn.dataset.initialized = 'true';
+      closeImportExportBtn.addEventListener('click', function() {
+        const importExportArea = $id('importExportArea');
+        if (importExportArea) {
+          importExportArea.classList.remove('active');
+        }
+      });
+    }
+  }
+
   // Function to apply settings
   function applySettings() {
     const formulariodescarga = $e('.formulariodescarga');
@@ -2318,28 +2677,8 @@
     renderizarButtons();
    
   
-    $id('shareBtn-mdcm').addEventListener('click', function(event) {
-      event.stopPropagation(); 
-      const dropdown = $id('shareDropdown');
-      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-    });
-    
-    document.addEventListener('click', function(event) {
-      event.stopPropagation();
-      const dropdown = $id('shareDropdown');
-      const shareButton = $id('shareBtn-mdcm');
-      if (event.target !== shareButton) {
-          dropdown.style.display = 'none';
-      }
-    });
-
-    $id('importExportBtn').addEventListener('click', function() {
-      $id('importExportArea').classList.toggle('active');
-    });
-
-    $id('closeImportExportBtn').addEventListener('click', function() {
-        $id('importExportArea').classList.remove('active');
-    });
+        // Initialize header buttons
+    initializeHeaderButtons();
 
    
   
@@ -2679,28 +3018,27 @@
 
     checkDarkMode();
 
-    function checkForVideo() {
-      if(!settings.waveVisualizer) {
-        cleanup(false);
-        return;
-      }
-      const video = $e('video');
-      const miniPlayer = $e('.ytp-miniplayer-ui');
-      if ((video && document.location.href.includes('watch')) || miniPlayer) {
-          if (isFullscreen()) {
-              hideCanvas();
-              return;
-          }
-          if (video === currentVideo && isSetup) {
-              if (controlPanel && video.paused === false) {
-                  showCanvas();
-              }
-          } else {
-              cleanup(true)
-              setupAudioAnalyzer(video);
-          }
-      }
+   function checkForVideo() {
+  if (!settings.waveVisualizer) {
+    cleanup(true); // Limpieza completa
+    return;
   }
+  const video = $e('video');
+  const miniPlayer = $e('.ytp-miniplayer-ui');
+  if ((video && document.location.href.includes('watch')) || miniPlayer) {
+    if (isFullscreen()) {
+      hideCanvas();
+      return;
+    }
+    // Solo si el video cambió o no está configurado
+    if (video !== currentVideo || !isSetup) {
+      cleanup(true); // Limpieza completa antes de crear uno nuevo
+      setupAudioAnalyzer(video);
+    } else if (controlPanel && video.paused === false) {
+      showCanvas();
+    }
+  }
+}
 
   // checkForVideo();
    
@@ -2730,7 +3068,7 @@
     
       const buttomHTML = `
         <div id="button_copy_description" style="display: flex; justify-content: end; align-items: center;margin-top: 10px;" >
-          <button id="copy-description" class="botones_div" type="button" style="cursor: pointer;">
+          <button id="copy-description" title="Copy description" class="botones_div" type="button" style="cursor: pointer;">
             <i style="font-size: 20px;" class="fa-solid fa-copy"></i>     
           </button>
         </div>
@@ -2757,7 +3095,7 @@
           } catch (e) {
             Notify('error', 'Error parsing JSON-LD');
           } finally {
-            Notify('success', 'Descripción copiada');
+            Notify('success', 'Description copied');
           }
         }
       });
@@ -3039,60 +3377,45 @@
     }
     
 
-    function cleanup(fullCleanup = false) {
+   function cleanup(fullCleanup = false) {
       if (fullCleanup && animationId) { 
-          cancelAnimationFrame(animationId);
-          animationId = null;
+        cancelAnimationFrame(animationId);
+        animationId = null;
       }
-      
-      // Remueve los event listeners que afectan la UI
       if (currentVideo) {
-          currentVideo.removeEventListener('play', showCanvas);
-          currentVideo.removeEventListener('pause', hideCanvas);
-          currentVideo.removeEventListener('ended', hideCanvas);
+        currentVideo.removeEventListener('play', showCanvas);
+        currentVideo.removeEventListener('pause', hideCanvas);
+        currentVideo.removeEventListener('ended', hideCanvas);
       }
-      
       if (fullCleanup) {
-          // Remueve  UI and disconnect from video
-          if (canvas && canvas.parentNode) {
-              canvas.parentNode.removeChild(canvas);
-              canvas = null;
-              ctx = null;
-          }
-          if (controlPanel && controlPanel.parentNode) {
-              controlPanel.parentNode.removeChild(controlPanel);
-              controlPanel = null;
-          }
-          if (source) {
-              try {
-                  source.disconnect();
-              } catch (err) {
-                  console.error("Error desconectando el source:", err);
-              }
-              source = null;
-          }
-          if (audioCtx) {
-              try {
-                  audioCtx.close();
-              } catch (err) {
-                  console.error("Error cerrando AudioContext:", err);
-              }
-              audioCtx = null;
-          }
-          if (currentVideo && currentVideo[PROCESSED_FLAG]) {
-              delete currentVideo[PROCESSED_FLAG];
-          }
-          currentVideo = null;
-          isSetup = false;
+        if (canvas && canvas.parentNode) {
+          canvas.parentNode.removeChild(canvas);
+          canvas = null;
+          ctx = null;
+        }
+        if (controlPanel && controlPanel.parentNode) {
+          controlPanel.parentNode.removeChild(controlPanel);
+          controlPanel = null;
+        }
+        if (source) {
+          try { source.disconnect(); } catch (err) {}
+          source = null;
+        }
+        if (audioCtx) {
+          try { audioCtx.close(); } catch (err) {}
+          audioCtx = null;
+        }
+        if (currentVideo && currentVideo[PROCESSED_FLAG]) {
+          delete currentVideo[PROCESSED_FLAG];
+        }
+        currentVideo = null;
+        isSetup = false;
       } else {
-          if (canvas) {
-              canvas.style.opacity = '0';
-          }
-          if (controlPanel) {
-              controlPanel.style.opacity = '0';
-          }
+        if (canvas) canvas.style.opacity = '0';
+        if (controlPanel) controlPanel.style.opacity = '0';
       }
   }
+
   
 
     function createCanvasOverlay() {
@@ -3147,59 +3470,58 @@
 
     // setting Audio y Analyser
     function setupAudioAnalyzer(video) {
-        if (video[PROCESSED_FLAG]) {
-            Notify('error', "This video already has a MediaElementSource, skipping setup");
-            return;
-        }
-        video[PROCESSED_FLAG] = true;
-        cleanup(false);
-        currentVideo = video;
-        createCanvasOverlay();
-        createControlPanelWave();
-    
-        
+      if (!video || video[PROCESSED_FLAG]) return;
+      video[PROCESSED_FLAG] = true;
+      cleanup(false);
+      currentVideo = video;
+      createCanvasOverlay();
+      createControlPanelWave();
       
-        if (!audioCtx) {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            audioCtx = new AudioContext();
-        }
-        
-        analyser = audioCtx.createAnalyser();
-        analyser.fftSize = 2048;
-        analyser.smoothingTimeConstant = 0.85;
-        bufferLength = analyser.fftSize;
-        dataArray = new Uint8Array(bufferLength);
-        smoothedData = new Array(bufferLength).fill(128);
-        try {
-            source = audioCtx.createMediaElementSource(video);
-            source.connect(analyser);
-            analyser.connect(audioCtx.destination);
-        } catch (e) {
-            Notify('error', "MediaElementSource or error:", e);
-            cleanup(true);
-            return setupAudioAnalyzer(video); // clean full
-        }
-        video.removeEventListener('play', showCanvas);
-        video.removeEventListener('pause', hideCanvas);
-        video.removeEventListener('ended', hideCanvas);
-
-        video.addEventListener('play', showCanvas);
-        video.addEventListener('pause', hideCanvas);
-        video.addEventListener('ended', hideCanvas);
-      
-        const updateCanvasSize = () => {
-            if (canvas) {
-                canvas.width = window.innerWidth;
-                canvas.height = canvasHeight;
-            }
-        };
-
-        window.removeEventListener('resize', updateCanvasSize);
-        window.addEventListener('resize', updateCanvasSize);
-      
-        draw();
-        isSetup = true;
+      if (audioCtx) {
+        try { audioCtx.close(); } catch (e) {}
+        audioCtx = null;
       }
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AudioContext();
+
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 2048;
+      analyser.smoothingTimeConstant = 0.85;
+      bufferLength = analyser.fftSize;
+      dataArray = new Uint8Array(bufferLength);
+      smoothedData = new Array(bufferLength).fill(128);
+
+      try {
+        source = audioCtx.createMediaElementSource(video);
+        source.connect(analyser);
+        analyser.connect(audioCtx.destination);
+      } catch (e) {
+        Notify('error', "MediaElementSource or error:", e);
+        cleanup(true);
+        return;
+      }
+
+      video.removeEventListener('play', showCanvas);
+      video.removeEventListener('pause', hideCanvas);
+      video.removeEventListener('ended', hideCanvas);
+
+      video.addEventListener('play', showCanvas);
+      video.addEventListener('pause', hideCanvas);
+      video.addEventListener('ended', hideCanvas);
+
+      const updateCanvasSize = () => {
+        if (canvas) {
+          canvas.width = window.innerWidth;
+          canvas.height = canvasHeight;
+        }
+      };
+
+      window.removeEventListener('resize', updateCanvasSize);
+      window.addEventListener('resize', updateCanvasSize);
+
+      draw();
+      isSetup = true;
+    }
       function draw() {
           animationId = requestAnimationFrame(draw);
           
@@ -3400,52 +3722,216 @@
 
     const formulariodescarga      = $e('.formulariodescarga');
     const formulariodescargaaudio = $e('.formulariodescargaaudio');
-    const framedescarga         = $e('#descargando');
-    const framedescargamp3      = $e('#descargandomp3');
     const btn1mp4               = $e('.btn1');
     const btn2mp3               = $e('.btn2');
     const btn3cancel            = $e('.btn3');
     const selectcalidades       = $e('.selectcalidades');
     const selectcalidadesaudio  = $e('.selectcalidadesaudio');
-    
-
+   
     [formulariodescarga, formulariodescargaaudio].forEach(form =>
       form?.addEventListener('click', e => e.preventDefault())
     );
     
     selectcalidades?.addEventListener('change', e => {
-      framedescarga.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=0af`;
-      framedescarga.classList.remove('ocultarframe');
+      const quality = e.target.value;
+      if (!quality) return; // Don't proceed if no quality selected
+      
+      const downloadContainer = $id('descargando');
+      const downloadText = downloadContainer.querySelector('.download-text');
+      const downloadQuality = downloadContainer.querySelector('.download-quality');
+      const downloadBtn = downloadContainer.querySelector('.download-btn');
+      const retryBtn = downloadContainer.querySelector('.retry-btn');
+      const progressContainer = downloadContainer.querySelector('.progress-container');
+      
+      // Update UI
+      downloadContainer.classList.add('video');
+      downloadContainer.classList.remove('ocultarframe');
+      downloadText.textContent = `Download ${quality.toUpperCase()} And Please Wait...`;
+      downloadQuality.textContent = `${quality}p`;
+      
+      // Show download button, hide progress
+      downloadBtn.style.display = 'block';
+      retryBtn.style.display = 'none';
+      progressContainer.style.display = 'none';
+      
+      // Store quality for later use
+      downloadContainer.dataset.quality = quality;
+      downloadContainer.dataset.type = 'video';
     });
     
     selectcalidadesaudio?.addEventListener('change', e => {
-      framedescargamp3.src = `https://loader.to/api/button/?url=${window.location.href}&f=${e.target.value}&color=049c16`;
-      framedescargamp3.classList.remove('ocultarframeaudio');
+      const format = e.target.value;
+      if (!format) return; // Don't proceed if no format selected
+      
+      const downloadContainer = $id('descargandomp3');
+      const downloadText = downloadContainer.querySelector('.download-text');
+      const downloadQuality = downloadContainer.querySelector('.download-quality');
+      const downloadBtn = downloadContainer.querySelector('.download-btn');
+      const retryBtn = downloadContainer.querySelector('.retry-btn');
+      const progressContainer = downloadContainer.querySelector('.progress-container');
+      
+      // Update UI
+      downloadContainer.classList.add('audio');
+      downloadContainer.classList.remove('ocultarframeaudio');
+      downloadText.textContent = `Download ${format.toUpperCase()} And Please Wait...`;
+      downloadQuality.textContent = format.toUpperCase();
+      
+      // Show download button, hide progress
+      downloadBtn.style.display = 'block';
+      retryBtn.style.display = 'none';
+      progressContainer.style.display = 'none';
+      
+      // Store format for later use
+      downloadContainer.dataset.quality = format;
+      downloadContainer.dataset.type = 'audio';
     });
     
     btn3cancel?.addEventListener('click', () => {
-      formulariodescarga.style.display = 'none';
-      formulariodescargaaudio.style.display = 'none';
+      // Hide all selects
+      selectcalidades?.classList.add('ocultarframe');
+      selectcalidadesaudio?.classList.add('ocultarframeaudio');
+      
+      // Hide all download containers
+      const videoContainer = $id('descargando');
+      const audioContainer = $id('descargandomp3');
+      
+      if (videoContainer) {
+        videoContainer.classList.add('ocultarframe');
+        videoContainer.classList.remove('video', 'audio', 'completed');
+        videoContainer.removeAttribute('data-quality');
+        videoContainer.removeAttribute('data-type');
+        videoContainer.removeAttribute('data-downloading');
+        videoContainer.removeAttribute('data-url-opened');
+      }
+      
+      if (audioContainer) {
+        audioContainer.classList.add('ocultarframeaudio');
+        audioContainer.classList.remove('video', 'audio', 'completed');
+        audioContainer.removeAttribute('data-quality');
+        audioContainer.removeAttribute('data-type');
+        audioContainer.removeAttribute('data-downloading');
+        audioContainer.removeAttribute('data-url-opened');
+      }
+      
+      // Hide all forms
+      formulariodescarga?.classList.add('ocultarframe');
+      formulariodescargaaudio?.classList.add('ocultarframe');
+      
+      // Reset forms
+      formulariodescarga?.reset();
+      formulariodescargaaudio?.reset();
     });
+
+      // Add event listeners for download buttons
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('download-btn')) {
+      const container = e.target.closest('.download-container');
+      const quality = container.dataset.quality;
+      const type = container.dataset.type;
+      
+      if (quality && type) {
+        startDownloadVideoOrAudio(quality, container);
+      }
+    }
+    
+    if (e.target.classList.contains('retry-btn')) {
+      const container = e.target.closest('.download-container');
+      const quality = container.dataset.quality;
+      const type = container.dataset.type;
+      
+      if (quality && type) {
+        startDownloadVideoOrAudio(quality, container);
+      }
+    }
+    
+    if (e.target.classList.contains('progress-retry-btn')) {
+      const container = e.target.closest('.download-container');
+      const quality = container.dataset.quality;
+      const type = container.dataset.type;
+      
+      if (quality && type) {
+        // Clear current progress and restart
+        container.dataset.downloading = 'false';
+        container.dataset.urlOpened = 'false';
+        startDownloadVideoOrAudio(quality, container);
+      }
+    }
+  });
+
+ 
     
     btn1mp4?.addEventListener('click', () => {
+      // Show video select, hide audio select
       selectcalidades?.classList.remove('ocultarframe');
-      framedescarga?.classList.add('ocultarframe');
+      selectcalidadesaudio?.classList.add('ocultarframeaudio');
+      
+      // Hide all download containers
+      const videoContainer = $id('descargando');
+      const audioContainer = $id('descargandomp3');
+      
+      if (videoContainer) {
+        videoContainer.classList.add('ocultarframe');
+        videoContainer.classList.remove('video', 'audio', 'completed');
+        videoContainer.removeAttribute('data-quality');
+        videoContainer.removeAttribute('data-type');
+        videoContainer.removeAttribute('data-downloading');
+        videoContainer.removeAttribute('data-url-opened');
+      }
+      
+      if (audioContainer) {
+        audioContainer.classList.add('ocultarframeaudio');
+        audioContainer.classList.remove('video', 'audio', 'completed');
+        audioContainer.removeAttribute('data-quality');
+        audioContainer.removeAttribute('data-type');
+        audioContainer.removeAttribute('data-downloading');
+        audioContainer.removeAttribute('data-url-opened');
+      }
+      
+      // Show video form
       formulariodescarga?.classList.remove('ocultarframe');
       formulariodescarga.style.display = '';
-      selectcalidadesaudio?.classList.add('ocultarframeaudio');
       formulariodescargaaudio?.classList.add('ocultarframe');
+      
+      // Reset forms
       formulariodescarga?.reset();
+      formulariodescargaaudio?.reset();
     });
     
     btn2mp3?.addEventListener('click', () => {
-      formulariodescargaaudio?.classList.remove('ocultarframe');
-      formulariodescarga?.classList.add('ocultarframe');
-      framedescargamp3?.classList.remove('ocultarframeaudio');
-      formulariodescargaaudio.style.display = '';
+      // Show audio select, hide video select
       selectcalidadesaudio?.classList.remove('ocultarframeaudio');
-      framedescargamp3?.classList.add('ocultarframeaudio');
+      selectcalidades?.classList.add('ocultarframe');
+      
+      // Hide all download containers
+      const videoContainer = $id('descargando');
+      const audioContainer = $id('descargandomp3');
+      
+      if (videoContainer) {
+        videoContainer.classList.add('ocultarframe');
+        videoContainer.classList.remove('video', 'audio', 'completed');
+        videoContainer.removeAttribute('data-quality');
+        videoContainer.removeAttribute('data-type');
+        videoContainer.removeAttribute('data-downloading');
+        videoContainer.removeAttribute('data-url-opened');
+      }
+      
+      if (audioContainer) {
+        audioContainer.classList.add('ocultarframeaudio');
+        audioContainer.classList.remove('video', 'audio', 'completed');
+        audioContainer.removeAttribute('data-quality');
+        audioContainer.removeAttribute('data-type');
+        audioContainer.removeAttribute('data-downloading');
+        audioContainer.removeAttribute('data-url-opened');
+      }
+      
+      // Show audio form
+      formulariodescargaaudio?.classList.remove('ocultarframe');
+      formulariodescargaaudio.style.display = '';
+      formulariodescarga?.classList.add('ocultarframe');
+      
+      // Reset forms
       formulariodescargaaudio?.reset();
+      formulariodescarga?.reset();
     });
       // Invertir contenido
 
@@ -3778,7 +4264,7 @@
 
   console.log(
     '%cYoutube Tools Extension NEW UI\n' +
-      '%cRun %c(v2.3.4.2)\n' +
+      '%cRun %c(v2.4)\n' +
       'By: DeveloperMDCM.',
     HEADER_STYLE,
     CODE_STYLE,
@@ -3889,11 +4375,21 @@
     }
   });
 
-  checkElement('ytd-topbar-menu-button-renderer', loadSettings);
+  checkElement('ytd-topbar-menu-button-renderer', () => {
+    loadSettings();
+    initializeHeaderButtons();
+  });
   // validate change url SPA youtube
   document.addEventListener('yt-navigate-finish', () => {
     if (!document.location.href.includes('watch')) {    
       hideCanvas();
     }
     });
+    GM_registerMenuCommand('Update Script by: DeveloperMDCM', function() {
+      window.open('https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js', '_blank');
+    });
+
+    // apis for download
+    // https://video-download-api.com
+    // 4kdownload
 })();
