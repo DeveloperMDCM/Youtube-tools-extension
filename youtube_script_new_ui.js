@@ -110,7 +110,7 @@
   let selectedTextColor = "#ffffff"; // Text color menu default
   let selectedBgAccentColor = "#ff0000"; // Accent color menu default
   const urlSharedCode = "https://greasyfork.org/es/scripts/460680-youtube-tools-all-in-one-local-download-mp3-mp4-higt-quality-return-dislikes-and-more";
-  const API_URL_AUDIO_VIDEO = "https://p.oceansaver.in/ajax/download.php?copyright=0&allow_extended_duration=1" // API URL AUDIO VIDEO
+  const API_URL_AUDIO_VIDEO = "https://p.oceansaver.in/ajax/download.php?copyright=0&allow_extended_duration=1&" // API URL AUDIO VIDEO
   const API_KEY_DEVELOPERMDCM = 'dfcb6d76f2f6a9894gjkege8a4ab232222';  // API KEY FOR DOWNLOAD AUDIO VIDEO
 
   // for translate comments video
