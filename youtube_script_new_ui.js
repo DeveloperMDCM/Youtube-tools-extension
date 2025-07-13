@@ -70,7 +70,7 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.4
+// @version      2.4.1
 // @author       DeveloperMDCM
 // @match        *://www.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -110,14 +110,8 @@
   let selectedTextColor = "#ffffff"; // Text color menu default
   let selectedBgAccentColor = "#ff0000"; // Accent color menu default
   const urlSharedCode = "https://greasyfork.org/es/scripts/460680-youtube-tools-all-in-one-local-download-mp3-mp4-higt-quality-return-dislikes-and-more";
-  const API_URL_AUDIO_VIDEO = "https://p.oceansaver.in/ajax/download.php?copyright=0&" // API URL AUDIO VIDEO
+  const API_URL_AUDIO_VIDEO = "https://p.oceansaver.in/ajax/download.php?copyright=0&allow_extended_duration=1" // API URL AUDIO VIDEO
   const API_KEY_DEVELOPERMDCM = 'dfcb6d76f2f6a9894gjkege8a4ab232222';  // API KEY FOR DOWNLOAD AUDIO VIDEO
-  
-  function isFullscreen() {
-    return document.fullscreenElement !== null;
-  }
-
-
 
   // for translate comments video
   const languagesTranslate = {
@@ -226,6 +220,28 @@
     "yo": "Yoruba",
     "zu": "Zulu"
   }
+
+
+   // var for wave
+  let currentVideo = null;
+  
+  let waveStyle = 'dinamica';
+  let audioCtx = null;
+  let analyser = null;
+  let source = null;
+  let animationId = null;
+  let canvas = null;
+  let ctx = null;
+  let controlPanel = null;
+  let bufferLength = 0;
+  let dataArray = null;
+  let smoothedData = [];
+  let isSetup = false;
+  const smoothingFactor = 0.05;
+  const canvasHeight = 240;
+  const scale = canvasHeight / 90;
+  
+  const PROCESSED_FLAG = 'wave_visualizer_processed';
   
   function hideCanvas() {
    
@@ -238,6 +254,16 @@
     }
   }
 
+    function showCanvas() {    
+    const canvas = $id('wave-visualizer-canvas');
+    if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    } 
+    if (canvas) {
+        canvas.style.opacity = '1';
+        if (controlPanel) controlPanel.style.opacity = '1';
+    }
+}
 
 
   function Notify(type = 'info', message = '', title = '') {
@@ -2354,7 +2380,7 @@
     <div class="developer-mdcm">
       Developed by <a href="https://github.com/DeveloperMDCM" target="_blank"> <i class="fa-brands fa-github"></i> DeveloperMDCM</a>
     </div>
-    <span style="color: #fff" ;>v2.4</span>
+    <span style="color: #fff" ;>v2.4.1</span>
   </div>
   `;
   const panelHTML = policy
@@ -3007,40 +3033,32 @@
         #icon-menu-settings {
          color: ${settings.iconsColorPicker} !important;
         }
-        .ytp-chrome-bottom {
-          width: ${settings.hideSidebar ? '100%' : ''} !important;
-          ${settings.hideSidebar ? 'left: 0;' : ''}
-        }
-          .ytp-progress-bar-container {
-            left: ${settings.hideSidebar ? '4px' : ''} !important;
-          }
+       
+         
       `);
 
     checkDarkMode();
-
    function checkForVideo() {
-  if (!settings.waveVisualizer) {
-    cleanup(true); // Limpieza completa
-    return;
-  }
-  const video = $e('video');
-  const miniPlayer = $e('.ytp-miniplayer-ui');
-  if ((video && document.location.href.includes('watch')) || miniPlayer) {
-    if (isFullscreen()) {
-      hideCanvas();
+    if (!settings.waveVisualizer) {
+      cleanup(true); // Limpieza completa
       return;
-    }
-    // Solo si el video cambió o no está configurado
-    if (video !== currentVideo || !isSetup) {
-      cleanup(true); // Limpieza completa antes de crear uno nuevo
-      setupAudioAnalyzer(video);
-    } else if (controlPanel && video.paused === false) {
-      showCanvas();
+    } 
+    const video = $e('video');
+    const miniPlayer = $e('.ytp-miniplayer-ui');
+    if ((video && document.location.href.includes('watch')) || miniPlayer) {
+    
+      // Solo si el video cambió o no está configurado
+      if (video !== currentVideo || !isSetup) {
+        cleanup(true); // Limpieza completa antes de crear uno nuevo
+        setupAudioAnalyzer(video);
+      } else if (controlPanel && video.paused === false) {
+        showCanvas();
+      }
     }
   }
-}
+  
 
-  // checkForVideo();
+  checkForVideo();
    
     let currentUrl = window.location.href;
     let urlCheckInterval = setInterval(function () {
@@ -3457,16 +3475,7 @@
   }
 
 
-  function showCanvas() {    
-    const canvas = $id('wave-visualizer-canvas');
-    if (audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-    } 
-    if (canvas) {
-        canvas.style.opacity = '1';
-        if (controlPanel) controlPanel.style.opacity = '1';
-    }
-}
+
 
     // setting Audio y Analyser
     function setupAudioAnalyzer(video) {
@@ -3662,6 +3671,7 @@
         checkForVideo();
  
   setInterval(() => {
+        
         const now = Date.now();
         // checkForVideo();
         const delta = (now - lastUpdate) / 1000;
@@ -4264,7 +4274,7 @@
 
   console.log(
     '%cYoutube Tools Extension NEW UI\n' +
-      '%cRun %c(v2.4)\n' +
+      '%cRun %c(v2.4.1)\n' +
       'By: DeveloperMDCM.',
     HEADER_STYLE,
     CODE_STYLE,
@@ -4331,25 +4341,7 @@
   panel.style.display = 'none';
 
   // var for wave
-  let currentVideo = null;
-  
-  let waveStyle = 'dinamica';
-  let audioCtx = null;
-  let analyser = null;
-  let source = null;
-  let animationId = null;
-  let canvas = null;
-  let ctx = null;
-  let controlPanel = null;
-  let bufferLength = 0;
-  let dataArray = null;
-  let smoothedData = [];
-  let isSetup = false;
-  const smoothingFactor = 0.05;
-  const canvasHeight = 240;
-  const scale = canvasHeight / 90;
-  
-  const PROCESSED_FLAG = 'wave_visualizer_processed';
+
   // Load saved settings
   // Visible element DOM
   function checkElement(selector, callback) {
@@ -4380,6 +4372,15 @@
     initializeHeaderButtons();
   });
   // validate change url SPA youtube
+  
+  document.addEventListener('fullscreenchange', () => {
+    if (document.fullscreenElement !== null) {
+      hideCanvas();
+    } else {
+      showCanvas();
+    }
+  });
+
   document.addEventListener('yt-navigate-finish', () => {
     if (!document.location.href.includes('watch')) {    
       hideCanvas();
