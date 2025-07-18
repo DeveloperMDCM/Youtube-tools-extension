@@ -70,7 +70,7 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.4.2
+// @version      2.4.2.1
 // @author       DeveloperMDCM
 // @match        *://www.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -2228,12 +2228,17 @@
         </label>
         <label>
           <div class="option-mdcm">
-            <input type="checkbox" class="checkbox-mdcm" id="cinematic-lighting-toggle"> Mode cinematic
+            <input type="checkbox" class="checkbox-mdcm" id="cinematic-lighting-toggle"> Cinematic Mode
           </div>
         </label>
         <label>
           <div class="option-mdcm">
             <input type="checkbox" class="checkbox-mdcm" checked id="wave-visualizer-toggle"> Wave visualizer Beta
+          </div>
+        </label>
+        <label>
+          <div class="option-mdcm">
+            <input type="checkbox" class="checkbox-mdcm" id="sync-cinematic-toggle"> Sync Ambient Mode YT
           </div>
         </label>
         <div class="quality-selector-mdcm" style="grid-column: span 2;">
@@ -2495,7 +2500,7 @@
     <div class="developer-mdcm">
       Developed by <a href="https://github.com/DeveloperMDCM" target="_blank"> <i class="fa-brands fa-github"></i> DeveloperMDCM</a>
     </div>
-    <span style="color: #fff" ;>v2.4.2</span>
+    <span style="color: #fff" ;>v2.4.2.1</span>
   </div>
   `;
   const panelHTML = policy
@@ -2589,6 +2594,7 @@
       hideSidebar: $id('hide-sidebar-toggle').checked,
       disableAutoplay: $id('autoplay-toggle').checked,
       cinematicLighting: $id('cinematic-lighting-toggle').checked,
+      syncCinematic: $id('sync-cinematic-toggle').checked, // NUEVO SETTING
       disableSubtitles: $id('subtitles-toggle').checked,
       // fontSize: $id('font-size-slider').value,
       playerSize: $id('player-size-slider').value,
@@ -2641,6 +2647,7 @@
     $id('hide-sidebar-toggle').checked = settings.hideSidebar || false;
     $id('autoplay-toggle').checked = settings.disableAutoplay || false;
     $id('cinematic-lighting-toggle').checked = settings.cinematicLighting || false;
+    $id('sync-cinematic-toggle').checked = settings.syncCinematic || false;
     $id('subtitles-toggle').checked = settings.disableSubtitles || false;
     // $id('font-size-slider').value = settings.fontSize || 16;
     $id('player-size-slider').value = settings.playerSize || 100;
@@ -2683,14 +2690,13 @@
           showDislikes = true;
       }
 
-      // Detectar estado inicial del modo cine si estamos en una página de video
       if (window.location.href.includes('youtube.com/watch?v=')) {
         detectInitialCinematicState();
       }
     }, 500);
   }
 
-  // Función para detectar el estado inicial del modo cine
+  // Check if the video is in cinematic mode
   async function detectInitialCinematicState() {
     return new Promise((resolve) => {
       const waitForVideo = () => {
@@ -2701,8 +2707,18 @@
           setTimeout(waitForVideo, 500);
           return;
         }
+        
+        const settings = JSON.parse(GM_getValue('ytSettingsMDCM', '{}'));
+        if (!settings.syncCinematic) {
+          // apply cinematic toggle
+          const cinematicToggle = $id('cinematic-lighting-toggle');
+          if (cinematicToggle && cinematicDiv) {
+            cinematicDiv.style.display = cinematicToggle.checked ? 'block' : 'none';
+          }
+          resolve(false);
+          return;
+        }
 
-     
         const startTime = video.currentTime;
         const checkPlayback = () => {
           if (video.currentTime >= startTime + 1) {
@@ -2820,12 +2836,10 @@
       return false;
     }
 
-    // Verificar si el div tiene contenido (canvas, elementos, etc.)
     const hasContent = cinematicDiv.innerHTML.trim() !== '';
     const hasCanvas = cinematicDiv.querySelector('canvas') !== null;
     const hasChildren = cinematicDiv.children.length > 0;
-
-    // También verificar si hay elementos específicos del modo cine
+   
     const hasCinematicElements = cinematicDiv.querySelector('div[style*="position: fixed"]') !== null;
 
     return hasContent || hasCanvas || hasChildren || hasCinematicElements;
@@ -2838,10 +2852,10 @@
       return;
     }
 
-    // Click en el botón de configuración para abrir el menú
+
     settingsButton.click();
 
-    // Esperar a que el menú se abra y buscar la opción de cinematic lighting
+   
     const observer = new MutationObserver((mutations) => {
       const menuItems = $m('.ytp-menuitem');
 
@@ -2849,16 +2863,15 @@
         const text = item.textContent?.toLowerCase();
         const icon = item.querySelector('.ytp-menuitem-icon svg path');
 
-        // Buscar por texto o por el path del SVG que representa cinematic lighting
+       
         if (text && (text.includes('cinematic') || text.includes('lighting') || text.includes('cinema'))) {
           console.log('Found cinematic lighting option:', text);
           item.click();
 
-          // Cerrar el menú después de hacer click
+         
           setTimeout(() => {
             const menu = $e('.ytp-settings-menu');
             if (menu) {
-              // Simular click fuera del menú para cerrarlo
               document.body.click();
             }
           }, 100);
@@ -2867,17 +2880,15 @@
           return;
         }
 
-        // Buscar por el path del SVG (patrón común para cinematic lighting)
+        
         if (icon && (icon.getAttribute('d')?.includes('M21 7v10H3V7') ||
                     icon.getAttribute('d')?.includes('M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'))) {
           console.log('Found cinematic lighting option by SVG path');
           item.click();
-
-          // Cerrar el menú después de hacer click
+          
           setTimeout(() => {
             const menu = $e('.ytp-settings-menu');
             if (menu) {
-              // Simular click fuera del menú para cerrarlo
               document.body.click();
             }
           }, 100);
@@ -2894,13 +2905,8 @@
       attributes: true,
       attributeFilter: ['class']
     });
-
-    // Timeout para evitar que el observer se quede activo indefinidamente
     setTimeout(() => {
       observer.disconnect();
-      console.log('Cinematic lighting toggle timeout');
-
-      // Intentar cerrar el menú si aún está abierto
       const menu = $e('.ytp-settings-menu');
       if (menu) {
         document.body.click();
@@ -2938,6 +2944,7 @@
       hideSidebar: $id('hide-sidebar-toggle').checked,
       disableAutoplay: $id('autoplay-toggle').checked,
       cinematicLighting: $id('cinematic-lighting-toggle').checked,
+      syncCinematic: $id('sync-cinematic-toggle').checked, // NUEVO SETTING
       disableSubtitles: $id('subtitles-toggle').checked,
       // fontSize: $id('font-size-slider').value,
       playerSize: $id('player-size-slider').value,
@@ -3013,11 +3020,19 @@
     if (isWatchPage()) {
       setTimeout(() => {
         const isCurrentlyActive = isCinematicActive();
-     
-        if (settings.cinematicLighting && !isCurrentlyActive) {
-          toggleCinematicLighting();
-        } else if (!settings.cinematicLighting && isCurrentlyActive) {
-          toggleCinematicLighting();
+        // Si la sincronización está activa, funciona como antes
+        if (settings.syncCinematic) {
+          if (settings.cinematicLighting && !isCurrentlyActive) {
+            toggleCinematicLighting();
+          } else if (!settings.cinematicLighting && isCurrentlyActive) {
+            toggleCinematicLighting();
+          }
+        } else {
+          // Si NO está activa, solo mostrar/ocultar #cinematics
+          const cinematicDiv = $id('cinematics');
+          if (cinematicDiv) {
+            cinematicDiv.style.display = settings.cinematicLighting ? 'block' : 'none';
+          }
         }
       }, 1000);
     }
@@ -4519,7 +4534,7 @@
 
   console.log(
     '%cYoutube Tools Extension NEW UI\n' +
-      '%cRun %c(v2.4.2)\n' +
+      '%cRun %c(v2.4.2.1)\n' +
       'By: DeveloperMDCM.',
     HEADER_STYLE,
     CODE_STYLE,
@@ -4617,10 +4632,52 @@
   if (checkCinematicLighting) {
     checkCinematicLighting.addEventListener('change', () => {
       const cinematicToggle = $e('#cinematic-lighting-toggle');
+      const syncToggle = $e('#sync-cinematic-toggle');
+      const cinematicDiv = $id('cinematics');
+      
       if (cinematicToggle.checked) {
         Notify('success', 'Cinematic mode enabled');
       } else {
         Notify('success', 'Cinematic mode disabled');
+      }
+      
+      // Aplicar el comportamiento según el estado de sincronización
+      if (syncToggle.checked) {
+        // Si hay sincronización, usar toggleCinematicLighting
+        setTimeout(() => {
+          toggleCinematicLighting();
+        }, 300);
+      } else {
+        // Si no hay sincronización, aplicar display inmediatamente
+        if (cinematicDiv) {
+          cinematicDiv.style.display = cinematicToggle.checked ? 'block' : 'none';
+        }
+      }
+    });
+  }
+
+  // Sync cinematic toggle event listener
+  const checkSyncCinematic = $id('sync-cinematic-toggle');
+  if (checkSyncCinematic) {
+    checkSyncCinematic.addEventListener('change', () => {
+      const syncToggle = $e('#sync-cinematic-toggle');
+      const cinematicToggle = $e('#cinematic-lighting-toggle');
+      const cinematicDiv = $id('cinematics');
+      
+      if (syncToggle.checked) {
+        Notify('success', 'Sync with YouTube enabled');
+        // Si se activa la sincronización y el modo cinematic está activado, sincronizar con YouTube
+        if (cinematicToggle.checked) {
+          setTimeout(() => {
+            toggleCinematicLighting();
+          }, 500);
+        }
+      } else {
+        Notify('success', 'Sync with YouTube disabled');
+        // Si se desactiva la sincronización, aplicar inmediatamente el estado del toggle
+        if (cinematicDiv) {
+          cinematicDiv.style.display = cinematicToggle.checked ? 'block' : 'none';
+        }
       }
     });
   }
