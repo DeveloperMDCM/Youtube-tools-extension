@@ -18,6 +18,7 @@
 - Copy description video.
 - Stats video playback.
 - Hide comments.
+- Mode Cinematic.
 - Hide sidebar.
 - Disable autoplay.
 - Disable subtitles.
