@@ -93,6 +93,7 @@
 // @updateURL https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.meta.js
 // @license MIT
 // @namespace https://github.com/DeveloperMDCM/
+// @keywords youtube, tools, download, mp3, mp4, hi-quality, return, dislikes, audio free, download mp3, download mp4, audio mp3, audio mp4, audio download, audio, free download, free audio, download audio, download free, hi quality, high quality, best quality, best audio quality, best free audio quality, best free quality, best audio free quality, best audio free, best free audio, best free
 // ==/UserScript==
 
 (function () {
@@ -110,8 +111,16 @@
   let selectedTextColor = "#ffffff"; // Text color menu default
   let selectedBgAccentColor = "#ff0000"; // Accent color menu default
   const urlSharedCode = "https://greasyfork.org/es/scripts/460680-youtube-tools-all-in-one-local-download-mp3-mp4-higt-quality-return-dislikes-and-more";
-  const API_URL_AUDIO_VIDEO = "https://p.oceansaver.in/ajax/download.php?copyright=0&allow_extended_duration=1&" // API URL AUDIO VIDEO
+  const API_URL_AUDIO_VIDEO = "https://p.savenow.to/ajax/download.php?copyright=0&allow_extended_duration=1&" // API URL AUDIO VIDEO
   const API_KEY_DEVELOPERMDCM = 'dfcb6d76f2f6a9894gjkege8a4ab232222';  // API KEY FOR DOWNLOAD AUDIO VIDEO
+  // Download API fallbacks (region/session issues)
+  const DOWNLOAD_API_FALLBACK_BASES = [
+    "https://p.savenow.to",
+    "https://p.lbserver.xyz",
+  ];
+  // Alternative provider fallback
+  const DUBS_START_ENDPOINT = "https://dubs.io/wp-json/tools/v1/download-video";
+  const DUBS_STATUS_ENDPOINT = "https://dubs.io/wp-json/tools/v1/status-video";
 
   // for translate comments video
   const languagesTranslate = {
@@ -243,6 +252,78 @@
 
   const PROCESSED_FLAG = 'wave_visualizer_processed';
 
+  // ------------------------------
+  // PERF: runtime guards + dynamic style (avoid style/event/interval leaks)
+  // ------------------------------
+  const __ytToolsRuntime = {
+    dynamicStyleEl: null,
+    dynamicCssLast: '',
+    settingsLoaded: false,
+    bookmarkClickHandlerInitialized: false,
+    bookmarksPanelOpen: false,
+    continueWatching: {
+      enabled: false,
+      map: null,
+      flushT: null,
+      boundVideo: null,
+      boundVideoId: null,
+      lastSaveAt: 0,
+      lastSavedTime: -1,
+      lastKnownVideoId: null,
+      navHandlerInitialized: false,
+      panelOpen: false,
+      clickHandlerInitialized: false,
+      pagehideHandlerInitialized: false,
+      handlers: null,
+    },
+    shortsChannelName: {
+      enabled: false,
+      observer: null,
+      io: null,
+      scanT: null,
+      cache: new Map(),        // videoId -> channelName
+      inflight: new Map(),     // videoId -> Promise<string>
+      fetchChain: Promise.resolve(),
+    },
+    dislikesCache: {
+      videoId: null,
+      dislikes: null,
+      ts: 0,
+    },
+    downloadClickHandlerInitialized: false,
+    shortsObserver: null,
+    statsObserver: null,
+    statsIntervalId: null,
+  };
+
+  function setDynamicCss(cssText = '') {
+    if (!__ytToolsRuntime.dynamicStyleEl) {
+      const style = document.createElement('style');
+      style.id = 'yt-tools-mdcm-dynamic-style';
+      document.head.appendChild(style);
+      __ytToolsRuntime.dynamicStyleEl = style;
+    }
+    if (__ytToolsRuntime.dynamicCssLast === cssText) return;
+    __ytToolsRuntime.dynamicCssLast = cssText;
+    __ytToolsRuntime.dynamicStyleEl.textContent = cssText;
+  }
+
+  const scheduleApplySettings = (() => {
+    let t = null;
+    return () => {
+      // Prevent overwriting saved config with defaults before loadSettings finishes.
+      if (!__ytToolsRuntime.settingsLoaded) return;
+      clearTimeout(t);
+      t = setTimeout(() => {
+        try {
+          applySettings();
+        } catch (err) {
+          console.error('applySettings error:', err);
+        }
+      }, 120);
+    };
+  })();
+
   function hideCanvas() {
 
     const canvas = $id('wave-visualizer-canvas');
@@ -290,10 +371,19 @@
       return;
     }
 
+    // Stop any previous poller (avoid leaks on retry)
+    try {
+      if (container.__ytDownloadPoll) {
+        clearInterval(container.__ytDownloadPoll);
+        container.__ytDownloadPoll = null;
+      }
+    } catch (e) {}
+
     // Get UI elements from the container
     const downloadBtn = container.querySelector('.download-btn');
     const retryBtn = container.querySelector('.retry-btn');
     const progressRetryBtn = container.querySelector('.progress-retry-btn');
+    const downloadAgainBtn = container.querySelector('.download-again-btn');
     const progressContainer = container.querySelector('.progress-container');
     const progressFill = container.querySelector('.progress-fill');
     const progressText = container.querySelector('.progress-text');
@@ -302,83 +392,163 @@
     // Set downloading flag
     container.dataset.downloading = 'true';
     container.dataset.urlOpened = 'false';
+    container.dataset.lastDownloadUrl = '';
 
     // Update UI to show progress
     downloadBtn.style.display = 'none';
     retryBtn.style.display = 'none';
     progressRetryBtn.style.display = 'block';
+    if (downloadAgainBtn) downloadAgainBtn.style.display = 'none';
     progressContainer.style.display = 'flex';
     progressFill.style.width = '0%';
     progressText.textContent = '0%';
 
-    try {
-        const response = await fetch(`${API_URL_AUDIO_VIDEO}format=${format}&url=${encodeURIComponent(videoURL)}&api=${API_KEY_DEVELOPERMDCM}`);
-        const data = await response.json();
+    const fetchJsonWithTimeout = async (url, timeoutMs = 20000) => {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), timeoutMs);
+      try {
+        const res = await fetch(url, { signal: ctrl.signal });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return await res.json();
+      } finally {
+        clearTimeout(t);
+      }
+    };
 
-        if (!data.success) {
-            // Notify('error', 'Error starting download. Try again');
-            // Show retry button
-            retryBtn.style.display = 'block';
-            progressContainer.style.display = 'none';
-            progressRetryBtn.style.display = 'none';
-            // Clear downloading flag
-            container.dataset.downloading = 'false';
-            container.dataset.urlOpened = 'false';
-            return;
+    const setErrorState = () => {
+      retryBtn.style.display = 'block';
+      progressContainer.style.display = 'none';
+      progressRetryBtn.style.display = 'none';
+      if (downloadAgainBtn) downloadAgainBtn.style.display = 'none';
+      container.dataset.downloading = 'false';
+      container.dataset.urlOpened = 'false';
+      container.dataset.lastDownloadUrl = '';
+    };
+
+    const markCompleteAndOpen = (downloadUrl) => {
+      if (!downloadUrl) {
+        setErrorState();
+        return;
+      }
+      // Save for the \"download again\" button
+      container.dataset.lastDownloadUrl = String(downloadUrl);
+      // Check if URL was already opened
+      if (container.dataset.urlOpened === 'true') return;
+      // Mark URL as opened
+      container.dataset.urlOpened = 'true';
+      // Update UI to show completion
+      container.classList.add('completed');
+      container.classList.remove('video', 'audio');
+      downloadText.textContent = 'Download Complete!';
+      progressFill.style.width = '100%';
+      progressText.textContent = '100%';
+      progressRetryBtn.style.display = 'none';
+      if (downloadAgainBtn) downloadAgainBtn.style.display = 'flex';
+      container.dataset.downloading = 'false';
+      try {
+        window.open(downloadUrl);
+      } catch (e) {
+        console.warn('Could not open download URL:', e);
+      }
+    };
+
+    const pollProgressUrl = (progressURL) => {
+      container.__ytDownloadPoll = setInterval(async () => {
+        try {
+          const progressData = await fetchJsonWithTimeout(progressURL, 15000);
+
+          const progress = Math.min((Number(progressData.progress) || 0) / 10, 100);
+          progressFill.style.width = `${progress}%`;
+          progressText.textContent = `${Math.round(progress)}%`;
+
+          if (Number(progressData.progress) >= 1000 && progressData.download_url) {
+            clearInterval(container.__ytDownloadPoll);
+            container.__ytDownloadPoll = null;
+            markCompleteAndOpen(progressData.download_url);
+          }
+        } catch (e) {
+          console.error('Error in progress:', e);
+          clearInterval(container.__ytDownloadPoll);
+          container.__ytDownloadPoll = null;
+          setErrorState();
+        }
+      }, 3000);
+    };
+
+    const trySaveNowProvider = async (baseUrl) => {
+      const url = new URL('/ajax/download.php', baseUrl);
+      url.searchParams.set('copyright', '0');
+      url.searchParams.set('allow_extended_duration', '1');
+      url.searchParams.set('format', String(format));
+      url.searchParams.set('url', videoURL);
+      url.searchParams.set('api', API_KEY_DEVELOPERMDCM);
+      const data = await fetchJsonWithTimeout(url.toString(), 25000);
+      if (!data?.success || !data?.progress_url) {
+        throw new Error('SaveNow provider did not return success/progress_url');
+      }
+      return data;
+    };
+
+    const tryDubsProvider = async () => {
+      const videoId = paramsVideoURL();
+      if (!videoId) throw new Error('Missing videoId');
+
+      const startUrl = new URL(DUBS_START_ENDPOINT);
+      startUrl.searchParams.set('id', videoId);
+      startUrl.searchParams.set('format', String(format));
+
+      const startData = await fetchJsonWithTimeout(startUrl.toString(), 25000);
+      if (!startData?.success || !startData?.progressId) {
+        throw new Error('Dubs provider did not return success/progressId');
+      }
+
+      const statusUrl = new URL(DUBS_STATUS_ENDPOINT);
+      statusUrl.searchParams.set('id', startData.progressId);
+
+      container.__ytDownloadPoll = setInterval(async () => {
+        try {
+          const st = await fetchJsonWithTimeout(statusUrl.toString(), 20000);
+          const rawProgress = Number(st?.progress) || 0; // 0..1000
+          const progress = Math.min(rawProgress / 10, 100);
+          progressFill.style.width = `${progress}%`;
+          progressText.textContent = `${Math.round(progress)}%`;
+
+          if (st?.finished && st?.downloadUrl) {
+            clearInterval(container.__ytDownloadPoll);
+            container.__ytDownloadPoll = null;
+            markCompleteAndOpen(st.downloadUrl);
+          }
+        } catch (e) {
+          console.error('❌ Error polling dubs status:', e);
+          clearInterval(container.__ytDownloadPoll);
+          container.__ytDownloadPoll = null;
+          setErrorState();
+        }
+      }, 3000);
+    };
+
+    try {
+        let started = null;
+        let lastErr = null;
+
+        for (const base of DOWNLOAD_API_FALLBACK_BASES) {
+          try {
+            started = await trySaveNowProvider(base);
+            break;
+          } catch (e) {
+            lastErr = e;
+          }
         }
 
-        const progressURL = data.progress_url;
+        if (started?.success && started?.progress_url) {
+          pollProgressUrl(started.progress_url);
+          return;
+        }
 
-        // 3 seconds
-        const checkProgress = setInterval(async () => {
-            try {
-                const progressResponse = await fetch(progressURL);
-                const progressData = await progressResponse.json();
-
-                // Update progress in UI
-                const progress = Math.min(progressData.progress / 10, 100);
-                progressFill.style.width = `${progress}%`;
-                progressText.textContent = `${Math.round(progress)}%`;
-
-                if (progressData.progress >= 1000 && progressData.download_url) {
-                    clearInterval(checkProgress);
-                    // Check if URL was already opened
-                    if (container.dataset.urlOpened === 'true') {
-                        return;
-                    }
-                    // Mark URL as opened
-                    container.dataset.urlOpened = 'true';
-                    // Update UI to show completion
-                    container.classList.add('completed');
-                    container.classList.remove('video', 'audio');
-                    downloadText.textContent = 'Download Complete!';
-                    progressFill.style.width = '100%';
-                    progressText.textContent = '100%';
-                    progressRetryBtn.style.display = 'none';
-                    container.dataset.downloading = 'false';
-                    window.open(progressData.download_url, '_blank');
-                }
-            } catch (e) {
-                console.error('❌ Error in progress:', e);
-                clearInterval(checkProgress);
-                // Show retry button
-                retryBtn.style.display = 'block';
-                progressContainer.style.display = 'none';
-                progressRetryBtn.style.display = 'none';
-                // Clear downloading flag
-                container.dataset.downloading = 'false';
-                container.dataset.urlOpened = 'false';
-            }
-        }, 3000);
-
+        console.warn('SaveNow providers failed, falling back to dubs.io', lastErr);
+        await tryDubsProvider();
     } catch (error) {
-        // Notify('error', 'Error starting download. Try again');
-        retryBtn.style.display = 'block';
-        progressContainer.style.display = 'none';
-        progressRetryBtn.style.display = 'none';
-        // Clear downloading flag
-        container.dataset.downloading = 'false';
-        container.dataset.urlOpened = 'false';
+        setErrorState();
         console.error('❌ Error starting download:', error);
     }
 }
@@ -435,6 +605,1081 @@
     return parametrosURL.get('v');
   }
 
+  // ------------------------------
+  // Feature helpers: videoId / channelId / storage
+  // ------------------------------
+  const STORAGE_KEYS_MDCM = {
+    BOOKMARKS: 'ytBookmarksMDCM',
+    CONTINUE_WATCHING: 'ytContinueWatchingMDCM',
+  };
+
+  function getCurrentVideoId() {
+    try {
+      if (location.pathname.startsWith('/shorts/')) {
+        const parts = location.pathname.split('/').filter(Boolean);
+        return parts[1] || null;
+      }
+      if (location.href.includes('youtube.com/watch')) {
+        return paramsVideoURL();
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function getCurrentChannelId() {
+    try {
+      const w = (typeof unsafeWindow !== 'undefined' && unsafeWindow) ? unsafeWindow : window;
+      const pr = w?.ytInitialPlayerResponse || window.ytInitialPlayerResponse;
+      const cid = pr?.videoDetails?.channelId;
+      if (cid) return cid;
+
+      // DOM fallbacks
+      const a =
+        $e('#owner a[href*="/channel/"], #owner a[href*="/@"], ytd-channel-name a[href*="/channel/"], ytd-channel-name a[href*="/@"]');
+      const href = a?.href || '';
+      const m1 = href.match(/\/channel\/([^/?]+)/);
+      if (m1?.[1]) return m1[1];
+      const m2 = href.match(/\/@([^/?]+)/);
+      if (m2?.[1]) return `@${m2[1]}`;
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function readJsonGM(key, fallback) {
+    try {
+      const raw = GM_getValue(key, '');
+      if (!raw) return fallback;
+      return JSON.parse(raw);
+    } catch (e) {
+      return fallback;
+    }
+  }
+
+  function writeJsonGM(key, value) {
+    try {
+      GM_setValue(key, JSON.stringify(value));
+    } catch (e) {
+      console.error('writeJsonGM error:', e);
+    }
+  }
+
+  function formatTimeShort(sec) {
+    const s = Math.max(0, Math.floor(Number(sec) || 0));
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const r = s % 60;
+    return h > 0 ? `${h}:${String(m).padStart(2, '0')}:${String(r).padStart(2, '0')}` : `${m}:${String(r).padStart(2, '0')}`;
+  }
+
+
+
+
+  // ------------------------------
+  // Feature: History / Continue watching (per video)
+  // ------------------------------
+  function getMainVideoEl() {
+    return (
+      document.querySelector('#movie_player video.video-stream.html5-main-video') ||
+      document.querySelector('ytd-player video.video-stream.html5-main-video') ||
+      document.querySelector('video.video-stream.html5-main-video') ||
+      document.querySelector('video')
+    );
+  }
+
+  function getCurrentVideoMeta() {
+    try {
+      // DOM first (updates earlier on SPA navigation)
+      const domTitle =
+        $e('ytd-watch-metadata h1 yt-formatted-string')?.textContent?.trim() ||
+        $e('h1.ytd-watch-metadata yt-formatted-string')?.textContent?.trim() ||
+        '';
+      const domAuthor =
+        $e('#owner ytd-channel-name a, ytd-video-owner-renderer ytd-channel-name a, #text-container.ytd-channel-name a')?.textContent?.trim() ||
+        $e('#owner a[href^="/@"], #owner a[href^="/channel/"]')?.textContent?.trim() ||
+        '';
+      const titleFromDom = (domTitle || document.title || '').replace(/\s*-\s*YouTube\s*$/i, '').trim();
+      const authorFromDom = (domAuthor || '').trim();
+
+      const w = (typeof unsafeWindow !== 'undefined' && unsafeWindow) ? unsafeWindow : window;
+      const pr = w?.ytInitialPlayerResponse || window.ytInitialPlayerResponse;
+      const vd = pr?.videoDetails || null;
+      const title = (titleFromDom || vd?.title || document.title || '').replace(/\s*-\s*YouTube\s*$/i, '').trim();
+      const author = (authorFromDom || vd?.author || '').trim();
+      const thumbs = vd?.thumbnail?.thumbnails;
+      const thumb = Array.isArray(thumbs) ? (thumbs[thumbs.length - 1]?.url || '') : '';
+      return { title, author, thumb };
+    } catch (e) {
+      return { title: '', author: '', thumb: '' };
+    }
+  }
+
+  function ensureContinueWatchingMapLoaded() {
+    const rt = __ytToolsRuntime.continueWatching;
+    if (!rt.map) rt.map = readJsonGM(STORAGE_KEYS_MDCM.CONTINUE_WATCHING, {});
+    if (typeof rt.map !== 'object' || !rt.map) rt.map = {};
+    return rt.map;
+  }
+
+  function pruneContinueWatchingMap(map, maxEntries = 200) {
+    try {
+      const entries = Object.entries(map || {}).filter(([, v]) => v && typeof v === 'object');
+      entries.sort((a, b) => (Number(b[1].updatedAt) || 0) - (Number(a[1].updatedAt) || 0));
+      const keep = entries.slice(0, maxEntries);
+      const next = {};
+      for (const [k, v] of keep) next[k] = v;
+      return next;
+    } catch (e) {
+      return map || {};
+    }
+  }
+
+  function scheduleContinueWatchingFlush() {
+    const rt = __ytToolsRuntime.continueWatching;
+    clearTimeout(rt.flushT);
+    rt.flushT = setTimeout(() => {
+      try {
+        if (!rt.map) return;
+        rt.map = pruneContinueWatchingMap(rt.map, 200);
+        writeJsonGM(STORAGE_KEYS_MDCM.CONTINUE_WATCHING, rt.map);
+      } catch (e) {}
+    }, 800);
+  }
+
+  function clearContinueWatchingForVideo(videoId) {
+    if (!videoId) return;
+    const rt = __ytToolsRuntime.continueWatching;
+    const map = ensureContinueWatchingMapLoaded();
+    if (map && Object.prototype.hasOwnProperty.call(map, videoId)) {
+      delete map[videoId];
+      rt.map = map;
+      scheduleContinueWatchingFlush();
+    }
+  }
+
+  function setContinueWatchingForVideo(videoId, seconds, durationSec) {
+    if (!videoId) return;
+    const rt = __ytToolsRuntime.continueWatching;
+    const map = ensureContinueWatchingMapLoaded();
+    const t = Math.max(0, Math.floor(Number(seconds) || 0));
+    const d = Math.max(0, Math.floor(Number(durationSec) || 0));
+    const prev = map[videoId] && typeof map[videoId] === 'object' ? map[videoId] : {};
+    const meta = getCurrentVideoMeta();
+    map[videoId] = {
+      t,
+      d,
+      updatedAt: Date.now(),
+      title: meta.title || prev.title || '',
+      author: meta.author || prev.author || '',
+      thumb: meta.thumb || prev.thumb || '',
+    };
+    rt.map = map;
+    scheduleContinueWatchingFlush();
+  }
+
+  function getContinueWatchingTime(videoId) {
+    if (!videoId) return null;
+    const map = ensureContinueWatchingMapLoaded();
+    const entry = map?.[videoId];
+    const t = Number(entry?.t);
+    return Number.isFinite(t) ? t : null;
+  }
+
+  function updateContinueWatchingButton() {
+    const rt = __ytToolsRuntime.continueWatching;
+    const enabled = !!rt.enabled;
+    if (!enabled || !isWatchPage()) return;
+
+    const videoId = getCurrentVideoId();
+    if (!videoId) return;
+
+    const v = getMainVideoEl();
+    const t = getContinueWatchingTime(videoId);
+    const dur = Number(v?.duration);
+    const hasDur = Number.isFinite(dur) && dur > 0;
+
+    if (!t || t < 5) return;
+
+    if (hasDur && t >= (dur - 5)) {
+      clearContinueWatchingForVideo(videoId);
+      return;
+    }
+  }
+
+  function updateContinueWatchingHistoryUi() {
+    const rt = __ytToolsRuntime.continueWatching;
+    const btn = $id('yt-cw-history-toggle');
+    const panel = $id('yt-continue-watching-panel');
+    if (!btn || !panel) return;
+
+    const enabled = !!rt.enabled;
+    if (!enabled || !isWatchPage()) {
+      btn.style.display = 'none';
+      panel.style.display = 'none';
+      return;
+    }
+
+    btn.style.display = 'inline-flex';
+    panel.style.display = rt.panelOpen ? 'block' : 'none';
+  }
+
+  function cssEscapeLite(s) {
+    const str = String(s || '');
+    if (typeof CSS !== 'undefined' && CSS.escape) return CSS.escape(str);
+    // minimal escape for attribute selector
+    return str.replace(/["\\]/g, '\\$&');
+  }
+
+  function updateContinueWatchingPanelRow(videoId) {
+    try {
+      const rt = __ytToolsRuntime.continueWatching;
+      if (!rt.enabled || !rt.panelOpen || !isWatchPage()) return false;
+      const panel = $id('yt-continue-watching-panel');
+      if (!panel) return false;
+
+      const key = cssEscapeLite(videoId);
+      const row = panel.querySelector(`.yt-cw-item[data-video-id="${key}"]`);
+      if (!row) return false;
+
+      const entry = ensureContinueWatchingMapLoaded()?.[videoId];
+      const t = Number(entry?.t);
+      if (!Number.isFinite(t)) return false;
+
+      const meta = row.querySelector('.yt-cw-meta');
+      if (!meta) return false;
+      const author = String(entry?.author || '').trim();
+      meta.textContent = `${formatTimeShort(t)}${author ? ` • ${author}` : ''}`;
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function navigateToWatchSpa(videoId, seconds) {
+    const t = Number(seconds);
+    const url = `/watch?v=${encodeURIComponent(videoId)}${Number.isFinite(t) ? `&t=${Math.max(0, Math.floor(t))}s` : ''}`;
+    try {
+      const a = document.createElement('a');
+      a.href = url;
+      a.target = '_self';
+      a.rel = 'noopener';
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      return;
+    } catch (e) {}
+    location.href = url;
+  }
+
+  function renderContinueWatchingPanel() {
+    const panel = $id('yt-continue-watching-panel');
+    if (!panel) return;
+
+    const rt = __ytToolsRuntime.continueWatching;
+    if (!rt.enabled || !rt.panelOpen || !isWatchPage()) {
+      panel.style.display = 'none';
+      return;
+    }
+
+    const map = pruneContinueWatchingMap(ensureContinueWatchingMapLoaded(), 200);
+    rt.map = map;
+    const currentVid = getCurrentVideoId();
+
+    const entries = Object.entries(map)
+      .map(([videoId, v]) => ({ videoId, ...v }))
+      .filter((e) => e.videoId && Number.isFinite(Number(e.t)) && Number(e.t) >= 5)
+      .sort((a, b) => (Number(b.updatedAt) || 0) - (Number(a.updatedAt) || 0))
+      .slice(0, 25);
+
+    panel.replaceChildren();
+
+    const header = document.createElement('div');
+    header.className = 'yt-cw-header';
+
+    const hTitle = document.createElement('div');
+    hTitle.className = 'yt-cw-header-title';
+    hTitle.textContent = 'Continue watching';
+
+    const clearAll = document.createElement('button');
+    clearAll.type = 'button';
+    clearAll.className = 'yt-cw-clear';
+    clearAll.textContent = 'Clear';
+    clearAll.dataset.cwAction = 'clearAll';
+
+    header.appendChild(hTitle);
+    header.appendChild(clearAll);
+    panel.appendChild(header);
+
+    if (!entries.length) {
+      const empty = document.createElement('div');
+      empty.className = 'yt-cw-empty';
+      empty.textContent = 'No history yet. Watch a bit, then reopen any video.';
+      panel.appendChild(empty);
+      return;
+    }
+
+    for (const e of entries) {
+      const item = document.createElement('div');
+      item.className = 'yt-cw-item';
+      item.dataset.videoId = e.videoId;
+
+      const thumbWrap = document.createElement('div');
+      thumbWrap.className = 'yt-cw-thumb-wrap';
+      const img = document.createElement('img');
+      img.className = 'yt-cw-thumb';
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.alt = '';
+      const thumbSrc = (e.thumb || '').trim() || `https://i.ytimg.com/vi/${encodeURIComponent(e.videoId)}/hqdefault.jpg`;
+      img.src = thumbSrc;
+      thumbWrap.appendChild(img);
+
+      const info = document.createElement('div');
+      info.className = 'yt-cw-info';
+
+      const title = document.createElement('div');
+      title.className = 'yt-cw-title';
+      const safeTitle = (e.title || '').trim();
+      title.textContent = safeTitle ? safeTitle : e.videoId;
+
+      const meta = document.createElement('div');
+      meta.className = 'yt-cw-meta';
+      const author = (e.author || '').trim();
+      meta.textContent = `${formatTimeShort(e.t)}${author ? ` • ${author}` : ''}`;
+
+      info.appendChild(title);
+      info.appendChild(meta);
+
+      const actions = document.createElement('div');
+      actions.className = 'yt-cw-actions';
+
+      const tSec = Math.max(0, Math.floor(Number(e.t) || 0));
+      let go = null;
+      if (currentVid && currentVid === e.videoId) {
+        const seek = document.createElement('button');
+        seek.type = 'button';
+        seek.className = 'yt-cw-go';
+        seek.textContent = 'Resume';
+        seek.dataset.cwAction = 'seek';
+        seek.dataset.t = String(tSec);
+        go = seek;
+      } else {
+        const a = document.createElement('a');
+        a.className = 'yt-simple-endpoint yt-cw-go';
+        a.textContent = 'Resume';
+        a.href = `/watch?v=${encodeURIComponent(e.videoId)}&t=${tSec}s`;
+        a.target = '_self';
+        a.rel = 'noopener';
+        go = a;
+      }
+
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'yt-cw-del';
+      del.textContent = '✕';
+      del.title = 'Delete';
+      del.dataset.cwAction = 'del';
+      del.dataset.videoId = e.videoId;
+
+      actions.appendChild(go);
+      actions.appendChild(del);
+
+      item.appendChild(thumbWrap);
+      item.appendChild(info);
+      item.appendChild(actions);
+      panel.appendChild(item);
+    }
+  }
+
+  function setupContinueWatchingFeature(enabled) {
+    const rt = __ytToolsRuntime.continueWatching;
+    rt.enabled = !!enabled;
+
+    // Keep UI in sync across YouTube SPA navigations
+    if (!rt.navHandlerInitialized) {
+      rt.navHandlerInitialized = true;
+      const onNav = () => {
+        try {
+          const vid = getCurrentVideoId();
+          if (rt.lastKnownVideoId !== vid) {
+            rt.lastKnownVideoId = vid;
+            // reset throttles so new video can save properly
+            rt.lastSaveAt = 0;
+            rt.lastSavedTime = -1;
+            rt.boundVideoId = vid;
+            updateContinueWatchingButton();
+            updateContinueWatchingHistoryUi();
+            if (rt.panelOpen) renderContinueWatchingPanel();
+          } else {
+            updateContinueWatchingButton();
+            updateContinueWatchingHistoryUi();
+            if (rt.panelOpen) renderContinueWatchingPanel();
+          }
+        } catch (e) {}
+      };
+      window.addEventListener('yt-navigate-finish', onNav, true);
+      window.addEventListener('popstate', onNav, true);
+      window.addEventListener('hashchange', onNav, true);
+    }
+
+    // Ensure click handler only once
+    if (!rt.clickHandlerInitialized) {
+      rt.clickHandlerInitialized = true;
+      document.addEventListener('click', (e) => {
+        const target = e.target;
+        if (!(target instanceof Element)) return;
+        const historyBtn = target.closest('#yt-cw-history-toggle');
+        const cwActionBtn = target.closest('[data-cw-action]');
+
+        if (historyBtn) {
+          e.preventDefault();
+          e.stopPropagation();
+          rt.panelOpen = !rt.panelOpen;
+          updateContinueWatchingHistoryUi();
+          if (rt.panelOpen) renderContinueWatchingPanel(); // render only when opened
+          return;
+        }
+
+        if (cwActionBtn) {
+          const action = cwActionBtn.getAttribute('data-cw-action');
+          if (!action) return;
+          e.preventDefault();
+          e.stopPropagation();
+          if (action === 'clearAll') {
+            rt.map = {};
+            writeJsonGM(STORAGE_KEYS_MDCM.CONTINUE_WATCHING, {});
+            renderContinueWatchingPanel();
+            updateContinueWatchingButton();
+            try { Notify('success', 'History cleared'); } catch (e2) {}
+            return;
+          }
+          if (action === 'del') {
+            const vid = cwActionBtn.getAttribute('data-video-id') || '';
+            if (vid) clearContinueWatchingForVideo(vid);
+            renderContinueWatchingPanel();
+            updateContinueWatchingButton();
+            return;
+          }
+          if (action === 'seek') {
+            const t = Number(cwActionBtn.getAttribute('data-t'));
+            const v = getMainVideoEl();
+            if (!v || !Number.isFinite(t)) return;
+            v.currentTime = Math.max(0, t);
+            v.play?.().catch(() => {});
+            try { Notify('success', `Resume: ${formatTimeShort(t)}`); } catch (e2) {}
+            updateContinueWatchingButton();
+            return;
+          }
+        }
+      }, true);
+    }
+
+    // Save on tab close / navigation (once)
+    if (!rt.pagehideHandlerInitialized) {
+      rt.pagehideHandlerInitialized = true;
+      window.addEventListener('pagehide', () => {
+        try {
+          if (!rt.enabled) return;
+          if (!isWatchPage()) return;
+          const vid = getCurrentVideoId();
+          const v = getMainVideoEl();
+          if (!vid || !v) return;
+          const t = Number(v.currentTime);
+          const d = Number(v.duration);
+          if (Number.isFinite(t) && t >= 5) setContinueWatchingForVideo(vid, t, d);
+          // best-effort immediate flush
+          if (rt.flushT) {
+            clearTimeout(rt.flushT);
+            rt.flushT = null;
+          }
+          if (rt.map) writeJsonGM(STORAGE_KEYS_MDCM.CONTINUE_WATCHING, pruneContinueWatchingMap(rt.map, 200));
+        } catch (e) {}
+      }, { capture: true });
+    }
+
+    const historyBtn = $id('yt-cw-history-toggle');
+    const panel = $id('yt-continue-watching-panel');
+    if (historyBtn && !rt.enabled) historyBtn.style.display = 'none';
+    if (panel && !rt.enabled) panel.style.display = 'none';
+
+    // Not on watch page: detach video listeners and hide
+    if (!rt.enabled || !isWatchPage()) {
+      try {
+        if (rt.boundVideo && rt.handlers) {
+          rt.boundVideo.removeEventListener('timeupdate', rt.handlers.timeupdate);
+          rt.boundVideo.removeEventListener('pause', rt.handlers.pause);
+          rt.boundVideo.removeEventListener('ended', rt.handlers.ended);
+          rt.boundVideo.removeEventListener('loadedmetadata', rt.handlers.loadedmetadata);
+          rt.boundVideo.removeEventListener('seeked', rt.handlers.seeked);
+        }
+      } catch (e) {}
+      rt.boundVideo = null;
+      rt.boundVideoId = null;
+      rt.handlers = null;
+      updateContinueWatchingButton();
+      updateContinueWatchingHistoryUi();
+      return;
+    }
+
+    const v = getMainVideoEl();
+    const videoId = getCurrentVideoId();
+    if (!v || !videoId) {
+      updateContinueWatchingButton();
+      updateContinueWatchingHistoryUi();
+      return;
+    }
+
+    // VideoId can change while YouTube reuses the same <video> element
+    if (rt.boundVideoId !== videoId) {
+      rt.boundVideoId = videoId;
+      rt.lastSaveAt = 0;
+      rt.lastSavedTime = -1;
+    }
+
+    // If video element changed, rebind listeners (avoid leaks)
+    if (rt.boundVideo && rt.boundVideo !== v && rt.handlers) {
+      try {
+        rt.boundVideo.removeEventListener('timeupdate', rt.handlers.timeupdate);
+        rt.boundVideo.removeEventListener('pause', rt.handlers.pause);
+        rt.boundVideo.removeEventListener('ended', rt.handlers.ended);
+        rt.boundVideo.removeEventListener('loadedmetadata', rt.handlers.loadedmetadata);
+        rt.boundVideo.removeEventListener('seeked', rt.handlers.seeked);
+      } catch (e) {}
+      rt.boundVideo = null;
+      rt.boundVideoId = null;
+      rt.handlers = null;
+    }
+
+    rt.boundVideo = v;
+    rt.boundVideoId = videoId;
+
+    if (!rt.handlers) {
+      rt.handlers = {
+        timeupdate: () => {
+          try {
+            if (!rt.enabled) return;
+            const vid = getCurrentVideoId();
+            if (!vid) return;
+            const now = Date.now();
+            if (now - rt.lastSaveAt < 5000) return; // throttle
+            if (v.paused) return;
+            const t = Number(v.currentTime);
+            const d = Number(v.duration);
+            if (!Number.isFinite(t)) return;
+            if (Math.abs(t - rt.lastSavedTime) < 2) return;
+            rt.lastSaveAt = now;
+            rt.lastSavedTime = t;
+            if (t < 5) return;
+            setContinueWatchingForVideo(vid, t, d);
+            updateContinueWatchingButton();
+            // Avoid re-rendering the whole panel every few seconds.
+            // If panel is open and row exists, just update its text.
+            if (rt.panelOpen) {
+              if (!updateContinueWatchingPanelRow(vid)) renderContinueWatchingPanel();
+            }
+          } catch (e) {}
+        },
+        pause: () => {
+          try {
+            if (!rt.enabled) return;
+            const vid = getCurrentVideoId();
+            if (!vid) return;
+            const t = Number(v.currentTime);
+            const d = Number(v.duration);
+            if (!Number.isFinite(t)) return;
+            if (t < 5) {
+              clearContinueWatchingForVideo(vid);
+            } else {
+              setContinueWatchingForVideo(vid, t, d);
+            }
+            updateContinueWatchingButton();
+            if (rt.panelOpen) {
+              if (!updateContinueWatchingPanelRow(vid)) renderContinueWatchingPanel();
+            }
+          } catch (e) {}
+        },
+        ended: () => {
+          try {
+            const vid = getCurrentVideoId();
+            if (vid) clearContinueWatchingForVideo(vid);
+            updateContinueWatchingButton();
+            if (rt.panelOpen) renderContinueWatchingPanel();
+          } catch (e) {}
+        },
+        loadedmetadata: () => {
+          updateContinueWatchingButton();
+          if (rt.panelOpen) renderContinueWatchingPanel();
+        },
+        seeked: () => {
+          updateContinueWatchingButton();
+          const vid = getCurrentVideoId();
+          if (rt.panelOpen && vid) updateContinueWatchingPanelRow(vid);
+        },
+      };
+
+      v.addEventListener('timeupdate', rt.handlers.timeupdate, { passive: true });
+      v.addEventListener('pause', rt.handlers.pause, { passive: true });
+      v.addEventListener('ended', rt.handlers.ended, { passive: true });
+      v.addEventListener('loadedmetadata', rt.handlers.loadedmetadata, { passive: true });
+      v.addEventListener('seeked', rt.handlers.seeked, { passive: true });
+    }
+
+    updateContinueWatchingButton();
+    updateContinueWatchingHistoryUi();
+  }
+
+  // ------------------------------
+  // Feature: Show channel name on Shorts list (Home / feeds) 
+  // Adapted from: @𝖢𝖸 𝖥𝗎𝗇𝗀
+  // ------------------------------
+  function setupShortsChannelNameFeature(enabled) {
+    __ytToolsRuntime.shortsChannelName.enabled = !!enabled;
+    document.documentElement.dataset.mdcmShortsChannelName = enabled ? '1' : '0';
+
+    // Disable: stop observers to reduce overhead
+    if (!enabled) {
+      try { __ytToolsRuntime.shortsChannelName.observer?.disconnect?.(); } catch (e) {}
+      try { __ytToolsRuntime.shortsChannelName.io?.disconnect?.(); } catch (e) {}
+      __ytToolsRuntime.shortsChannelName.observer = null;
+      __ytToolsRuntime.shortsChannelName.io = null;
+      clearTimeout(__ytToolsRuntime.shortsChannelName.scanT);
+      __ytToolsRuntime.shortsChannelName.scanT = null;
+      return;
+    }
+
+    const rt = __ytToolsRuntime.shortsChannelName;
+
+    const getShortsVideoIdFromItem = (item) => {
+      const a = item.querySelector('a[href^="/shorts/"]');
+      const href = a?.getAttribute('href') || '';
+      const m = href.match(/\/shorts\/([^/?]+)/);
+      return m?.[1] || null;
+    };
+
+    const findSubhead = (item) => {
+      return item.querySelector(
+        '.ShortsLockupViewModelHostOutsideMetadataSubhead,' +
+        ' .shortsLockupViewModelHostOutsideMetadataSubhead,' +
+        ' .ShortsLockupViewModelHostMetadataSubhead,' +
+        ' .shortsLockupViewModelHostMetadataSubhead'
+      );
+    };
+
+    const ensureLabel = (subhead) => {
+      const parent = subhead?.parentElement;
+      if (!parent) return null;
+      let el = parent.querySelector('.yt-tools-shorts-channel-name');
+      if (!el) {
+        el = document.createElement('div');
+        el.className = 'yt-tools-shorts-channel-name';
+        el.textContent = '';
+        parent.insertBefore(el, subhead);
+      }
+      return el;
+    };
+
+    const tryExtractChannelNameFromDom = (item) => {
+      const a = item.querySelector('a[href^="/@"], a[href^="/channel/"]');
+      const name = (a?.textContent || a?.getAttribute('title') || '').trim();
+      return name || null;
+    };
+
+    const fetchChannelNameFromWatch = (videoId) => {
+      rt.fetchChain = rt.fetchChain.then(async () => {
+        if (rt.cache.has(videoId)) return rt.cache.get(videoId);
+        let res = null;
+        try {
+          res = await fetch(`/watch?v=${videoId}`, {
+            method: 'GET',
+            credentials: 'same-origin',
+            cache: 'force-cache',
+          });
+        } catch (e) {
+          return '';
+        }
+        if (!res?.ok) return '';
+        const html = await res.text();
+
+        const idx = html.indexOf('itemprop="author"');
+        if (idx < 0) return '';
+        const start = html.lastIndexOf('<span', idx);
+        const end = html.indexOf('</span>', idx);
+        if (start < 0 || end < 0) return '';
+        const chunk = html.slice(start, end + 7);
+
+        const doc = new DOMParser().parseFromString(chunk, 'text/html');
+        const link = doc.querySelector('link[itemprop="name"]');
+        return (link?.getAttribute('content') || '').trim();
+      });
+      return rt.fetchChain;
+    };
+
+    const getChannelName = (videoId, item) => {
+      const cached = rt.cache.get(videoId);
+      if (cached) return Promise.resolve(cached);
+
+      const domName = tryExtractChannelNameFromDom(item);
+      if (domName) {
+        rt.cache.set(videoId, domName);
+        return Promise.resolve(domName);
+      }
+
+      const inflight = rt.inflight.get(videoId);
+      if (inflight) return inflight;
+
+      const p = fetchChannelNameFromWatch(videoId)
+        .then((name) => {
+          const finalName = (name || '').trim();
+          if (finalName) rt.cache.set(videoId, finalName);
+          return finalName;
+        })
+        .finally(() => {
+          rt.inflight.delete(videoId);
+        });
+      rt.inflight.set(videoId, p);
+      return p;
+    };
+
+    const processItem = (item) => {
+      if (!(item instanceof Element)) return;
+      if (item.dataset.ytToolsShortsChannelProcessed === '1') return;
+
+      const subhead = findSubhead(item);
+      if (!subhead) return;
+
+      const videoId = getShortsVideoIdFromItem(item);
+      if (!videoId) return;
+
+      item.dataset.ytToolsShortsChannelProcessed = '1';
+      item.dataset.ytToolsShortsVideoId = videoId;
+
+      const label = ensureLabel(subhead);
+      if (!label) return;
+      label.textContent = '';
+
+      rt.io?.observe(item);
+    };
+
+    if (!rt.io) {
+      rt.io = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const item = entry.target;
+          const videoId = item?.dataset?.ytToolsShortsVideoId;
+          const subhead = findSubhead(item);
+          const label = subhead?.parentElement?.querySelector?.('.yt-tools-shorts-channel-name');
+
+          if (!videoId || !label) {
+            rt.io.unobserve(item);
+            continue;
+          }
+
+          getChannelName(videoId, item)
+            .then((name) => {
+              if (name) label.textContent = name;
+            })
+            .finally(() => {
+              rt.io.unobserve(item);
+            });
+        }
+      }, { threshold: 0.15 });
+    }
+
+    const scan = () => {
+      clearTimeout(rt.scanT);
+      rt.scanT = setTimeout(() => {
+        document
+          .querySelectorAll('ytm-shorts-lockup-view-model, ytm-shorts-lockup-view-model-v2')
+          .forEach(processItem);
+      }, 120);
+    };
+
+    if (!rt.observer) {
+      rt.observer = new MutationObserver(scan);
+      rt.observer.observe(document.body, { childList: true, subtree: true });
+    }
+
+    scan();
+  }
+  // ------------------------------
+  // Feature: Bookmarks per video (persisted)
+  // ------------------------------
+  function getBookmarksForVideo(videoId) {
+    const all = readJsonGM(STORAGE_KEYS_MDCM.BOOKMARKS, {});
+    const list = Array.isArray(all[videoId]) ? all[videoId] : [];
+    return { all, list };
+  }
+
+  function saveBookmark(videoId, seconds, label) {
+    const { all, list } = getBookmarksForVideo(videoId);
+    const t = Math.max(0, Math.floor(Number(seconds) || 0));
+    const exists = list.some(b => b && b.t === t);
+    const item = { t, label: (label || formatTimeShort(t)).trim(), createdAt: Date.now() };
+    const nextList = exists ? list.map(b => (b.t === t ? item : b)) : [...list, item];
+    nextList.sort((a, b) => a.t - b.t);
+    all[videoId] = nextList;
+    writeJsonGM(STORAGE_KEYS_MDCM.BOOKMARKS, all);
+  }
+
+  function deleteBookmark(videoId, seconds) {
+    const { all, list } = getBookmarksForVideo(videoId);
+    const t = Math.max(0, Math.floor(Number(seconds) || 0));
+    all[videoId] = list.filter(b => b && b.t !== t);
+    writeJsonGM(STORAGE_KEYS_MDCM.BOOKMARKS, all);
+  }
+
+  function renderBookmarksPanel(videoId) {
+    const panel = $id('yt-bookmarks-panel');
+    if (!panel) return;
+
+    const { list } = getBookmarksForVideo(videoId);
+    if (!list.length) {
+      panel.innerHTML = `<div class="yt-bm-empty">No bookmarks yet. Click ★ to save one.</div>`;
+      return;
+    }
+
+    panel.innerHTML = list
+      .map((b) => {
+        const time = formatTimeShort(b.t);
+        const safeLabel = (b.label || time).replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return `
+          <div class="yt-bm-item">
+            <button type="button" class="yt-bm-go" data-action="go" data-t="${b.t}" title="Go to ${time}">${time}</button>
+            <div class="yt-bm-label" title="${safeLabel}">${safeLabel}</div>
+            <button type="button" class="yt-bm-del" data-action="del" data-t="${b.t}" title="Delete">✕</button>
+          </div>
+        `;
+      })
+      .join('');
+  }
+
+  function applyBookmarksIfEnabled(settings) {
+    const addBtn = $id('yt-bookmark-add');
+    const toggleBtn = $id('yt-bookmark-toggle');
+    const panel = $id('yt-bookmarks-panel');
+
+    if (!addBtn || !toggleBtn || !panel) return;
+
+    const enabled = !!settings?.bookmarks;
+    addBtn.style.display = enabled ? 'inline-flex' : 'none';
+    toggleBtn.style.display = enabled ? 'inline-flex' : 'none';
+    panel.style.display = enabled && __ytToolsRuntime.bookmarksPanelOpen ? 'block' : 'none';
+
+    if (!enabled) return;
+
+    const videoId = getCurrentVideoId();
+    if (!videoId) return;
+    renderBookmarksPanel(videoId);
+
+    if (__ytToolsRuntime.bookmarkClickHandlerInitialized) return;
+    __ytToolsRuntime.bookmarkClickHandlerInitialized = true;
+
+    document.addEventListener('click', (e) => {
+      const target = e.target;
+      if (!(target instanceof Element)) return;
+
+      const add = target.closest('#yt-bookmark-add');
+      const tog = target.closest('#yt-bookmark-toggle');
+      const actionBtn = target.closest('[data-action][data-t]');
+
+      if (add) {
+        e.preventDefault();
+        e.stopPropagation();
+        const v = $e('video');
+        const vid = getCurrentVideoId();
+        if (!v || !vid) return;
+        const t = Math.floor(v.currentTime || 0);
+        const defaultLabel = formatTimeShort(t);
+        const label = prompt('Bookmark name (optional):', defaultLabel) || defaultLabel;
+        saveBookmark(vid, t, label);
+        __ytToolsRuntime.bookmarksPanelOpen = true;
+        panel.style.display = 'block';
+        renderBookmarksPanel(vid);
+        Notify('success', `Bookmark saved at ${defaultLabel}`);
+        return;
+      }
+
+      if (tog) {
+        e.preventDefault();
+        e.stopPropagation();
+        __ytToolsRuntime.bookmarksPanelOpen = !__ytToolsRuntime.bookmarksPanelOpen;
+        panel.style.display = __ytToolsRuntime.bookmarksPanelOpen ? 'block' : 'none';
+        const vid = getCurrentVideoId();
+        if (vid && __ytToolsRuntime.bookmarksPanelOpen) renderBookmarksPanel(vid);
+        return;
+      }
+
+      if (actionBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const action = actionBtn.getAttribute('data-action');
+        const t = Number(actionBtn.getAttribute('data-t'));
+        const v = $e('video');
+        const vid = getCurrentVideoId();
+        if (!v || !vid) return;
+        if (action === 'go') {
+          v.currentTime = Math.max(0, t || 0);
+          v.play?.().catch(() => {});
+        } else if (action === 'del') {
+          deleteBookmark(vid, t);
+          renderBookmarksPanel(vid);
+        }
+      }
+    });
+  }
+
+  // ------------------------------
+  // Feature: Like vs Dislike bar
+  // ------------------------------
+  function parseCountText(text) {
+    if (!text) return null;
+    const s0 = String(text).trim().toLowerCase();
+    if (!s0) return null;
+    let mult = 1;
+    let s = s0.replace(/\s+/g, '');
+    if (s.includes('mil')) {
+      mult = 1000;
+      s = s.replace('mil', '');
+    } else if (s.includes('k')) {
+      mult = 1000;
+      s = s.replace('k', '');
+    } else if (s.includes('m')) {
+      mult = 1000000;
+      s = s.replace('m', '');
+    }
+    // normalize decimal separators
+    s = s.replace(/[^\d.,]/g, '');
+    if (!s) return null;
+    // If both separators exist, assume last is decimal
+    const lastDot = s.lastIndexOf('.');
+    const lastComma = s.lastIndexOf(',');
+    let nStr = s;
+    if (lastDot !== -1 && lastComma !== -1) {
+      const dec = Math.max(lastDot, lastComma);
+      const intPart = s.slice(0, dec).replace(/[.,]/g, '');
+      const decPart = s.slice(dec + 1);
+      nStr = `${intPart}.${decPart}`;
+    } else {
+      // Use dot as decimal
+      nStr = s.replace(',', '.');
+    }
+    const num = Number.parseFloat(nStr);
+    if (!Number.isFinite(num)) return null;
+    return Math.round(num * mult);
+  }
+
+  async function ensureDislikesForCurrentVideo() {
+    const videoId = getCurrentVideoId();
+    if (!videoId) return null;
+    const now = Date.now();
+    if (__ytToolsRuntime.dislikesCache.videoId === videoId && __ytToolsRuntime.dislikesCache.dislikes != null && (now - __ytToolsRuntime.dislikesCache.ts) < 10 * 60 * 1000) {
+      return __ytToolsRuntime.dislikesCache.dislikes;
+    }
+    try {
+      const res = await fetch(`${apiDislikes}${videoId}`);
+      const data = await res.json();
+      const dislikes = Number(data?.dislikes);
+      if (Number.isFinite(dislikes)) {
+        __ytToolsRuntime.dislikesCache = { videoId, dislikes, ts: now };
+        return dislikes;
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  function getLikesFromDom() {
+    // Try grab visible like count (YouTube UI varies a lot)
+    const likeBtn =
+      $e('#top-level-buttons-computed like-button-view-model button-view-model button') ||
+      $e('#top-level-buttons-computed like-button-view-model button') ||
+      $e('#top-level-buttons-computed ytd-toggle-button-renderer:nth-child(1)') ||
+      $e('segmented-like-dislike-button-view-model like-button-view-model');
+    if (!likeBtn) return null;
+
+    // Prefer visible counter first; aria-label can include locale thousands separators (17.606) that are ambiguous.
+    const candidates = [
+      likeBtn.querySelector?.('.yt-spec-button-shape-next__button-text-content')?.textContent,
+      likeBtn.textContent,
+      likeBtn.getAttribute?.('aria-label'),
+    ].filter(Boolean);
+
+    for (const txt of candidates) {
+      const n = parseCountText(txt);
+      if (n != null) return n;
+    }
+    return null;
+  }
+
+  function updateLikeDislikeBar(likes, dislikes) {
+    // Prefer placing it above the "copy description" button (as requested).
+    const copyDesc = $id('button_copy_description');
+    const host =
+      $e('#top-level-buttons-computed') ||
+      $e('ytd-watch-metadata #top-level-buttons-computed');
+    if (!host && !copyDesc) return;
+
+    let bar = $id('yt-like-dislike-bar-mdcm');
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.id = 'yt-like-dislike-bar-mdcm';
+      bar.innerHTML = `<div class="like"></div><div class="dislike"></div>`;
+      if (copyDesc) {
+        copyDesc.insertAdjacentElement('beforebegin', bar);
+      } else {
+        host.appendChild(bar);
+      }
+    } else if (copyDesc && bar.previousElementSibling !== copyDesc) {
+      // Keep it near the copy description area if the DOM changed
+      try { copyDesc.insertAdjacentElement('beforebegin', bar); } catch (e) {}
+    }
+
+    if (!Number.isFinite(likes) || !Number.isFinite(dislikes) || likes + dislikes <= 0) {
+      bar.style.display = 'none';
+      return;
+    }
+
+    const total = likes + dislikes;
+    const likePct = Math.max(0, Math.min(100, (likes / total) * 100));
+    const dislikePct = 100 - likePct;
+    bar.style.display = 'block';
+    const likeEl = bar.querySelector('.like');
+    const dislikeEl = bar.querySelector('.dislike');
+    likeEl.style.width = `${likePct}%`;
+    dislikeEl.style.width = `${dislikePct}%`;
+    bar.title = `Likes: ${likes.toLocaleString()} | Dislikes: ${dislikes.toLocaleString()}`;
+  }
+
+  async function applyLikeDislikeBarIfEnabled(settings) {
+    if (!settings?.likeDislikeBar) {
+      const existing = $id('yt-like-dislike-bar-mdcm');
+      if (existing) existing.style.display = 'none';
+      return;
+    }
+    if (!window.location.href.includes('youtube.com/watch')) return;
+    const dislikes = await ensureDislikesForCurrentVideo();
+    const likes = getLikesFromDom();
+    if (dislikes == null || likes == null) return;
+    updateLikeDislikeBar(likes, dislikes);
+  }
+
+  // Retry helper (YT often renders likes late; keep it lightweight)
+  function scheduleLikeBarUpdate(settings, attempts = 4) {
+    if (!settings?.likeDislikeBar) return;
+    let i = 0;
+    const tick = async () => {
+      i += 1;
+      await applyLikeDislikeBarIfEnabled(settings);
+      const bar = $id('yt-like-dislike-bar-mdcm');
+      if (bar && bar.style.display !== 'none') return;
+      if (i < attempts) setTimeout(tick, 800);
+    };
+    setTimeout(tick, 300);
+  }
+
 //   Dislikes video
   async function videoDislike() {
 
@@ -455,6 +1700,12 @@
             <svg class="svg-dislike-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 13v-8a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v7a1 1 0 0 0 1 1h3a4 4 0 0 1 4 4v1a2 2 0 0 0 4 0v-5h3a2 2 0 0 0 2 -2l-1 -5a2 3 0 0 0 -2 -2h-7a3 3 0 0 0 -3 3" /></svg>
             ${FormatterNumber(dislikes, 0)}`;
         }
+        // Cache for bar + trigger update if enabled
+        __ytToolsRuntime.dislikesCache = { videoId: validoUrl, dislikes: Number(dislikes) || 0, ts: Date.now() };
+        try {
+          const st = JSON.parse(GM_getValue('ytSettingsMDCM', '{}'));
+          scheduleLikeBarUpdate(st, 5);
+        } catch (e) {}
 
       } catch (error) {
         console.log(error);
@@ -466,8 +1717,9 @@
   async function shortDislike() {
     validoUrl = document.location.href;
     const validoVentanaShort = $m(
-      '#dislike-button > yt-button-shape > label > div > span'
+      "#button-bar > reel-action-bar-view-model > dislike-button-view-model > toggle-button-view-model > button-view-model > label > div > span"
     );
+    
     if (validoVentanaShort != undefined && document.location.href.split('/')[3] === 'shorts') {
       validoUrl = document.location.href.split('/')[4];
       const urlShorts = `${apiDislikes}${validoUrl}`;
@@ -506,10 +1758,22 @@
 
 
   // Create a Trusted Types policy
-  const policy = window.trustedTypes?.createPolicy('default', {
-    createHTML: (input) => input,
-  });
-
+  let policy = null;
+  try {
+    const tt = (typeof unsafeWindow !== 'undefined' ? unsafeWindow.trustedTypes : window.trustedTypes);
+    if (tt) {
+      policy = tt.defaultPolicy;
+      if (!policy) {
+        try {
+          policy = tt.createPolicy('default', { createHTML: (s) => s });
+        } catch (e) {
+          policy = tt.defaultPolicy || null;
+        }
+      }
+    }
+  } catch (e) {
+    policy = null;
+  }
 
   // Styles for our enhancement panel
   GM_addStyle(`
@@ -1346,9 +2610,193 @@
           font-weight: 700;
         }
 
+      /* Bookmarks panel (under video buttons) */
+      .yt-bookmarks-panel {
+        margin-top: 10px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 10px;
+        padding: 8px;
+      }
+      .yt-bm-empty {
+        font-size: 12px;
+        color: var(--text-custom-secondary);
+      }
+      .yt-bm-item {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 8px;
+        align-items: center;
+        padding: 6px;
+        border-radius: 8px;
+      }
+      .yt-bm-item:hover {
+        background: rgba(255,255,255,0.06);
+      }
+      .yt-bm-go {
+        border: none;
+        border-radius: 6px;
+        padding: 4px 8px;
+        background: rgba(34,197,94,0.2);
+        color: #fff;
+        cursor: pointer;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+      .yt-bm-label {
+        font-size: 12px;
+        color: var(--text-custom);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .yt-bm-del {
+        border: none;
+        border-radius: 6px;
+        padding: 4px 8px;
+        background: rgba(239,68,68,0.2);
+        color: #fff;
+        cursor: pointer;
+        font-size: 12px;
+      }
+
+      /* Continue watching panel (under video buttons) */
+      .yt-continue-watching-panel {
+        margin-top: 10px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 10px;
+        padding: 8px;
+      }
+      .yt-cw-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+      .yt-cw-header-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-custom, #fff);
+      }
+      .yt-cw-clear {
+        border: none;
+        border-radius: 6px;
+        padding: 4px 8px;
+        background: rgba(239,68,68,0.18);
+        color: #fff;
+        cursor: pointer;
+        font-size: 12px;
+      }
+      .yt-cw-empty {
+        font-size: 12px;
+        color: var(--text-custom-secondary, #aaa);
+      }
+      .yt-cw-item {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 10px;
+        align-items: center;
+        padding: 8px;
+        border-radius: 10px;
+      }
+      .yt-cw-item:hover {
+        background: rgba(255,255,255,0.06);
+      }
+      .yt-cw-thumb-wrap {
+        width: 72px;
+        height: 40px;
+        border-radius: 8px;
+        overflow: hidden;
+        background: rgba(255,255,255,0.08);
+        flex: none;
+      }
+      .yt-cw-thumb {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .yt-cw-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-custom, #fff);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 520px;
+      }
+      .yt-cw-meta {
+        font-size: 12px;
+        color: var(--text-custom-secondary, #aaa);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .yt-cw-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .yt-cw-go {
+        border: none;
+        border-radius: 6px;
+        padding: 4px 8px;
+        background: rgba(34,197,94,0.2);
+        color: #fff;
+        cursor: pointer;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+      .yt-cw-del {
+        border: none;
+        border-radius: 6px;
+        padding: 4px 8px;
+        background: rgba(239,68,68,0.2);
+        color: #fff;
+        cursor: pointer;
+        font-size: 12px;
+      }
+
+      /* Shorts channel name label (Home/feed Shorts lockups) */
+      html:not([data-mdcm-shorts-channel-name="1"]) .yt-tools-shorts-channel-name {
+        display: none !important;
+      }
+      .yt-tools-shorts-channel-name {
+        font-size: 12px;
+        line-height: 1.2;
+        color: var(--yt-spec-text-secondary, #aaa);
+        margin-bottom: 2px;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      /* Like vs dislike bar (under likes/dislikes) */
+      #yt-like-dislike-bar-mdcm {
+        height: 6px;
+        border-radius: 999px;
+        overflow: hidden;
+        margin-top: 6px;
+        background: rgba(255,255,255,0.12);
+        max-width: 305px;
+      }
+      #yt-like-dislike-bar-mdcm .like {
+        height: 100%;
+        background: #22c55e;
+        float: left;
+      }
+      #yt-like-dislike-bar-mdcm .dislike {
+        height: 100%;
+        background: #ef4444;
+        float: left;
+      }
+
         .progress-retry-btn {
           position: absolute;
-          top: 95px;
+          top: 116px;
           right: 50%;
           width: 24px;
           height: 24px;
@@ -1366,6 +2814,29 @@
 
         .progress-retry-btn:hover {
           background: rgba(255, 255, 255, 0.3);
+          transform: scale(1.1);
+        }
+
+        .download-again-btn {
+          position: absolute;
+          top: 116px;
+          left: 50%;
+          width: 24px;
+          height: 24px;
+          border: none;
+          border-radius: 50%;
+          background: rgba(34, 197, 94, 0.35);
+          color: white;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 12px;
+          transition: all 0.3s ease;
+        }
+
+        .download-again-btn:hover {
+          background: rgba(34, 197, 94, 0.5);
           transform: scale(1.1);
         }
 
@@ -1676,7 +3147,11 @@
       ytd-feed-filter-chip-bar-renderer[not-sticky] #chips-wrapper.ytd-feed-filter-chip-bar-renderer {
         padding: 10px;
       }
-
+      .text-description-download {
+        font-size: 12px;
+        text-align: center;
+        margin-top: 10px;
+        }
     `);
 
 
@@ -1829,6 +3304,42 @@
 </button>
   `;
 
+  const bookmarkAddBtn = `
+  <button title="Add bookmark" type="button" id="yt-bookmark-add" class="botones_div">
+    <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M7 4h10a2 2 0 0 1 2 2v14l-7 -4l-7 4v-14a2 2 0 0 1 2 -2z" />
+      <path d="M12 7v6" />
+      <path d="M9 10h6" />
+    </svg>
+  </button>
+  `;
+
+  const bookmarkToggleBtn = `
+  <button title="Show bookmarks" type="button" id="yt-bookmark-toggle" class="botones_div">
+    <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M9 6h11" />
+      <path d="M9 12h11" />
+      <path d="M9 18h11" />
+      <path d="M5 6h.01" />
+      <path d="M5 12h.01" />
+      <path d="M5 18h.01" />
+    </svg>
+  </button>
+  `;
+
+  const continueWatchingHistoryBtn = `
+  <button title="History" type="button" id="yt-cw-history-toggle" class="botones_div" style="display:none;">
+    <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <path d="M12 8v4l3 3" />
+      <path d="M3 12a9 9 0 1 0 3 -6.7" />
+      <path d="M3 4v4h4" />
+    </svg>
+  </button>
+  `;
+
   const bufferVideo = `
   <button title="Buffer video" type="button" class="buffer_video botones_div">
  <svg width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-align-box-right-stretch"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 17h2" /><path d="M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14z" /><path d="M11 12h6" /><path d="M13 7h4" /></svg>
@@ -1846,6 +3357,9 @@
       ${filterEyes}
       ${resetButton}
       ${repeatVideo}
+      ${bookmarkAddBtn}
+      ${bookmarkToggleBtn}
+      ${continueWatchingHistoryBtn}
       ${downloadMp4Mp3}
       ${donwloadExternal}
       ${viewExternalVideo}
@@ -1853,6 +3367,8 @@
       ${screenShot}
       ${checkUpdates}
       </div>
+      <div id="yt-bookmarks-panel" class="yt-bookmarks-panel" style="display:none;"></div>
+      <div id="yt-continue-watching-panel" class="yt-continue-watching-panel" style="display:none;"></div>
       <div>
       </div>
     </form>
@@ -1877,6 +3393,9 @@
         <button class="progress-retry-btn" title="Retry" style="display: none;">
         <i class="fa-solid fa-rotate-right"></i>
         </button>
+        <button class="download-again-btn" title="Download again" style="display: none;">
+        <i class="fa-solid fa-download"></i>
+        </button>
         <div class="download-info">
           <span class="download-text">Download Video And Please Wait...</span>
           <span class="download-quality"></span>
@@ -1894,6 +3413,9 @@
         <div class="download-footer">
           <a href="https://github.com/DeveloperMDCM/" target="_blank"> <i class="fa-brands fa-github"></i> by: DeveloperMDCM</a>
         </div>
+        <h1 class="text-description-download">
+          <span >Enable pop-ups on YouTube to download audio or video</span>
+        </h1>
       </div>
     </div>
     </form>
@@ -1914,6 +3436,9 @@
         <button class="progress-retry-btn" title="Retry" style="display: none;">
         <i class="fa-solid fa-rotate-right"></i>
         </button>
+        <button class="download-again-btn" title="Download again" style="display: none;">
+        <i class="fa-solid fa-download"></i>
+        </button>
         <div class="download-info">
           <span class="download-text">Download Audio And Please Wait...</span>
           <span class="download-quality"></span>
@@ -1931,6 +3456,9 @@
          <div class="download-footer">
           <a href="https://github.com/DeveloperMDCM/" target="_blank"><i class="fa-brands fa-github"></i> by: DeveloperMDCM</a>
         </div>
+         <h1 class="text-description-download">
+          <span >Enable pop-ups on YouTube to download audio or video</span>
+        </h1>
       </div>
     </div>
     </form>
@@ -2204,6 +3732,26 @@
         <label>
           <div class="option-mdcm">
             <input type="checkbox" class="checkbox-mdcm" checked id="dislikes-toggle"> Show Dislikes
+          </div>
+        </label>
+        <label>
+          <div class="option-mdcm">
+            <input type="checkbox" class="checkbox-mdcm" id="like-dislike-bar-toggle"> Like vs Dislike bar
+          </div>
+        </label>
+        <label>
+          <div class="option-mdcm">
+            <input type="checkbox" class="checkbox-mdcm" id="bookmarks-toggle"> Bookmarks (timestamps)
+          </div>
+        </label>
+        <label>
+          <div class="option-mdcm">
+            <input type="checkbox" class="checkbox-mdcm" id="continue-watching-toggle"> Continue watching
+          </div>
+        </label>
+        <label>
+          <div class="option-mdcm">
+            <input type="checkbox" class="checkbox-mdcm" id="shorts-channel-name-toggle"> Shorts: show channel name
           </div>
         </label>
         <label>
@@ -2503,15 +4051,12 @@
     <span style="color: #fff" ;>v2.4.2.1</span>
   </div>
   `;
-  const panelHTML = policy
-    ? policy.createHTML(`
-      ${menuHTML}
-    `)
-    : `
-      ${menuHTML}
-    `;
+  const panelHTML = policy?.createHTML
+  ? policy.createHTML(`${menuHTML}`)
+  : `${menuHTML}`;
 
   panel.innerHTML = panelHTML;
+
   $ap(panel);
 
 
@@ -2584,6 +4129,10 @@
       lineColorPicker: $id('line-color-picker').value,
       timeColorPicker: $id('time-color-picker').value,
       dislikes: $id('dislikes-toggle').checked,
+      likeDislikeBar: $id('like-dislike-bar-toggle').checked,
+      bookmarks: $id('bookmarks-toggle').checked,
+      continueWatching: $id('continue-watching-toggle').checked,
+      shortsChannelName: $id('shorts-channel-name-toggle').checked,
       themes: $id('themes-toggle').checked,
       translation: $id('translation-toggle').checked,
       avatars: $id('avatars-toggle').checked,
@@ -2618,6 +4167,8 @@
   // Function to load settings
   function loadSettings() {
     const settings = JSON.parse(GM_getValue('ytSettingsMDCM', '{}'));
+    // Mark as loaded early so applySettings/saveSettings don't overwrite persisted values with defaults.
+    __ytToolsRuntime.settingsLoaded = true;
 
     if (settings.theme) {
       $e(`input[name="theme"][value="${settings.theme}"]`).checked = true;
@@ -2637,6 +4188,10 @@
     $id('line-color-picker').value = settings.lineColorPicker || '#ff0000';
     $id('time-color-picker').value = settings.timeColorPicker || '#ffffff';
     $id('dislikes-toggle').checked = settings.dislikes || false;
+    $id('like-dislike-bar-toggle').checked = settings.likeDislikeBar || false;
+    $id('bookmarks-toggle').checked = settings.bookmarks || false;
+    $id('continue-watching-toggle').checked = settings.continueWatching || false;
+    $id('shorts-channel-name-toggle').checked = settings.shortsChannelName || false;
     $id('themes-toggle').checked = settings.themes || false;
     $id('translation-toggle').checked = settings.translation || false;
     $id('avatars-toggle').checked = settings.avatars || false;
@@ -2934,6 +4489,10 @@
       lineColorPicker: $id('line-color-picker').value,
       timeColorPicker: $id('time-color-picker').value,
       dislikes: $id('dislikes-toggle').checked,
+      likeDislikeBar: $id('like-dislike-bar-toggle').checked,
+      bookmarks: $id('bookmarks-toggle').checked,
+      continueWatching: $id('continue-watching-toggle').checked,
+      shortsChannelName: $id('shorts-channel-name-toggle').checked,
       themes: $id('themes-toggle').checked,
       translation: $id('translation-toggle').checked,
       avatars: $id('avatars-toggle').checked,
@@ -3049,11 +4608,6 @@
     // selected video quality
     const video = $e('div#movie_player');
     let ytPlayerQuality = localStorage.getItem('yt-player-quality');
-    $m('#select-video-qualitys-select, #select-languages-comments-select').forEach(el => {
-      el.addEventListener('change', () => {
-        applySettings();
-      });
-    });
 
     // only force quality if the user didn't select "user"
     if (video != undefined && settings.selectVideoQuality !== "user") {
@@ -3083,6 +4637,12 @@
     const isThemeNormal = $e(`input[name="theme"][value="normal"]`).checked;
     const themeCustomOptions = $e('.theme-custom-options');
     const themeNormal = $e('.theme-selected-normal');
+    // Dynamic CSS (avoid GM_addStyle accumulating thousands of style tags)
+    let dynamicCss = '';
+    const addDynamicCss = (css) => {
+      if (!css) return;
+      dynamicCss += `\n${css}\n`;
+    };
     if(isThemeCustom != undefined) {
       themeNormal.style.display = "flex"
       themeCustomOptions.style.display = "flex";
@@ -3106,7 +4666,7 @@
           themeCustomOptions.style.display = "none";
 
           if(settings.theme === '0') {
-            GM_addStyle(`
+            addDynamicCss(`
               .botones_div {
                background-color: transparent;
                border: none;
@@ -3131,8 +4691,7 @@
             $sp('--ytd-searchbox-background', selectedTheme.gradient);
             $sp('--ytd-searchbox-text-color', selectedTheme.textColor);
             $sp('--ytcp-text-primary', settings.textColor);
-            GM_addStyle(`
-
+            addDynamicCss(`
               .botones_div {
               background-color: transparent;
               border: none;
@@ -3196,10 +4755,33 @@
           $sp('--ytd-searchbox-background', settings.primaryColorPicker);
           $sp('--ytd-searchbox-text-color', settings.secondaryColorPicker);
           $sp('--ytcp-text-primary', settings.primaryColorPicker);
-          GM_addStyle(`
+          addDynamicCss(`
             .html5-video-player {
                 color: ${settings.primaryColorPicker} !important;
               }
+                .ytProgressBarLineProgressBarPlayed {
+                background: linear-gradient(to right, ${settings.progressbarColorPicker} 80%, ${settings.progressbarColorPicker} 100%);
+
+                }
+              .ytp-menuitem .ytp-menuitem-icon svg path{
+                fill: ${settings.iconsColorPicker} !important;
+                }
+                .ytThumbnailOverlayProgressBarHostWatchedProgressBarSegment {
+                  background: linear-gradient(to right, ${settings.lineColorPicker} 80%, ${settings.lineColorPicker} 100%) !important;
+                }
+                .yt-badge-shape--thumbnail-default {
+                  color: ${settings.timeColorPicker} !important;
+                }
+                a svg > path, .ytp-button svg path  {
+                  fill: ${settings.iconsColorPicker} !important;
+              }
+                svg.path{ 
+                 fill: ${settings.iconsColorPicker} !important;
+                }
+
+              svg {
+                color: ${settings.iconsColorPicker} !important;
+                } 
               .ytp-volume-slider-handle:before, .ytp-volume-slider-handle, .ytp-tooltip.ytp-preview:not(.ytp-text-detail) {
                 background-color: ${settings.iconsColorPicker} !important;
               }
@@ -3269,7 +4851,7 @@
           }
             `);
         } else {
-          GM_addStyle(`
+          addDynamicCss(`
             .botones_div {
              background-color: transparent;
              border: none;
@@ -3280,7 +4862,7 @@
         }
 
       } else {
-        GM_addStyle(`
+        addDynamicCss(`
           .botones_div {
            background-color: transparent;
            border: none;
@@ -3293,7 +4875,7 @@
     }
 
 
-    GM_addStyle(`
+    addDynamicCss(`
       #columns.style-scope.ytd-watch-flexy {
         flex-direction: ${settings.reverseMode ? 'row-reverse' : 'row'} !important;
         padding-left: ${settings.reverseMode ? '20px' : '0'} !important;
@@ -3309,6 +4891,14 @@
       `);
 
     checkDarkMode();
+    // Apply dynamic CSS once per settings update
+    setDynamicCss(dynamicCss);
+
+    // Apply new features (safe, no heavy loops)
+    applyBookmarksIfEnabled(settings);
+    setupContinueWatchingFeature(settings.continueWatching);
+    scheduleLikeBarUpdate(settings, 5);
+    setupShortsChannelNameFeature(settings.shortsChannelName);
    function checkForVideo() {
     if (!settings.waveVisualizer) {
       cleanup(true); // Limpieza completa
@@ -3330,21 +4920,6 @@
 
 
   checkForVideo();
-
-    let currentUrl = window.location.href;
-    let urlCheckInterval = setInterval(function () {
-      if (window.location.href !== currentUrl) {
-        currentUrl = window.location.href;
-        checkUrlChange();
-      }
-    }, 1000);
-
-    function checkUrlChange() {
-      setTimeout(() => {
-        applySettings();
-      }, 1000);
-      clearInterval(urlCheckInterval);
-    }
 
     function downloadDescriptionVideo() {
       if ($e('#button_copy_description')) return;
@@ -3569,6 +5144,7 @@
   };
 
   const observeDOM = () => {
+      if (__ytToolsRuntime.shortsObserver) return;
       const observer = new MutationObserver(() => {
           insertButtons();
           addIcon();
@@ -3578,10 +5154,13 @@
           childList: true,
           subtree: true
       });
+      __ytToolsRuntime.shortsObserver = observer;
   };
 
-    insertButtons();
-    observeDOM();
+    if (!__ytToolsRuntime.shortsObserver) {
+      insertButtons();
+      observeDOM();
+    }
 
 
     const targetNode = $e('body');
@@ -3928,20 +5507,28 @@
 
 
 
-  const observer = new MutationObserver(() => {
-      const newVideo = findActiveVideo();
-      if (newVideo !== activeVideo) {
-          activeVideo = newVideo;
-          if (activeVideo) {
-              activeType = detectContentType(activeVideo);
-
-          }
-      }
-  });
+  if (!__ytToolsRuntime.statsObserver) {
+    const observer = new MutationObserver(() => {
+        const newVideo = findActiveVideo();
+        if (newVideo !== activeVideo) {
+            activeVideo = newVideo;
+            if (activeVideo) {
+                activeType = detectContentType(activeVideo);
+            }
+        }
+    });
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true
+    });
+    __ytToolsRuntime.statsObserver = observer;
+  }
 
         checkForVideo();
 
-  setInterval(() => {
+  if (!__ytToolsRuntime.statsIntervalId) {
+    __ytToolsRuntime.statsIntervalId = setInterval(() => {
 
         const now = Date.now();
         // checkForVideo();
@@ -3963,22 +5550,20 @@
         GM_setValue(STORAGE.VIDEO, videoTime);
         GM_setValue(STORAGE.SHORTS, shortsTime);
         updateUI();
-  }, UPDATE_INTERVAL);
+    }, UPDATE_INTERVAL);
+  }
 
 
 
 
 
 
-  observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-      attributes: true
-  });
   updateUI();
 
   // end stats
-  saveSettings();
+  if (__ytToolsRuntime.settingsLoaded) {
+    saveSettings();
+  }
 
   }
 
@@ -4009,11 +5594,16 @@
     const selectcalidades       = $e('.selectcalidades');
     const selectcalidadesaudio  = $e('.selectcalidadesaudio');
 
-    [formulariodescarga, formulariodescargaaudio].forEach(form =>
-      form?.addEventListener('click', e => e.preventDefault())
-    );
+    [formulariodescarga, formulariodescargaaudio].forEach(form => {
+      if (!form) return;
+      if (form.dataset.ytToolsPreventDefault === '1') return;
+      form.addEventListener('click', e => e.preventDefault());
+      form.dataset.ytToolsPreventDefault = '1';
+    });
 
-    selectcalidades?.addEventListener('change', e => {
+    if (selectcalidades && selectcalidades.dataset.ytToolsBound !== '1') {
+      selectcalidades.dataset.ytToolsBound = '1';
+      selectcalidades.addEventListener('change', e => {
       const quality = e.target.value;
       if (!quality) return; // Don't proceed if no quality selected
 
@@ -4038,9 +5628,12 @@
       // Store quality for later use
       downloadContainer.dataset.quality = quality;
       downloadContainer.dataset.type = 'video';
-    });
+      });
+    }
 
-    selectcalidadesaudio?.addEventListener('change', e => {
+    if (selectcalidadesaudio && selectcalidadesaudio.dataset.ytToolsBound !== '1') {
+      selectcalidadesaudio.dataset.ytToolsBound = '1';
+      selectcalidadesaudio.addEventListener('change', e => {
       const format = e.target.value;
       if (!format) return; // Don't proceed if no format selected
 
@@ -4065,9 +5658,12 @@
       // Store format for later use
       downloadContainer.dataset.quality = format;
       downloadContainer.dataset.type = 'audio';
-    });
+      });
+    }
 
-    btn3cancel?.addEventListener('click', () => {
+    if (btn3cancel && btn3cancel.dataset.ytToolsBound !== '1') {
+      btn3cancel.dataset.ytToolsBound = '1';
+      btn3cancel.addEventListener('click', () => {
       // Hide all selects
       selectcalidades?.classList.add('ocultarframe');
       selectcalidadesaudio?.classList.add('ocultarframeaudio');
@@ -4083,6 +5679,8 @@
         videoContainer.removeAttribute('data-type');
         videoContainer.removeAttribute('data-downloading');
         videoContainer.removeAttribute('data-url-opened');
+        videoContainer.removeAttribute('data-last-download-url');
+        videoContainer.querySelector?.('.download-again-btn')?.style && (videoContainer.querySelector('.download-again-btn').style.display = 'none');
       }
 
       if (audioContainer) {
@@ -4092,6 +5690,8 @@
         audioContainer.removeAttribute('data-type');
         audioContainer.removeAttribute('data-downloading');
         audioContainer.removeAttribute('data-url-opened');
+        audioContainer.removeAttribute('data-last-download-url');
+        audioContainer.querySelector?.('.download-again-btn')?.style && (audioContainer.querySelector('.download-again-btn').style.display = 'none');
       }
 
       // Hide all forms
@@ -4101,47 +5701,51 @@
       // Reset forms
       formulariodescarga?.reset();
       formulariodescargaaudio?.reset();
-    });
-
-      // Add event listeners for download buttons
-  document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('download-btn')) {
-      const container = e.target.closest('.download-container');
-      const quality = container.dataset.quality;
-      const type = container.dataset.type;
-
-      if (quality && type) {
-        startDownloadVideoOrAudio(quality, container);
-      }
+      });
     }
 
-    if (e.target.classList.contains('retry-btn')) {
-      const container = e.target.closest('.download-container');
+      // Add event listeners for download buttons (only once)
+  if (!__ytToolsRuntime.downloadClickHandlerInitialized) {
+    __ytToolsRuntime.downloadClickHandlerInitialized = true;
+    document.addEventListener('click', (e) => {
+      const target = e.target;
+      if (!(target instanceof Element)) return;
+
+      const clicked =
+        target.closest('.download-btn') ||
+        target.closest('.retry-btn') ||
+        target.closest('.progress-retry-btn') ||
+        target.closest('.download-again-btn');
+      if (!clicked) return;
+
+      const container = clicked.closest('.download-container');
+      if (!container) return;
+
       const quality = container.dataset.quality;
       const type = container.dataset.type;
-
-      if (quality && type) {
-        startDownloadVideoOrAudio(quality, container);
+      // download-again just re-opens the last URL (no restart)
+      if (clicked.classList.contains('download-again-btn')) {
+        const url = container.dataset.lastDownloadUrl;
+        if (url) window.open(url);
+        return;
       }
-    }
+      if (!quality || !type) return;
 
-    if (e.target.classList.contains('progress-retry-btn')) {
-      const container = e.target.closest('.download-container');
-      const quality = container.dataset.quality;
-      const type = container.dataset.type;
-
-      if (quality && type) {
-        // Clear current progress and restart
+      if (clicked.classList.contains('progress-retry-btn')) {
         container.dataset.downloading = 'false';
         container.dataset.urlOpened = 'false';
-        startDownloadVideoOrAudio(quality, container);
+        container.dataset.lastDownloadUrl = '';
+        container.querySelector?.('.download-again-btn')?.style && (container.querySelector('.download-again-btn').style.display = 'none');
       }
-    }
-  });
+      startDownloadVideoOrAudio(quality, container);
+    });
+  }
 
 
 
-    btn1mp4?.addEventListener('click', () => {
+    if (btn1mp4 && btn1mp4.dataset.ytToolsBound !== '1') {
+      btn1mp4.dataset.ytToolsBound = '1';
+      btn1mp4.addEventListener('click', () => {
       // Show video select, hide audio select
       selectcalidades?.classList.remove('ocultarframe');
       selectcalidadesaudio?.classList.add('ocultarframeaudio');
@@ -4176,9 +5780,12 @@
       // Reset forms
       formulariodescarga?.reset();
       formulariodescargaaudio?.reset();
-    });
+      });
+    }
 
-    btn2mp3?.addEventListener('click', () => {
+    if (btn2mp3 && btn2mp3.dataset.ytToolsBound !== '1') {
+      btn2mp3.dataset.ytToolsBound = '1';
+      btn2mp3.addEventListener('click', () => {
       // Show audio select, hide video select
       selectcalidadesaudio?.classList.remove('ocultarframeaudio');
       selectcalidades?.classList.add('ocultarframe');
@@ -4213,7 +5820,8 @@
       // Reset forms
       formulariodescargaaudio?.reset();
       formulariodescarga?.reset();
-    });
+      });
+    }
       // Invertir contenido
 
 
@@ -4261,7 +5869,8 @@
         }
       }
 
-      setInterval(initClickEvent, 2000);
+      // Run once; renderizarButtons() may run multiple times and we guard with dataset.listenerAdded
+      initClickEvent();
 
 
 
@@ -4281,38 +5890,32 @@
             videoFull != undefined
           ) {
             countRepeat += 1;
-            setInterval(() => {
-              switch (countRepeat) {
-                case 1:
-                  document
-                    .querySelector(
-                      '#movie_player > div.html5-video-container > video'
-                    )
-                    .setAttribute('loop', 'true');
-                  imarepeat.innerHTML = `  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-repeat-off" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                      <path d="M4 12v-3c0 -1.336 .873 -2.468 2.08 -2.856m3.92 -.144h10m-3 -3l3 3l-3 3"></path>
-                      <path d="M20 12v3a3 3 0 0 1 -.133 .886m-1.99 1.984a3 3 0 0 1 -.877 .13h-13m3 3l-3 -3l3 -3"></path>
-                      <path d="M3 3l18 18"></path>
-                   </svg> `; // img repeat
-                  break;
-                case 2:
-                  countRepeat = 0;
-                  document
-                    .querySelector(
-                      '#movie_player > div.html5-video-container > video'
-                    )
-                    .removeAttribute('loop');
-                  imarepeat.innerHTML = ` <svg  xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-repeat" width="24"
-                      height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                      stroke-linecap="round" stroke-linejoin="round">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                      <path d="M4 12v-3a3 3 0 0 1 3 -3h13m-3 -3l3 3l-3 3"></path>
-                      <path d="M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3"></path>
-                    </svg>`;
-                  break;
-              }
-            }, 1000);
+            switch (countRepeat) {
+              case 1:
+                document
+                  .querySelector('#movie_player > div.html5-video-container > video')
+                  ?.setAttribute('loop', 'true');
+                imarepeat.innerHTML = `  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-repeat-off" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M4 12v-3c0 -1.336 .873 -2.468 2.08 -2.856m3.92 -.144h10m-3 -3l3 3l-3 3"></path>
+                    <path d="M20 12v3a3 3 0 0 1 -.133 .886m-1.99 1.984a3 3 0 0 1 -.877 .13h-13m3 3l-3 -3l3 -3"></path>
+                    <path d="M3 3l18 18"></path>
+                 </svg> `; // img repeat
+                break;
+              case 2:
+                countRepeat = 0;
+                document
+                  .querySelector('#movie_player > div.html5-video-container > video')
+                  ?.removeAttribute('loop');
+                imarepeat.innerHTML = ` <svg  xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-repeat" width="24"
+                    height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M4 12v-3a3 3 0 0 1 3 -3h13m-3 -3l3 3l-3 3"></path>
+                    <path d="M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3"></path>
+                  </svg>`;
+                break;
+            }
           }
           }
       }
@@ -4390,19 +5993,20 @@
         };
       }
       // for background image file photo higt quality
+      // for background image file photo higt quality
       const fileInput = $id('background_image');
       const backgroundDiv = $e('ytd-app');
-
+ 
       const storedImage = localStorage.getItem('backgroundImage');
       if (storedImage) {
         backgroundDiv.style = `
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
-
+ 
         background-image: url(${storedImage}) !important`;
       }
-
+ 
       fileInput.addEventListener('change', (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -4424,7 +6028,7 @@
           let enlace;
           enlace = parametrosURL.get('v');
           window.open(
-            `https://www.y2mate.com/es/convert-youtube/${enlace}`,
+            `https://ssyoutube.com/watch?v=${enlace}&t=2s`,
             'popUpWindow',
             'height=800,width=1000,left=50%,top=100,resizable=no,scrollbars=yes,toolbar=no,menubar=yes,location=no,directories=yes, status=no'
           );
@@ -4554,14 +6158,36 @@
   // Add event listeners to all inputs
   const inputs = $m('input');
   inputs.forEach((input) => {
-    input.addEventListener('change', applySettings);
+    input.addEventListener('change', scheduleApplySettings);
     if (input.type === 'range') {
       input.addEventListener('change', () => {
         updateSliderValues();
-        applySettings();
+        scheduleApplySettings();
       });
     }
   });
+
+  // Some settings are controlled by <select> elements; ensure they persist and apply without duplicating listeners.
+  function bindSelectOnce(id) {
+    const el = $id(id);
+    if (!el) return;
+    if (el.dataset.ytToolsBound === '1') return;
+    el.dataset.ytToolsBound = '1';
+    el.addEventListener('change', () => {
+      // Persist immediately
+      try {
+        saveSettings();
+      } catch (e) {
+        console.error('saveSettings error:', e);
+      }
+      // Apply with debounce
+      scheduleApplySettings();
+    });
+  }
+
+  bindSelectOnce('select-video-qualitys-select');
+  bindSelectOnce('select-languages-comments-select');
+  bindSelectOnce('select-wave-visualizer-select');
 
   // Export configuration
 
@@ -4700,6 +6326,7 @@
     if (!document.location.href.includes('watch')) {
       hideCanvas();
     }
+    scheduleApplySettings();
     });
     GM_registerMenuCommand('Update Script by: DeveloperMDCM', function() {
       window.open('https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js', '_blank');
@@ -4732,27 +6359,35 @@
     inputFile.click();
   });
 
-  // add background image
-  inputFile.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function (ev) {
-      const dataUrl = ev.target.result;
-      preview.style.backgroundImage = `url(${dataUrl})`;
-      preview.classList.add('has-image');
-      localStorage.setItem('backgroundImage', dataUrl);
-      removeBtn.style.display = 'flex';
-    };
-    reader.readAsDataURL(file);
-  });
+    // add background image (bind once)
+    inputFile.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (ev) {
+        const dataUrl = ev.target.result;
+        preview.style.backgroundImage = `url(${dataUrl})`;
+        preview.classList.add('has-image');
+        localStorage.setItem('backgroundImage', dataUrl);
+        removeBtn.style.display = 'flex';
+      };
+      reader.readAsDataURL(file);
+    });
 
-  // Remove background image
-  removeBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    preview.style.backgroundImage = '';
-    preview.classList.remove('has-image');
-    localStorage.removeItem('backgroundImage');
-    removeBtn.style.display = 'none';
-  });
+    // Remove background image (bind once)
+    if (removeBtn && removeBtn.dataset.ytToolsBound !== '1') {
+      removeBtn.dataset.ytToolsBound = '1';
+      removeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        // Only allow real user click to remove stored background
+        if (e.isTrusted === false) return;
+        preview.style.backgroundImage = '';
+        preview.classList.remove('has-image');
+        localStorage.removeItem('backgroundImage');
+        removeBtn.style.display = 'none';
+      });
+    }
+  
+  
 })();

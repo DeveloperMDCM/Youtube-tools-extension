@@ -11,7 +11,12 @@
 
 <details>
 <summary>Features:</summary>
-   
+- Continue watching (history)
+- Bookmarks (timestamps)
+- Like vs Dislike bar
+- show channel short name
+- Download fallbacks (extra providers)
+- Download again button 
 - Download Audio Flac, WAV, WebM, MP3, M4A, AAC, OPUS, OGG audio.
 - Download MP4, MP3 up to 8K with high quality.
 - Change default video player quality.
