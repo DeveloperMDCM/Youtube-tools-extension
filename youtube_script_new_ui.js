@@ -70,7 +70,7 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.4.2.0
+// @version      2.4.3.2
 // @author       DeveloperMDCM
 // @match        *://www.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -622,10 +622,10 @@
   };
 
   const UPDATE_META_URL = 'https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.meta.js';
-  const VERSION_CHECK_INTERVAL_MS = 0; // once per day
+  const VERSION_CHECK_INTERVAL_MS = 24 * 60 * 60 * 1000; // once per day
 
-  const SHORTS_CHANNEL_TTL_MS = 7 * 24 * 60 * 60 * 1000;   // 7 days
-  const LIKES_DISLIKES_TTL_MS = 24 * 60 * 60 * 1000;        // 24 hours
+  const SHORTS_CHANNEL_TTL_MS = 24 * 24 * 60 * 60 * 1000;   // 7 days
+  const LIKES_DISLIKES_TTL_MS = 7 * 24 * 60 * 60 * 1000;        // 7 days
   const PERSISTED_CACHE_MAX_ENTRIES = 500;
 
   function getShortsChannelFromPersistedCache(videoId) {
@@ -4425,7 +4425,7 @@
     <div class="developer-mdcm">
       Developed by <a href="https://github.com/DeveloperMDCM" target="_blank"> <i class="fa-brands fa-github"></i> DeveloperMDCM</a>
     </div>
-    <span style="color: #fff" ;>v2.4.3.1</span>
+    <span style="color: #fff" ;>v2.4.3.2</span>
   </div>
   `;
   const panelHTML = policy?.createHTML
@@ -6583,7 +6583,7 @@
 
   console.log(
     '%cYoutube Tools Extension NEW UI\n' +
-      '%cRun %c(v2.4.3.1)\n' +
+      '%cRun %c(v2.4.3.2)\n' +
       'By: DeveloperMDCM.',
     HEADER_STYLE,
     CODE_STYLE,
