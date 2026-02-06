@@ -70,7 +70,7 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.4.2.1
+// @version      2.4.2.0
 // @author       DeveloperMDCM
 // @match        *://www.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -294,6 +294,11 @@
     shortsObserver: null,
     statsObserver: null,
     statsIntervalId: null,
+    lockupCachedStatsObserver: null,
+    lockupCachedStatsObserveTarget: null,
+    lockupCachedStatsIntervalId: null,
+    updateShortsViewsButton: function () {},
+    updateShortsRatingButton: function () {},
   };
 
   function setDynamicCss(cssText = '') {
@@ -611,7 +616,70 @@
   const STORAGE_KEYS_MDCM = {
     BOOKMARKS: 'ytBookmarksMDCM',
     CONTINUE_WATCHING: 'ytContinueWatchingMDCM',
+    SHORTS_CHANNEL_CACHE: 'ytShortsChannelCacheMDCM',
+    LIKES_DISLIKES_CACHE: 'ytLikesDislikesCacheMDCM',
+    VERSION_CHECK_LAST: 'ytVersionCheckLastMDCM',
   };
+
+  const UPDATE_META_URL = 'https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.meta.js';
+  const VERSION_CHECK_INTERVAL_MS = 0; // once per day
+
+  const SHORTS_CHANNEL_TTL_MS = 7 * 24 * 60 * 60 * 1000;   // 7 days
+  const LIKES_DISLIKES_TTL_MS = 24 * 60 * 60 * 1000;        // 24 hours
+  const PERSISTED_CACHE_MAX_ENTRIES = 500;
+
+  function getShortsChannelFromPersistedCache(videoId) {
+    try {
+      const map = readJsonGM(STORAGE_KEYS_MDCM.SHORTS_CHANNEL_CACHE, {});
+      const entry = map?.[videoId];
+      if (!entry || typeof entry.channelName !== 'string') return null;
+      const age = Date.now() - (Number(entry.ts) || 0);
+      if (age > SHORTS_CHANNEL_TTL_MS) return null;
+      return entry.channelName;
+    } catch (e) { return null; }
+  }
+
+  function setShortsChannelToPersistedCache(videoId, channelName) {
+    if (!videoId || typeof channelName !== 'string') return;
+    try {
+      const map = readJsonGM(STORAGE_KEYS_MDCM.SHORTS_CHANNEL_CACHE, {});
+      map[videoId] = { channelName, ts: Date.now() };
+      const entries = Object.entries(map).sort((a, b) => (Number(b[1]?.ts) || 0) - (Number(a[1]?.ts) || 0));
+      const pruned = Object.fromEntries(entries.slice(0, PERSISTED_CACHE_MAX_ENTRIES));
+      writeJsonGM(STORAGE_KEYS_MDCM.SHORTS_CHANNEL_CACHE, pruned);
+    } catch (e) {}
+  }
+
+  function getLikesDislikesFromPersistedCache(videoId) {
+    try {
+      const map = readJsonGM(STORAGE_KEYS_MDCM.LIKES_DISLIKES_CACHE, {});
+      const entry = map?.[videoId];
+      if (!entry) return null;
+      const age = Date.now() - (Number(entry.ts) || 0);
+      if (age > LIKES_DISLIKES_TTL_MS) return null;
+      const dislikes = Number(entry.dislikes);
+      const likes = Number(entry.likes);
+      const viewCount = Number(entry.viewCount);
+      const rating = Number(entry.rating);
+      return {
+        likes: Number.isFinite(likes) ? likes : null,
+        dislikes: Number.isFinite(dislikes) ? dislikes : null,
+        viewCount: Number.isFinite(viewCount) ? viewCount : null,
+        rating: Number.isFinite(rating) && rating >= 0 && rating <= 5 ? rating : null,
+      };
+    } catch (e) { return null; }
+  }
+
+  function setLikesDislikesToPersistedCache(videoId, likes, dislikes, viewCount, rating) {
+    if (!videoId) return;
+    try {
+      const map = readJsonGM(STORAGE_KEYS_MDCM.LIKES_DISLIKES_CACHE, {});
+      map[videoId] = { likes: likes ?? null, dislikes: dislikes ?? null, viewCount: viewCount ?? null, rating: rating ?? null, ts: Date.now() };
+      const entries = Object.entries(map).sort((a, b) => (Number(b[1]?.ts) || 0) - (Number(a[1]?.ts) || 0));
+      const pruned = Object.fromEntries(entries.slice(0, Math.min(PERSISTED_CACHE_MAX_ENTRIES, 300)));
+      writeJsonGM(STORAGE_KEYS_MDCM.LIKES_DISLIKES_CACHE, pruned);
+    } catch (e) {}
+  }
 
   function getCurrentVideoId() {
     try {
@@ -627,27 +695,7 @@
       return null;
     }
   }
-
-  function getCurrentChannelId() {
-    try {
-      const w = (typeof unsafeWindow !== 'undefined' && unsafeWindow) ? unsafeWindow : window;
-      const pr = w?.ytInitialPlayerResponse || window.ytInitialPlayerResponse;
-      const cid = pr?.videoDetails?.channelId;
-      if (cid) return cid;
-
-      // DOM fallbacks
-      const a =
-        $e('#owner a[href*="/channel/"], #owner a[href*="/@"], ytd-channel-name a[href*="/channel/"], ytd-channel-name a[href*="/@"]');
-      const href = a?.href || '';
-      const m1 = href.match(/\/channel\/([^/?]+)/);
-      if (m1?.[1]) return m1[1];
-      const m2 = href.match(/\/@([^/?]+)/);
-      if (m2?.[1]) return `@${m2[1]}`;
-      return null;
-    } catch (e) {
-      return null;
-    }
-  }
+  
 
   function readJsonGM(key, fallback) {
     try {
@@ -664,6 +712,65 @@
       GM_setValue(key, JSON.stringify(value));
     } catch (e) {
       console.error('writeJsonGM error:', e);
+    }
+  }
+
+  function isVersionNewer(latestStr, currentStr) {
+    if (!latestStr || !currentStr) return false;
+    const parse = (s) => String(s).trim().split('.').map((n) => parseInt(n, 10) || 0);
+    const a = parse(latestStr);
+    const b = parse(currentStr);
+    const len = Math.max(a.length, b.length);
+    for (let i = 0; i < len; i++) {
+      const x = a[i] || 0;
+      const y = b[i] || 0;
+      if (x > y) return true;
+      if (x < y) return false;
+    }
+    return false;
+  }
+
+  async function checkNewVersion() {
+    try {
+      const last = GM_getValue(STORAGE_KEYS_MDCM.VERSION_CHECK_LAST, 0);
+      if (Date.now() - last < VERSION_CHECK_INTERVAL_MS) return;
+      GM_setValue(STORAGE_KEYS_MDCM.VERSION_CHECK_LAST, Date.now());
+
+      const res = await fetch(UPDATE_META_URL, { cache: 'no-store' });
+      if (!res.ok) return;
+      const text = await res.text();
+      const m = text.match(/@version\s+([\d.]+)/);
+      if (!m) return;
+      const latestVer = m[1].trim();
+      const currentVer = (typeof GM_info !== 'undefined' && GM_info.script && GM_info.script.version)
+        ? String(GM_info.script.version).trim()
+        : '';
+      if (!currentVer || !isVersionNewer(latestVer, currentVer)) return;
+
+      const updateUrl = 'https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js';
+      iziToast.info({
+        title: 'Nueva versión disponible',
+        message: 'YouTube Tools v' + latestVer + ' está disponible. Haz clic para actualizar.',
+        position: 'bottomLeft',
+        timeout: 12000,
+        progressBar: true,
+        closeOnClick: true,
+        onclick: function () {
+          window.open(updateUrl, '_blank');
+        },
+      });
+    //   iziToast.show({
+    //     title: 'New Update',
+    //     message: 'A new version is available.',
+    //     buttons: [
+    //         ['<button>View Now</button>', function (instance, toast) {
+    //             window.open('https://your-site.com', '_blank');
+    //             instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+    //         }, true] // true = focus
+    //     ]
+    // });
+    } catch (e) {
+      // silent: network or parse error
     }
   }
 
@@ -1322,9 +1429,16 @@
       const cached = rt.cache.get(videoId);
       if (cached) return Promise.resolve(cached);
 
+      const persisted = getShortsChannelFromPersistedCache(videoId);
+      if (persisted) {
+        rt.cache.set(videoId, persisted);
+        return Promise.resolve(persisted);
+      }
+
       const domName = tryExtractChannelNameFromDom(item);
       if (domName) {
         rt.cache.set(videoId, domName);
+        setShortsChannelToPersistedCache(videoId, domName);
         return Promise.resolve(domName);
       }
 
@@ -1334,7 +1448,10 @@
       const p = fetchChannelNameFromWatch(videoId)
         .then((name) => {
           const finalName = (name || '').trim();
-          if (finalName) rt.cache.set(videoId, finalName);
+          if (finalName) {
+            rt.cache.set(videoId, finalName);
+            setShortsChannelToPersistedCache(videoId, finalName);
+          }
           return finalName;
         })
         .finally(() => {
@@ -1405,6 +1522,213 @@
 
     scan();
   }
+
+  // ------------------------------
+  // Feature: Show cached rating/likes/dislikes on video cards (watch related + home/search)
+  // ------------------------------
+  function getVideoIdFromLockup(lockup) {
+    const a = lockup.querySelector('a[href*="watch?v="]');
+    if (a) {
+      const m = (a.getAttribute('href') || '').match(/[?&]v=([^&]+)/);
+      if (m) return m[1];
+    }
+    const el = lockup.querySelector('[class*="content-id-"]');
+    if (el) {
+      const m = el.className.match(/content-id-([A-Za-z0-9_-]+)/);
+      if (m) return m[1];
+    }
+    return null;
+  }
+
+  function createSvgIconFromString(svgString, sizePx) {
+    const div = document.createElement('div');
+    div.innerHTML = svgString.trim();
+    const svg = div.firstElementChild;
+    if (!svg) return null;
+    svg.setAttribute('width', String(sizePx || 14));
+    svg.setAttribute('height', String(sizePx || 14));
+    svg.style.display = 'inline-block';
+    svg.style.verticalAlign = 'middle';
+    svg.style.marginRight = '2px';
+    return svg;
+  }
+
+  const LOCKUP_RATING_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-star"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245" /></svg>';
+  const LOCKUP_LIKE_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-thumb-up"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 11v8a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1v-7a1 1 0 0 1 1 -1h3a4 4 0 0 0 4 -4v-1a2 2 0 0 1 4 0v5h3a2 2 0 0 1 2 2l-1 5a2 3 0 0 1 -2 2h-7a3 3 0 0 1 -3 -3" /></svg>';
+  const LOCKUP_DISLIKE_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-thumb-down"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 13v-8a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v7a1 1 0 0 0 1 1h3a4 4 0 0 1 4 4v1a2 2 0 0 0 4 0v-5h3a2 2 0 0 0 2 -2l-1 -5a2 3 0 0 0 -2 -2h-7a3 3 0 0 0 -3 3" /></svg>';
+
+  function injectLockupCachedStats() {
+    if (!window.location.href.includes('youtube.com')) return;
+    document.querySelectorAll('yt-lockup-view-model').forEach((lockup) => {
+      if (lockup.hasAttribute('data-yt-tools-lockup-stats')) return;
+      const videoId = getVideoIdFromLockup(lockup);
+      if (!videoId) return;
+      const cached = getLikesDislikesFromPersistedCache(videoId);
+      if (!cached) return;
+      const hasRating = cached.rating != null;
+      const hasLikes = cached.likes != null;
+      const hasDislikes = cached.dislikes != null;
+      if (!hasRating && !hasLikes && !hasDislikes) return;
+      const meta = lockup.querySelector('yt-content-metadata-view-model');
+      if (!meta) return;
+      const row = document.createElement('div');
+      row.className = 'yt-content-metadata-view-model__metadata-row';
+      row.setAttribute('data-yt-tools-lockup-stats-row', '1');
+      const wrap = document.createElement('span');
+      wrap.className = 'yt-core-attributed-string yt-content-metadata-view-model__metadata-text yt-core-attributed-string--white-space-pre-wrap yt-core-attributed-string--link-inherit-color';
+      wrap.setAttribute('dir', 'auto');
+      wrap.setAttribute('role', 'text');
+      const sep = () => { const s = document.createTextNode(' · '); return s; };
+      if (hasRating) {
+        const ratingIcon = createSvgIconFromString(LOCKUP_RATING_SVG, 14);
+        if (ratingIcon) wrap.appendChild(ratingIcon);
+        wrap.appendChild(document.createTextNode(' ' + cached.rating.toFixed(1)));
+        if (hasLikes || hasDislikes) wrap.appendChild(sep());
+      }
+      if (hasLikes) {
+        const likeIcon = createSvgIconFromString(LOCKUP_LIKE_SVG, 14);
+        if (likeIcon) wrap.appendChild(likeIcon);
+        wrap.appendChild(document.createTextNode(' ' + FormatterNumber(cached.likes, 0)));
+        if (hasDislikes) wrap.appendChild(sep());
+      }
+      if (hasDislikes) {
+        const dislikeIcon = createSvgIconFromString(LOCKUP_DISLIKE_SVG, 14);
+        if (dislikeIcon) wrap.appendChild(dislikeIcon);
+        wrap.appendChild(document.createTextNode(' ' + FormatterNumber(cached.dislikes, 0)));
+      }
+      row.appendChild(wrap);
+      meta.appendChild(row);
+      lockup.setAttribute('data-yt-tools-lockup-stats', videoId);
+    });
+  }
+
+  function getVideoIdFromShortsLockup(item) {
+    if (item.dataset.ytToolsShortsVideoId) return item.dataset.ytToolsShortsVideoId;
+    var a = item.querySelector('a[href^="/shorts/"]');
+    if (!a) return null;
+    var m = (a.getAttribute('href') || '').match(/\/shorts\/([^/?]+)/);
+    return m ? m[1] : null;
+  }
+
+  function injectShortsLockupCachedStats() {
+    if (!window.location.href.includes('youtube.com')) return;
+    // Process inner lockup (has metadata); v2 wraps it and would duplicate
+    document.querySelectorAll('ytm-shorts-lockup-view-model').forEach(function (item) {
+      if (item.hasAttribute('data-yt-tools-shorts-stats')) return;
+      var videoId = getVideoIdFromShortsLockup(item);
+      if (!videoId) return;
+      var cached = getLikesDislikesFromPersistedCache(videoId);
+      if (!cached) return;
+      var hasLikes = cached.likes != null;
+      var hasDislikes = cached.dislikes != null;
+      if (!hasLikes && !hasDislikes) return;
+      var subhead = item.querySelector(
+        '.ShortsLockupViewModelHostOutsideMetadataSubhead,' +
+        '.shortsLockupViewModelHostOutsideMetadataSubhead,' +
+        '.ShortsLockupViewModelHostMetadataSubhead,' +
+        '.shortsLockupViewModelHostMetadataSubhead'
+      );
+      if (!subhead || !subhead.parentElement) return;
+      var wrap = document.createElement('span');
+      wrap.className = 'yt-core-attributed-string yt-content-metadata-view-model__metadata-text yt-core-attributed-string--white-space-pre-wrap yt-core-attributed-string--link-inherit-color yt-tools-shorts-stats-row';
+      wrap.setAttribute('dir', 'auto');
+      wrap.setAttribute('role', 'text');
+      wrap.setAttribute('style', 'color: #aaa !important;');
+      var sep = function () { return document.createTextNode(' \u00b7 '); };
+      if (hasLikes) {
+        var likeIcon = createSvgIconFromString(LOCKUP_LIKE_SVG, 12);
+        if (likeIcon) { likeIcon.style.setProperty('color', '#aaa', 'important'); wrap.appendChild(likeIcon); }
+        wrap.appendChild(document.createTextNode(' ' + FormatterNumber(cached.likes, 0)));
+        if (hasDislikes) wrap.appendChild(sep());
+      }
+      if (hasDislikes) {
+        var dislikeIcon = createSvgIconFromString(LOCKUP_DISLIKE_SVG, 12);
+        if (dislikeIcon) { dislikeIcon.style.setProperty('color', '#aaa', 'important'); wrap.appendChild(dislikeIcon); }
+        wrap.appendChild(document.createTextNode(' ' + FormatterNumber(cached.dislikes, 0)));
+      }
+      var row = document.createElement('div');
+      row.className = 'yt-tools-shorts-stats-wrap';
+      row.setAttribute('style', 'color: #aaa !important;');
+      row.appendChild(wrap);
+      subhead.parentElement.appendChild(row);
+      item.setAttribute('data-yt-tools-shorts-stats', videoId);
+    });
+  }
+
+  function createLockupStatsObserver(target) {
+    var lockupStatsDebounceT = null;
+    var lockupStatsScheduled = false;
+    var obs = new MutationObserver(function () {
+      if (lockupStatsScheduled) return;
+      lockupStatsScheduled = true;
+      clearTimeout(lockupStatsDebounceT);
+      lockupStatsDebounceT = setTimeout(function () {
+        lockupStatsScheduled = false;
+        if (!window.location.href.includes('youtube.com')) return;
+        injectLockupCachedStats();
+        injectShortsLockupCachedStats();
+        // Extra passes for late-rendered lockups (infinite scroll / related column / SPA)
+        [500, 1100, 2000].forEach(function (delay) {
+          setTimeout(function () {
+            if (!window.location.href.includes('youtube.com')) return;
+            injectLockupCachedStats();
+            injectShortsLockupCachedStats();
+          }, delay);
+        });
+      }, 280);
+    });
+    obs.observe(target, { childList: true, subtree: true });
+    return obs;
+  }
+
+  function retargetLockupStatsObserverIfNeeded() {
+    if (!window.location.href.includes('youtube.com/watch')) return;
+    var secondary = document.getElementById('secondary') || document.querySelector('ytd-watch-next-secondary-results-renderer');
+    if (!secondary || !secondary.parentNode) return;
+    if (__ytToolsRuntime.lockupCachedStatsObserveTarget === secondary) return;
+    var obs = __ytToolsRuntime.lockupCachedStatsObserver;
+    if (!obs) return;
+    obs.disconnect();
+    __ytToolsRuntime.lockupCachedStatsObserver = createLockupStatsObserver(secondary);
+    __ytToolsRuntime.lockupCachedStatsObserveTarget = secondary;
+  }
+
+  function hasUnprocessedLockups() {
+    var normal = document.querySelectorAll('yt-lockup-view-model:not([data-yt-tools-lockup-stats])').length > 0;
+    var shorts = document.querySelectorAll('ytm-shorts-lockup-view-model:not([data-yt-tools-shorts-stats])').length > 0;
+    return normal || shorts;
+  }
+
+  function runLockupCachedStatsCatchUp() {
+    if (!window.location.href.includes('youtube.com')) return;
+    if (document.visibilityState !== 'visible') return;
+    if (!hasUnprocessedLockups()) return;
+    injectLockupCachedStats();
+    injectShortsLockupCachedStats();
+  }
+
+  function setupLockupCachedStats() {
+    if (!window.location.href.includes('youtube.com')) return;
+    injectLockupCachedStats();
+    injectShortsLockupCachedStats();
+    var secondary = document.getElementById('secondary') || document.querySelector('ytd-watch-next-secondary-results-renderer');
+    var observeTarget = secondary && secondary.parentNode ? secondary : document.body;
+    if (__ytToolsRuntime.lockupCachedStatsObserver) {
+      if (observeTarget !== __ytToolsRuntime.lockupCachedStatsObserveTarget) {
+        __ytToolsRuntime.lockupCachedStatsObserver.disconnect();
+        __ytToolsRuntime.lockupCachedStatsObserver = createLockupStatsObserver(observeTarget);
+        __ytToolsRuntime.lockupCachedStatsObserveTarget = observeTarget;
+      }
+      return;
+    }
+    __ytToolsRuntime.lockupCachedStatsObserver = createLockupStatsObserver(observeTarget);
+    __ytToolsRuntime.lockupCachedStatsObserveTarget = observeTarget;
+    // Catch-up interval: apply stats to any new cards (scroll, filters, SPA) every 1.8s when there are unprocessed lockups
+    if (!__ytToolsRuntime.lockupCachedStatsIntervalId) {
+      __ytToolsRuntime.lockupCachedStatsIntervalId = setInterval(runLockupCachedStatsCatchUp, 1800);
+    }
+  }
+
   // ------------------------------
   // Feature: Bookmarks per video (persisted)
   // ------------------------------
@@ -1579,12 +1903,21 @@
     if (__ytToolsRuntime.dislikesCache.videoId === videoId && __ytToolsRuntime.dislikesCache.dislikes != null && (now - __ytToolsRuntime.dislikesCache.ts) < 10 * 60 * 1000) {
       return __ytToolsRuntime.dislikesCache.dislikes;
     }
+    const persisted = getLikesDislikesFromPersistedCache(videoId);
+    if (persisted && persisted.dislikes != null) {
+      __ytToolsRuntime.dislikesCache = { videoId, dislikes: persisted.dislikes, ts: now };
+      return persisted.dislikes;
+    }
     try {
       const res = await fetch(`${apiDislikes}${videoId}`);
       const data = await res.json();
       const dislikes = Number(data?.dislikes);
+      const viewCount = Number(data?.viewCount);
+      const rating = Number(data?.rating);
       if (Number.isFinite(dislikes)) {
         __ytToolsRuntime.dislikesCache = { videoId, dislikes, ts: now };
+        const likes = getLikesFromDom();
+        setLikesDislikesToPersistedCache(videoId, likes != null ? likes : undefined, dislikes, Number.isFinite(viewCount) ? viewCount : undefined, (Number.isFinite(rating) && rating >= 0 && rating <= 5) ? rating : undefined);
         return dislikes;
       }
     } catch (e) {}
@@ -1660,8 +1993,14 @@
       return;
     }
     if (!window.location.href.includes('youtube.com/watch')) return;
+    const videoId = getCurrentVideoId();
+    if (!videoId) return;
     const dislikes = await ensureDislikesForCurrentVideo();
-    const likes = getLikesFromDom();
+    let likes = getLikesFromDom();
+    if (likes == null) {
+      const persisted = getLikesDislikesFromPersistedCache(videoId);
+      if (persisted?.likes != null) likes = persisted.likes;
+    }
     if (dislikes == null || likes == null) return;
     updateLikeDislikeBar(likes, dislikes);
   }
@@ -1688,32 +2027,44 @@
     const validoVentana = $e('#below > ytd-watch-metadata > div');
     if (validoVentana != undefined && document.location.href.split('?v=')[0].includes('youtube.com/watch')) {
         validoUrl = paramsVideoURL();
-        const urlShorts = `${apiDislikes}${validoUrl}`;
-      try {
-        const respuesta = await fetch(urlShorts);
-        const datosShort = await respuesta.json();
-        const { dislikes } = datosShort;
-        const dislikes_content = $e('#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > dislike-button-view-model > toggle-button-view-model > button-view-model > button');
-        if (dislikes_content !== undefined) {
-          dislikes_content.style = 'width: 90px';
-          dislikes_content.innerHTML = `
-            <svg class="svg-dislike-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 13v-8a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v7a1 1 0 0 0 1 1h3a4 4 0 0 1 4 4v1a2 2 0 0 0 4 0v-5h3a2 2 0 0 0 2 -2l-1 -5a2 3 0 0 0 -2 -2h-7a3 3 0 0 0 -3 3" /></svg>
-            ${FormatterNumber(dislikes, 0)}`;
+        let dislikes = null;
+        const persisted = getLikesDislikesFromPersistedCache(validoUrl);
+        if (persisted && persisted.dislikes != null) {
+          dislikes = persisted.dislikes;
+        } else {
+          const urlShorts = `${apiDislikes}${validoUrl}`;
+          try {
+            const respuesta = await fetch(urlShorts);
+            const datosShort = await respuesta.json();
+            dislikes = Number(datosShort?.dislikes);
+            if (Number.isFinite(dislikes)) {
+              const likes = getLikesFromDom();
+              const viewCount = Number(datosShort?.viewCount);
+              const rating = Number(datosShort?.rating);
+              setLikesDislikesToPersistedCache(validoUrl, likes != null ? likes : undefined, dislikes, Number.isFinite(viewCount) ? viewCount : undefined, (Number.isFinite(rating) && rating >= 0 && rating <= 5) ? rating : undefined);
+            }
+          } catch (error) {
+            console.log(error);
+          }
         }
-        // Cache for bar + trigger update if enabled
-        __ytToolsRuntime.dislikesCache = { videoId: validoUrl, dislikes: Number(dislikes) || 0, ts: Date.now() };
-        try {
-          const st = JSON.parse(GM_getValue('ytSettingsMDCM', '{}'));
-          scheduleLikeBarUpdate(st, 5);
-        } catch (e) {}
-
-      } catch (error) {
-        console.log(error);
-      }
+        if (dislikes != null) {
+          const dislikes_content = $e('#top-level-buttons-computed > segmented-like-dislike-button-view-model > yt-smartimation > div > div > dislike-button-view-model > toggle-button-view-model > button-view-model > button');
+          if (dislikes_content !== undefined) {
+            dislikes_content.style = 'width: 90px';
+            dislikes_content.innerHTML = `
+              <svg class="svg-dislike-icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 13v-8a1 1 0 0 0 -1 -1h-2a1 1 0 0 0 -1 1v7a1 1 0 0 0 1 1h3a4 4 0 0 1 4 4v1a2 2 0 0 0 4 0v-5h3a2 2 0 0 0 2 -2l-1 -5a2 3 0 0 0 -2 -2h-7a3 3 0 0 0 -3 3" /></svg>
+              ${FormatterNumber(dislikes, 0)}`;
+          }
+          __ytToolsRuntime.dislikesCache = { videoId: validoUrl, dislikes, ts: Date.now() };
+          try {
+            const st = JSON.parse(GM_getValue('ytSettingsMDCM', '{}'));
+            scheduleLikeBarUpdate(st, 5);
+          } catch (e) {}
+        }
     }
   }
 
-  // dislikes shorts
+  // dislikes shorts + views button (viewCount from Return YouTube Dislike API)
   async function shortDislike() {
     validoUrl = document.location.href;
     const validoVentanaShort = $m(
@@ -1722,20 +2073,34 @@
     
     if (validoVentanaShort != undefined && document.location.href.split('/')[3] === 'shorts') {
       validoUrl = document.location.href.split('/')[4];
-      const urlShorts = `${apiDislikes}${validoUrl}`;
-      try {
-        const respuesta = await fetch(urlShorts);
-        const datosShort = await respuesta.json();
-        const { dislikes } = datosShort;
-        for (let i = 0; i < validoVentanaShort.length; i++) {
-          validoVentanaShort[i].textContent = `${FormatterNumber(
-            dislikes,
-            0
-          )}`;
+      let dislikes = null;
+      let viewCount = null;
+      let rating = null;
+      const persisted = getLikesDislikesFromPersistedCache(validoUrl);
+      if (persisted && persisted.dislikes != null) {
+        dislikes = persisted.dislikes;
+        viewCount = persisted.viewCount ?? null;
+        rating = persisted.rating ?? null;
+      } else {
+        const urlShorts = `${apiDislikes}${validoUrl}`;
+        try {
+          const respuesta = await fetch(urlShorts);
+          const datosShort = await respuesta.json();
+          dislikes = Number(datosShort?.dislikes);
+          viewCount = Number(datosShort?.viewCount);
+          rating = Number(datosShort?.rating);
+          if (Number.isFinite(dislikes)) setLikesDislikesToPersistedCache(validoUrl, undefined, dislikes, Number.isFinite(viewCount) ? viewCount : undefined, (Number.isFinite(rating) && rating >= 0 && rating <= 5) ? rating : undefined);
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
       }
+      if (dislikes != null) {
+        for (let i = 0; i < validoVentanaShort.length; i++) {
+          validoVentanaShort[i].textContent = `${FormatterNumber(dislikes, 0)}`;
+        }
+      }
+      if (__ytToolsRuntime.updateShortsViewsButton) __ytToolsRuntime.updateShortsViewsButton(validoUrl, viewCount);
+      if (__ytToolsRuntime.updateShortsRatingButton) __ytToolsRuntime.updateShortsRatingButton(validoUrl, rating);
     }
   }
 
@@ -2772,6 +3137,18 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+      }
+      .yt-tools-shorts-stats-wrap {
+        margin-top: 4px;
+        font-size: 11px;
+        line-height: 1.2;
+        color: var(--yt-spec-text-secondary, #aaa);
+      }
+      .yt-tools-shorts-stats-wrap .yt-tools-shorts-stats-row {
+        display: inline-flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 2px;
       }
 
       /* Like vs dislike bar (under likes/dislikes) */
@@ -4048,7 +4425,7 @@
     <div class="developer-mdcm">
       Developed by <a href="https://github.com/DeveloperMDCM" target="_blank"> <i class="fa-brands fa-github"></i> DeveloperMDCM</a>
     </div>
-    <span style="color: #fff" ;>v2.4.2.1</span>
+    <span style="color: #fff" ;>v2.4.3.1</span>
   </div>
   `;
   const panelHTML = policy?.createHTML
@@ -4899,6 +5276,7 @@
     setupContinueWatchingFeature(settings.continueWatching);
     scheduleLikeBarUpdate(settings, 5);
     setupShortsChannelNameFeature(settings.shortsChannelName);
+    setupLockupCachedStats();
    function checkForVideo() {
     if (!settings.waveVisualizer) {
       cleanup(true); // Limpieza completa
@@ -4922,13 +5300,11 @@
   checkForVideo();
 
     function downloadDescriptionVideo() {
+      if (!window.location.href.includes('youtube.com/watch')) return;
       if ($e('#button_copy_description')) return;
 
       const containerDescription = $e('#bottom-row.style-scope.ytd-watch-metadata');
-      if (!containerDescription) {
-        console.warn('No se encontró el contenedor de descripción. No se insertará el botón.');
-        return;
-      }
+      if (!containerDescription) return;
 
       const buttomHTML = `
         <div id="button_copy_description" style="display: flex; justify-content: end; align-items: center;margin-top: 10px;" >
@@ -5105,43 +5481,112 @@
       });
     }
 
-    const BUTTON_CLASS = 'custom-classic-btn';
-
-
     const redirectToClassic = () => {
       const videoId = window.location.pathname.split('/').pop();
       const classicUrl = `https://www.youtube.com/watch?v=${videoId}`;
-
       window.open(classicUrl, '_blank');
+      $e('video.video-stream.html5-main-video').pause();
+    };
 
-     $e('video.video-stream.html5-main-video').pause();
+    // Update the Shorts "views" button label (same bar as Classic). Call with viewCount from API/cache.
+    function updateShortsViewsButton(videoId, viewCount) {
+      const bar = $e('reel-action-bar-view-model');
+      if (!bar) return;
+      const viewsWrap = bar.querySelector('[data-yt-tools-shorts-views]');
+      if (!viewsWrap) return;
+      const labelSpan = viewsWrap.querySelector('.yt-spec-button-shape-with-label__label span, [role="text"]');
+      if (!labelSpan) return;
+      labelSpan.textContent = Number.isFinite(viewCount) && viewCount >= 0 ? FormatterNumber(viewCount, 0) : '—';
+    }
 
-  };
+    // Update the Shorts "rating" button label (rating 0–5 from API/cache, shown as e.g. "4.9").
+    function updateShortsRatingButton(videoId, rating) {
+      const bar = $e('reel-action-bar-view-model');
+      if (!bar) return;
+      const ratingWrap = bar.querySelector('[data-yt-tools-shorts-rating]');
+      if (!ratingWrap) return;
+      const labelSpan = ratingWrap.querySelector('.yt-spec-button-shape-with-label__label span, [role="text"]');
+      if (!labelSpan) return;
+      labelSpan.textContent = (Number.isFinite(rating) && rating >= 0 && rating <= 5) ? rating.toFixed(1) : '—';
+    }
 
+    // Build one YT-style button for the reel action bar (same structure as like/dislike/comments).
+    function createReelBarButton(opts) {
+      const wrap = document.createElement('div');
+      wrap.className = 'button-view-model ytSpecButtonViewModelHost';
+      if (opts.dataAttr) wrap.setAttribute(opts.dataAttr, '1');
+      wrap.innerHTML = `
+        <label class="yt-spec-button-shape-with-label">
+          <button type="button" class="yt-spec-button-shape-next yt-spec-button-shape-next--tonal yt-spec-button-shape-next--mono yt-spec-button-shape-next--size-l yt-spec-button-shape-next--icon-button yt-spec-button-shape-next--enable-backdrop-filter-experiment yt-spec-button-shape-next--enable-drop-shadow-experiment" title="${opts.title || ''}" aria-label="${opts.ariaLabel || ''}">
+            <div class="yt-spec-button-shape-next__icon" aria-hidden="true">
+              <span class="yt-icon-shape ytSpecIconShapeHost">${opts.iconSvg || ''}</span>
+            </div>
+          </button>
+          <div class="yt-spec-button-shape-with-label__label" aria-hidden="false">
+            <span class="yt-core-attributed-string yt-core-attributed-string--white-space-pre-wrap yt-core-attributed-string--text-alignment-center yt-core-attributed-string--word-wrapping" role="text">${opts.labelText || ''}</span>
+          </div>
+        </label>
+      `;
+      const btn = wrap.querySelector('button');
+      if (opts.onclick) btn.addEventListener('click', opts.onclick);
+      return wrap;
+    }
 
+    const eyeIconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-eye"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>';
+    const classicIconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-device-tv"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 9a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2l0 -9" /><path d="M16 3l-4 4l-4 -4" /></svg>';
+    const starIconSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
 
-  const createButton = () => {
-    const button = $cl('button');
-    button.classList.add(BUTTON_CLASS);
-    button.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-screen-share"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M21 12v3a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1v-10a1 1 0 0 1 1 -1h9" /><path d="M7 20l10 0" /><path d="M9 16l0 4" /><path d="M15 16l0 4" /><path d="M17 4h4v4" /><path d="M16 9l5 -5" /></svg>';
-    button.title = 'Classic mode';
-    button.onclick = redirectToClassic;
-    return button;
-  };
-
-  const insertButtons = () => {
+    function insertReelBarButtons() {
       const isShortsPage = document.location.pathname.startsWith('/shorts');
-
-      if (isShortsPage) {
-         $m('#actions').forEach(actionsContainer => {
-              if (!actionsContainer.querySelector(`.${BUTTON_CLASS}`)) {
-                  actionsContainer.prepend(createButton());
-              }
-          });
-      } else {
-          $m(`.${BUTTON_CLASS}`).forEach(button => button.remove());
+      const bar = $e('reel-action-bar-view-model');
+      if (!isShortsPage || !bar) {
+        document.querySelectorAll('[data-yt-tools-shorts-classic], [data-yt-tools-shorts-views], [data-yt-tools-shorts-rating]').forEach(el => el.remove());
+        return;
       }
-  };
+      if (bar.querySelector('[data-yt-tools-shorts-classic]')) return;
+
+      const classicBtn = createReelBarButton({
+        dataAttr: 'data-yt-tools-shorts-classic',
+        title: 'Classic mode',
+        ariaLabel: 'Classic mode',
+        iconSvg: classicIconSvg,
+        labelText: 'Clásico',
+        onclick: redirectToClassic,
+      });
+      const viewsBtn = createReelBarButton({
+        dataAttr: 'data-yt-tools-shorts-views',
+        title: 'Vistas',
+        ariaLabel: 'Vistas',
+        iconSvg: eyeIconSvg,
+        labelText: '—',
+        onclick: function () {},
+      });
+      const ratingBtn = createReelBarButton({
+        dataAttr: 'data-yt-tools-shorts-rating',
+        title: 'Rating (likes/dislikes)',
+        ariaLabel: 'Rating',
+        iconSvg: starIconSvg,
+        labelText: '—',
+        onclick: function () {},
+      });
+
+      bar.insertBefore(ratingBtn, bar.firstChild);
+      bar.insertBefore(viewsBtn, bar.firstChild);
+      bar.insertBefore(classicBtn, bar.firstChild);
+
+      const videoId = (document.location.pathname.split('/').filter(Boolean))[1];
+      if (videoId) {
+        const persisted = getLikesDislikesFromPersistedCache(videoId);
+        if (persisted && persisted.viewCount != null) updateShortsViewsButton(videoId, persisted.viewCount);
+        if (persisted && persisted.rating != null) updateShortsRatingButton(videoId, persisted.rating);
+      }
+      __ytToolsRuntime.updateShortsViewsButton = updateShortsViewsButton;
+      __ytToolsRuntime.updateShortsRatingButton = updateShortsRatingButton;
+    }
+
+    const insertButtons = () => {
+      insertReelBarButtons();
+    };
 
   const observeDOM = () => {
       if (__ytToolsRuntime.shortsObserver) return;
@@ -6138,7 +6583,7 @@
 
   console.log(
     '%cYoutube Tools Extension NEW UI\n' +
-      '%cRun %c(v2.4.2.1)\n' +
+      '%cRun %c(v2.4.3.1)\n' +
       'By: DeveloperMDCM.',
     HEADER_STYLE,
     CODE_STYLE,
@@ -6311,6 +6756,7 @@
   checkElement('ytd-topbar-menu-button-renderer', () => {
     loadSettings();
     initializeHeaderButtons();
+    setTimeout(checkNewVersion, 3000);
   });
   // validate change url SPA youtube
 
@@ -6327,7 +6773,22 @@
       hideCanvas();
     }
     scheduleApplySettings();
-    });
+    if (!document.location.href.includes('youtube.com')) return;
+    // Re-inject lockup stats when landing on watch (related column often renders late when coming from home)
+    if (document.location.href.includes('youtube.com/watch')) {
+      [300, 600, 1200, 2200, 3500].forEach((ms) => setTimeout(() => {
+        injectLockupCachedStats();
+        injectShortsLockupCachedStats();
+        retargetLockupStatsObserverIfNeeded();
+      }, ms));
+    } else {
+      // Re-inject when landing on home (feed often renders after SPA nav from watch/shorts)
+      [300, 700, 1500, 2800].forEach((ms) => setTimeout(() => {
+        injectLockupCachedStats();
+        injectShortsLockupCachedStats();
+      }, ms));
+    }
+  });
     GM_registerMenuCommand('Update Script by: DeveloperMDCM', function() {
       window.open('https://update.greasyfork.org/scripts/460680/Youtube%20Tools%20All%20in%20one%20local%20download%20mp3%20mp4%20HIGT%20QUALITY%20return%20dislikes%20and%20more.user.js', '_blank');
     });
