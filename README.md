@@ -11,6 +11,7 @@
 
 <details>
 <summary>Features:</summary>
+   
 - Continue watching (history)
 - Bookmarks (timestamps)
 - Like vs Dislike bar
