@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "Youtube Tools Extension",
+  "author": "DeveloperMDCM",
+  "version": "2.0.0",
+  "description": "Extra tools for YouTube: themes, dislikes, downloads and more.",
+  "permissions": ["storage", "activeTab", "tabs"],
+  "host_permissions": ["*://www.youtube.com/*"],
+  "action": {
+    "default_title": "Youtube Tools",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_popup": "index.html"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "youtube-tools@developermdcm",
+      "strict_min_version": "109.0"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/*"],
+      "exclude_matches": [
+        "*://www.youtube.com/audiolibrary/*",
+        "*://www.youtube.com/tv*"
+      ],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}
