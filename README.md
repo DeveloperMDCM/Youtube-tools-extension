@@ -1,7 +1,11 @@
+
+
 <p align="center">
   <a href="https://github.com/DeveloperMDCM/Youtube-tools-extension/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/DeveloperMDCM/Youtube-tools-extension"></a>
   <a href="https://github.com/DeveloperMDCM/Youtube-tools-extension"><img alt="GitHub stars" src="https://img.shields.io/github/stars/DeveloperMDCM/Youtube-tools-extension"></a>
 </p>
+
+<img width="1717" height="916" alt="d059976e-54fa-4ff0-91ba-946cd55d3075" src="https://github.com/user-attachments/assets/366d5e95-507b-480c-b0d9-a10e80253b75" />
 
 # Youtube Tools
 
