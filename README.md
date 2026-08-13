@@ -198,4 +198,4 @@ More detail: [`tampermonkey/README.md`](tampermonkey/README.md)
 
 [DeveloperMDCM](https://github.com/DeveloperMDCM)
 
-[![Star History Chart](https://api.star-history.com/svg?repos=DeveloperMDCM/Youtube-tools-extension&type=Date)](https://star-history.com/#DeveloperMDCM/Youtube-tools-extension&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=DeveloperMDCM/Youtube-tools-extension&type=Date)](https://star-history.dera.page/#DeveloperMDCM/Youtube-tools-extension&Date)
