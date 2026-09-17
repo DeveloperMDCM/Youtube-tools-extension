@@ -40,6 +40,7 @@ export type YtSettings = {
   btnRepeat: boolean;
   btnBookmark: boolean;
   btnContinueWatching: boolean;
+  btnTranscript: boolean;
   btnDownloadMp4: boolean;
   btnDownloadMp3: boolean;
   btnExternalDownload: boolean;
@@ -92,6 +93,7 @@ export const DEFAULT_YT_SETTINGS: YtSettings = {
   btnRepeat: true,
   btnBookmark: true,
   btnContinueWatching: true,
+  btnTranscript: true,
   btnDownloadMp4: true,
   btnDownloadMp3: true,
   btnExternalDownload: true,

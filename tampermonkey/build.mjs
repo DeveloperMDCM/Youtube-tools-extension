@@ -29,6 +29,7 @@ const MODULES = [
   '10-player-buttons.js',
   '11-menu-ui.js',
   '12-app.js',
+  '13-transcript.js',
 ];
 
 function read(file) {

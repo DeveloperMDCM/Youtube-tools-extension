@@ -296,6 +296,8 @@
       ts: 0,
     },
     downloadClickHandlerInitialized: false,
+    transcriptClickHandlerInitialized: false,
+    transcriptPanelOpen: false,
     shortsObserver: null,
     statsObserver: null,
     statsIntervalId: null,
@@ -3325,6 +3327,139 @@ a.icon-btn-mdcm {
         font-size: 12px;
       }
 
+      /* Transcript panel (copy / download .txt) */
+      .yt-transcript-panel {
+        margin-top: 10px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 10px;
+        padding: 10px;
+        text-align: left;
+      }
+      .yt-tr-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+      .yt-tr-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-custom, #fff);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .yt-tr-close {
+        border: none;
+        background: transparent;
+        color: var(--text-custom-secondary, #aaa);
+        cursor: pointer;
+        font-size: 13px;
+        line-height: 1;
+        padding: 4px 6px;
+        border-radius: 6px;
+      }
+      .yt-tr-close:hover {
+        background: rgba(255,255,255,0.1);
+        color: #fff;
+      }
+      .yt-tr-controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+      .yt-tr-field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        font-size: 11px;
+        color: var(--text-custom-secondary, #aaa);
+      }
+      .yt-tr-field select {
+        background: rgba(0,0,0,0.35);
+        color: var(--text-custom, #fff);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 6px;
+        padding: 5px 8px;
+        font-size: 12px;
+        max-width: 220px;
+      }
+      .yt-tr-check {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: var(--text-custom, #fff);
+        padding-bottom: 5px;
+        cursor: pointer;
+      }
+      .yt-tr-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .yt-tr-btn {
+        border: none;
+        border-radius: 6px;
+        padding: 6px 12px;
+        background: rgba(255,255,255,0.14);
+        color: #fff;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .yt-tr-btn:hover:not(:disabled) {
+        background: rgba(255,255,255,0.22);
+      }
+      .yt-tr-btn.primary {
+        background: rgba(239,68,68,0.85);
+      }
+      .yt-tr-btn.primary:hover:not(:disabled) {
+        background: rgba(239,68,68,1);
+      }
+      .yt-tr-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .yt-tr-status {
+        font-size: 11px;
+        color: var(--text-custom-secondary, #aaa);
+        margin-bottom: 6px;
+        min-height: 14px;
+      }
+      .yt-tr-status[data-kind="error"] {
+        color: #f87171;
+      }
+      .yt-tr-empty {
+        font-size: 12px;
+        color: var(--text-custom-secondary, #aaa);
+      }
+      .yt-tr-preview {
+        margin: 0;
+        max-height: 240px;
+        overflow: auto;
+        padding: 8px;
+        background: rgba(0,0,0,0.3);
+        border-radius: 8px;
+        font-size: 12px;
+        line-height: 1.5;
+        color: var(--text-custom, #fff);
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-family: inherit;
+      }
+      .yt-tr-preview:empty {
+        display: none;
+      }
+
       /* Shorts channel name label (Home/feed Shorts lockups) */
       html:not([data-mdcm-shorts-channel-name="1"]) .yt-tools-shorts-channel-name {
         display: none !important;
@@ -3876,6 +4011,12 @@ a.icon-btn-mdcm {
 
   `;
 
+  const transcriptBtn = `
+  <button title="Transcript (copy / download .txt)" type="button" id="yt-transcript-btn" class="botones_div">
+  <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M9 9h1" /><path d="M9 13h6" /><path d="M9 17h6" /></svg>
+</button>
+  `;
+
   const checkUpdates = `
   <button title="Check new updates" type="button" class="checked_updates botones_div">
   <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" /><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" /></svg>
@@ -3938,6 +4079,7 @@ a.icon-btn-mdcm {
       ${bookmarkAddBtn}
       ${bookmarkToggleBtn}
       ${continueWatchingHistoryBtn}
+      ${transcriptBtn}
       ${downloadMp4Mp3}
       ${donwloadExternal}
       ${viewExternalVideo}
@@ -3947,6 +4089,7 @@ a.icon-btn-mdcm {
       </div>
       <div id="yt-bookmarks-panel" class="yt-bookmarks-panel" style="display:none;"></div>
       <div id="yt-continue-watching-panel" class="yt-continue-watching-panel" style="display:none;"></div>
+      <div id="yt-transcript-panel" class="yt-transcript-panel" style="display:none;"></div>
       <div>
       </div>
     </form>
@@ -4808,6 +4951,7 @@ a.icon-btn-mdcm {
       btnRepeat: readBtnToggle('btn-repeat-toggle'),
       btnBookmark: readBtnToggle('btn-bookmark-toggle'),
       btnContinueWatching: readBtnToggle('btn-continue-toggle'),
+      btnTranscript: readBtnToggle('btn-transcript-toggle'),
       btnDownloadMp4: readBtnToggle('btn-mp4-toggle'),
       btnDownloadMp3: readBtnToggle('btn-mp3-toggle'),
       btnExternalDownload: readBtnToggle('btn-external-toggle'),
@@ -4882,6 +5026,7 @@ a.icon-btn-mdcm {
     setBtn('btn-repeat-toggle', settings.btnRepeat);
     setBtn('btn-bookmark-toggle', settings.btnBookmark);
     setBtn('btn-continue-toggle', settings.btnContinueWatching);
+    setBtn('btn-transcript-toggle', settings.btnTranscript);
     setBtn('btn-mp4-toggle', settings.btnDownloadMp4);
     setBtn('btn-mp3-toggle', settings.btnDownloadMp3);
     setBtn('btn-external-toggle', settings.btnExternalDownload);
@@ -5185,6 +5330,7 @@ a.icon-btn-mdcm {
     setVisible('#yt-bookmark-toggle', showBookmarks);
     const showContinue = !!settings.continueWatching && settings.btnContinueWatching !== false;
     setVisible('#yt-cw-history-toggle', showContinue);
+    setVisible('#yt-transcript-btn', settings.btnTranscript !== false);
     setVisible('.btn1', settings.btnDownloadMp4 !== false);
     setVisible('.btn2', settings.btnDownloadMp3 !== false);
     setVisible('.btn3', settings.btnDownloadMp4 !== false || settings.btnDownloadMp3 !== false);
@@ -5251,6 +5397,7 @@ a.icon-btn-mdcm {
       setCheck('btn-repeat-toggle', settings.btnRepeat !== false);
       setCheck('btn-bookmark-toggle', settings.btnBookmark !== false);
       setCheck('btn-continue-toggle', settings.btnContinueWatching !== false);
+      setCheck('btn-transcript-toggle', settings.btnTranscript !== false);
       setCheck('btn-mp4-toggle', settings.btnDownloadMp4 !== false);
       setCheck('btn-mp3-toggle', settings.btnDownloadMp3 !== false);
       setCheck('btn-external-toggle', settings.btnExternalDownload !== false);
@@ -5320,6 +5467,7 @@ a.icon-btn-mdcm {
           btnRepeat: stored.btnRepeat !== false,
           btnBookmark: stored.btnBookmark !== false,
           btnContinueWatching: stored.btnContinueWatching !== false,
+          btnTranscript: stored.btnTranscript !== false,
           btnDownloadMp4: stored.btnDownloadMp4 !== false,
           btnDownloadMp3: stored.btnDownloadMp3 !== false,
           btnExternalDownload: stored.btnExternalDownload !== false,
@@ -5381,6 +5529,7 @@ a.icon-btn-mdcm {
         btnRepeat: readBtnToggle('btn-repeat-toggle'),
         btnBookmark: readBtnToggle('btn-bookmark-toggle'),
         btnContinueWatching: readBtnToggle('btn-continue-toggle'),
+        btnTranscript: readBtnToggle('btn-transcript-toggle'),
         btnDownloadMp4: readBtnToggle('btn-mp4-toggle'),
         btnDownloadMp3: readBtnToggle('btn-mp3-toggle'),
         btnExternalDownload: readBtnToggle('btn-external-toggle'),
@@ -7450,5 +7599,484 @@ a.icon-btn-mdcm {
         removeBtn.style.display = 'none';
       });
     }
+
+  // --- 13-transcript.js ---
+  const __ytTranscriptState = {
+    panelOpen: false,
+    tracks: [],
+    cues: [],
+    text: '',
+    videoId: null,
+    langIndex: 0,
+    translate: '',
+    withTimestamps: true,
+    loading: false,
+    resolved: false,
+    fetchToken: 0,
+  };
+
+  function ytTranscriptPageWindow() {
+    try {
+      if (typeof unsafeWindow !== 'undefined' && unsafeWindow) return unsafeWindow;
+    } catch (e) {}
+    return typeof window !== 'undefined' ? window : null;
+  }
+
+  function ytTranscriptEscapeHtml(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function ytTranscriptTrackName(track) {
+    const name = track?.name;
+    if (name?.simpleText) return name.simpleText;
+    if (Array.isArray(name?.runs)) return name.runs.map((r) => r.text || '').join('').trim();
+    return track?.languageCode || 'Unknown';
+  }
+
+  // Extract a JSON object that follows `marker` in a page HTML string.
+  function ytTranscriptExtractJson(html, marker) {
+    const at = html.indexOf(marker);
+    if (at === -1) return null;
+    const start = html.indexOf('{', at);
+    if (start === -1) return null;
+    let depth = 0;
+    let inString = false;
+    let escaped = false;
+    for (let i = start; i < html.length; i++) {
+      const ch = html[i];
+      if (inString) {
+        if (escaped) escaped = false;
+        else if (ch === '\\') escaped = true;
+        else if (ch === '"') inString = false;
+        continue;
+      }
+      if (ch === '"') inString = true;
+      else if (ch === '{') depth++;
+      else if (ch === '}') {
+        depth--;
+        if (depth === 0) return html.slice(start, i + 1);
+      }
+    }
+    return null;
+  }
+
+  async function ytTranscriptFetchPagePlayerResponse() {
+    const pageWin = ytTranscriptPageWindow();
+    try {
+      if (pageWin && pageWin.ytInitialPlayerResponse) return pageWin.ytInitialPlayerResponse;
+    } catch (e) {}
+    const res = await fetch(window.location.href, { credentials: 'include' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const html = await res.text();
+    const json = ytTranscriptExtractJson(html, 'ytInitialPlayerResponse');
+    if (!json) throw new Error('Player response not found');
+    return JSON.parse(json);
+  }
+
+  // The WEB caption URLs now return empty bodies without a proof-of-origin token.
+  // The ANDROID InnerTube client still returns working caption track URLs.
+  async function ytTranscriptFetchInnertubePlayer(videoId) {
+    const client = {
+      clientName: 'ANDROID',
+      clientVersion: '20.10.38',
+      androidSdkVersion: 30,
+      hl: 'en',
+      gl: 'US',
+    };
+    try {
+      const cfg = ytTranscriptPageWindow()?.ytcfg;
+      const hl = cfg?.get?.('HL');
+      const gl = cfg?.get?.('GL');
+      if (hl) client.hl = hl;
+      if (gl) client.gl = gl;
+    } catch (e) {}
+
+    const res = await fetch('https://www.youtube.com/youtubei/v1/player?prettyPrint=false', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        context: { client },
+        videoId,
+        contentCheckOk: true,
+        racyCheckOk: true,
+      }),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  }
+
+  async function ytTranscriptResolvePlayerResponse(videoId) {
+    try {
+      const android = await ytTranscriptFetchInnertubePlayer(videoId);
+      if (ytTranscriptGetTracks(android).length) return android;
+      const page = await ytTranscriptFetchPagePlayerResponse();
+      if (ytTranscriptGetTracks(page).length) return page;
+      return android;
+    } catch (err) {
+      console.warn('[Youtube Tools] innertube player failed, using page response', err);
+      return ytTranscriptFetchPagePlayerResponse();
+    }
+  }
+
+  function ytTranscriptGetTracks(playerResponse) {
+    const list = playerResponse?.captions?.playerCaptionsTracklistRenderer?.captionTracks;
+    return Array.isArray(list) ? list.filter((t) => t && t.baseUrl) : [];
+  }
+
+  function ytTranscriptFormatTime(sec) {
+    const total = Math.max(0, Math.floor(Number(sec) || 0));
+    const h = Math.floor(total / 3600);
+    const m = Math.floor((total % 3600) / 60);
+    const s = total % 60;
+    const mm = h > 0 ? String(m).padStart(2, '0') : String(m);
+    return `${h > 0 ? `${h}:` : ''}${mm}:${String(s).padStart(2, '0')}`;
+  }
+
+  function ytTranscriptParseJson3(data) {
+    const events = Array.isArray(data?.events) ? data.events : [];
+    const cues = [];
+    for (const ev of events) {
+      if (!Array.isArray(ev?.segs)) continue;
+      const text = ev.segs.map((s) => s.utf8 || '').join('').replace(/\s+/g, ' ').trim();
+      if (!text) continue;
+      cues.push({ start: (Number(ev.tStartMs) || 0) / 1000, text });
+    }
+    return cues;
+  }
+
+  function ytTranscriptParseXml(xml) {
+    const doc = new DOMParser().parseFromString(xml, 'text/xml');
+    return Array.from(doc.querySelectorAll('text'))
+      .map((node) => ({
+        start: parseFloat(node.getAttribute('start')) || 0,
+        text: (node.textContent || '').replace(/\s+/g, ' ').trim(),
+      }))
+      .filter((cue) => cue.text);
+  }
+
+  async function ytTranscriptFetchCues(track, tlang) {
+    const jsonUrl = new URL(track.baseUrl);
+    jsonUrl.searchParams.set('fmt', 'json3');
+    if (tlang) jsonUrl.searchParams.set('tlang', tlang);
+
+    const res = await fetch(jsonUrl.toString(), { credentials: 'include' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const contentType = res.headers.get('content-type') || '';
+    const body = await res.text();
+
+    if (body.trim().startsWith('<')) return ytTranscriptParseXml(body);
+
+    try {
+      const cues = ytTranscriptParseJson3(JSON.parse(body));
+      if (cues.length) return cues;
+    } catch (e) {}
+
+    if (contentType.includes('json')) return [];
+    return ytTranscriptParseXml(body);
+  }
+
+  function ytTranscriptBuildText(cues, withTimestamps) {
+    if (!cues || !cues.length) return '';
+    if (withTimestamps) {
+      return cues.map((c) => `[${ytTranscriptFormatTime(c.start)}] ${c.text}`).join('\n');
+    }
+    let out = '';
+    for (const cue of cues) {
+      out += `${cue.text} `;
+      if (/[.!?。！？…]["')\]]?$/.test(cue.text)) out += '\n';
+    }
+    out = out.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+    if (!out.includes('\n') && cues.length > 1) out = cues.map((c) => c.text).join(' ');
+    return out;
+  }
+
+  function ytTranscriptFilename() {
+    const id = getCurrentVideoId() || 'video';
+    let title = '';
+    try {
+      title = $e('h1.style-scope.ytd-watch-metadata')?.innerText || '';
+      if (!title) title = (document.title || '').replace(/\s*-\s*YouTube\s*$/, '');
+    } catch (e) {}
+    title = String(title).replace(/[\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80);
+    return `${title || id} - transcript.txt`;
+  }
+
+  function ytTranscriptDownloadText(text) {
+    const blob = new Blob([`\uFEFF${text}`], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = $cl('a');
+    link.href = url;
+    link.download = ytTranscriptFilename();
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+  }
+
+  async function ytTranscriptCopyText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (e) {
+      const area = $cl('textarea');
+      area.value = text;
+      area.setAttribute('readonly', '');
+      area.style.cssText = 'position:fixed;left:-9999px;top:0;';
+      document.body.appendChild(area);
+      area.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
+      area.remove();
+      return ok;
+    }
+  }
+
+  function ytTranscriptSetStatus(message, kind) {
+    const status = $id('yt-tr-status');
+    if (!status) return;
+    status.textContent = message || '';
+    status.dataset.kind = kind || '';
+  }
+
+  function ytTranscriptUpdatePreview() {
+    const preview = $id('yt-tr-preview');
+    const copyBtn = $id('yt-tr-copy');
+    const downloadBtn = $id('yt-tr-download');
+    const text = ytTranscriptBuildText(__ytTranscriptState.cues, __ytTranscriptState.withTimestamps);
+    __ytTranscriptState.text = text;
+
+    if (preview) preview.textContent = text.length > 8000 ? `${text.slice(0, 8000)}\n…` : text;
+    const hasText = !!text;
+    if (copyBtn) copyBtn.disabled = !hasText;
+    if (downloadBtn) downloadBtn.disabled = !hasText;
+  }
+
+  function ytTranscriptRenderPanel() {
+    const panel = $id('yt-transcript-panel');
+    if (!panel) return;
+
+    const tracks = __ytTranscriptState.tracks;
+    if (!__ytTranscriptState.resolved) {
+      panel.innerHTML = `
+        <div class="yt-tr-header">
+          <span class="yt-tr-title"><i class="fa-solid fa-align-left"></i> Transcript</span>
+          <button type="button" class="yt-tr-close" id="yt-tr-close" title="Close">✕</button>
+        </div>
+        <div class="yt-tr-empty">Reading available captions…</div>
+      `;
+      $id('yt-tr-close')?.addEventListener('click', () => ytTranscriptToggle(false));
+      return;
+    }
+    if (!tracks.length) {
+      panel.innerHTML = `
+        <div class="yt-tr-header">
+          <span class="yt-tr-title"><i class="fa-solid fa-align-left"></i> Transcript</span>
+          <button type="button" class="yt-tr-close" id="yt-tr-close" title="Close">✕</button>
+        </div>
+        <div class="yt-tr-empty">No captions / transcript available for this video.</div>
+      `;
+      $id('yt-tr-close')?.addEventListener('click', () => ytTranscriptToggle(false));
+      return;
+    }
+
+    const langOptions = tracks
+      .map((track, index) => {
+        const auto = track.kind === 'asr' ? ' (auto)' : '';
+        return `<option value="${index}">${ytTranscriptEscapeHtml(ytTranscriptTrackName(track) + auto)}</option>`;
+      })
+      .join('');
+
+    const translateOptions = Object.entries(languagesTranslate)
+      .map(([code, name]) => `<option value="${code}">${ytTranscriptEscapeHtml(name)}</option>`)
+      .join('');
+
+    panel.innerHTML = `
+      <div class="yt-tr-header">
+        <span class="yt-tr-title"><i class="fa-solid fa-align-left"></i> Transcript</span>
+        <button type="button" class="yt-tr-close" id="yt-tr-close" title="Close">✕</button>
+      </div>
+      <div class="yt-tr-controls">
+        <label class="yt-tr-field">
+          <span>Language</span>
+          <select id="yt-tr-lang">${langOptions}</select>
+        </label>
+        <label class="yt-tr-field">
+          <span>Translate to</span>
+          <select id="yt-tr-translate">
+            <option value="">Original (no translation)</option>
+            ${translateOptions}
+          </select>
+        </label>
+        <label class="yt-tr-check">
+          <input type="checkbox" id="yt-tr-timestamps"${__ytTranscriptState.withTimestamps ? ' checked' : ''}>
+          <span>Include timestamps</span>
+        </label>
+      </div>
+      <div class="yt-tr-actions">
+        <button type="button" class="yt-tr-btn" id="yt-tr-copy" disabled><i class="fa-solid fa-copy"></i> Copy</button>
+        <button type="button" class="yt-tr-btn primary" id="yt-tr-download" disabled><i class="fa-solid fa-download"></i> Download .txt</button>
+      </div>
+      <div class="yt-tr-status" id="yt-tr-status"></div>
+      <pre class="yt-tr-preview" id="yt-tr-preview"></pre>
+    `;
+
+    $id('yt-tr-close')?.addEventListener('click', () => ytTranscriptToggle(false));
+
+    const langSelect = $id('yt-tr-lang');
+    const translateSelect = $id('yt-tr-translate');
+    const timestampsCheck = $id('yt-tr-timestamps');
+
+    if (langSelect) langSelect.value = String(__ytTranscriptState.langIndex || 0);
+    if (translateSelect) translateSelect.value = __ytTranscriptState.translate || '';
+
+    langSelect?.addEventListener('change', () => {
+      __ytTranscriptState.langIndex = Number(langSelect.value) || 0;
+      ytTranscriptLoad();
+    });
+    translateSelect?.addEventListener('change', () => {
+      __ytTranscriptState.translate = translateSelect.value || '';
+      ytTranscriptLoad();
+    });
+    timestampsCheck?.addEventListener('change', () => {
+      __ytTranscriptState.withTimestamps = !!timestampsCheck.checked;
+      ytTranscriptUpdatePreview();
+    });
+
+    $id('yt-tr-copy')?.addEventListener('click', async () => {
+      if (!__ytTranscriptState.text) return;
+      const ok = await ytTranscriptCopyText(__ytTranscriptState.text);
+      ytTranscriptSetStatus(ok ? 'Transcript copied to clipboard' : 'Could not copy transcript', ok ? 'ok' : 'error');
+      if (ok) Notify('success', 'Transcript copied');
+    });
+    $id('yt-tr-download')?.addEventListener('click', () => {
+      if (!__ytTranscriptState.text) return;
+      ytTranscriptDownloadText(__ytTranscriptState.text);
+      ytTranscriptSetStatus('Transcript downloaded as .txt', 'ok');
+      Notify('success', 'Transcript downloaded');
+    });
+  }
+
+  async function ytTranscriptLoad() {
+    const tracks = __ytTranscriptState.tracks;
+    if (!tracks.length) return;
+
+    const token = ++__ytTranscriptState.fetchToken;
+    const track = tracks[__ytTranscriptState.langIndex] || tracks[0];
+    const tlang = __ytTranscriptState.translate;
+
+    __ytTranscriptState.loading = true;
+    ytTranscriptSetStatus('Loading transcript…', 'loading');
+
+    try {
+      const cues = await ytTranscriptFetchCues(track, tlang);
+      if (token !== __ytTranscriptState.fetchToken) return;
+      __ytTranscriptState.cues = cues;
+      __ytTranscriptState.loading = false;
+      if (!cues.length) {
+        ytTranscriptSetStatus('No transcript content for this language.', 'error');
+      } else {
+        const shown = `${cues.length} segments${tlang ? ` · translated to ${languagesTranslate[tlang] || tlang}` : ''}`;
+        ytTranscriptSetStatus(shown, 'ok');
+      }
+      ytTranscriptUpdatePreview();
+    } catch (err) {
+      if (token !== __ytTranscriptState.fetchToken) return;
+      __ytTranscriptState.loading = false;
+      __ytTranscriptState.cues = [];
+      ytTranscriptUpdatePreview();
+      ytTranscriptSetStatus('Could not load transcript. Try another language.', 'error');
+      console.warn('[Youtube Tools] transcript error', err);
+    }
+  }
+
+  async function ytTranscriptEnsureLoaded(videoId) {
+    if (__ytTranscriptState.videoId === videoId && __ytTranscriptState.tracks.length) return;
+    __ytTranscriptState.videoId = videoId;
+    __ytTranscriptState.tracks = [];
+    __ytTranscriptState.cues = [];
+    __ytTranscriptState.langIndex = 0;
+    __ytTranscriptState.translate = '';
+    __ytTranscriptState.text = '';
+    __ytTranscriptState.resolved = false;
+    ytTranscriptRenderPanel();
+    ytTranscriptSetStatus('Reading available captions…', 'loading');
+    try {
+      const playerResponse = await ytTranscriptResolvePlayerResponse(videoId);
+      if (__ytTranscriptState.videoId !== videoId) return;
+      __ytTranscriptState.tracks = ytTranscriptGetTracks(playerResponse);
+      __ytTranscriptState.resolved = true;
+      ytTranscriptRenderPanel();
+      if (__ytTranscriptState.tracks.length) await ytTranscriptLoad();
+      else ytTranscriptSetStatus('No captions / transcript available for this video.', 'error');
+    } catch (err) {
+      if (__ytTranscriptState.videoId !== videoId) return;
+      __ytTranscriptState.resolved = true;
+      ytTranscriptRenderPanel();
+      ytTranscriptSetStatus('Could not read captions for this video.', 'error');
+      console.warn('[Youtube Tools] transcript error', err);
+    }
+  }
+
+  function ytTranscriptToggle(force) {
+    const panel = $id('yt-transcript-panel');
+    if (!panel) return;
+    __ytToolsRuntime.transcriptPanelOpen = force == null
+      ? !__ytToolsRuntime.transcriptPanelOpen
+      : !!force;
+    panel.style.display = __ytToolsRuntime.transcriptPanelOpen ? 'block' : 'none';
+    if (__ytToolsRuntime.transcriptPanelOpen) {
+      const videoId = getCurrentVideoId();
+      if (!videoId) return;
+      ytTranscriptEnsureLoaded(videoId);
+      setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+    }
+  }
+
+  function ytTranscriptHandleButtonClick() {
+    if (!window.location.href.includes('youtube.com/watch')) {
+      Notify('info', 'Open a video to use the transcript tool');
+      return;
+    }
+    ytTranscriptToggle();
+  }
+
+  (function ytTranscriptBind() {
+    if (__ytToolsRuntime.transcriptClickHandlerInitialized) return;
+    __ytToolsRuntime.transcriptClickHandlerInitialized = true;
+
+    document.addEventListener('click', (e) => {
+      const target = e.target;
+      if (!(target instanceof Element)) return;
+      if (!target.closest('#yt-transcript-btn')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      ytTranscriptHandleButtonClick();
+    });
+
+    document.addEventListener('yt-navigate-finish', () => {
+      // Reset between videos (SPA navigation keeps the panel in the DOM).
+      const wasOpen = __ytToolsRuntime.transcriptPanelOpen;
+      __ytTranscriptState.videoId = null;
+      __ytTranscriptState.tracks = [];
+      __ytTranscriptState.cues = [];
+      __ytTranscriptState.text = '';
+      __ytTranscriptState.resolved = false;
+      const panel = $id('yt-transcript-panel');
+      if (!panel) return;
+      const onWatch = window.location.href.includes('youtube.com/watch');
+      if (wasOpen && onWatch) {
+        ytTranscriptToggle(true);
+      } else {
+        panel.innerHTML = '';
+        panel.style.display = 'none';
+        __ytToolsRuntime.transcriptPanelOpen = false;
+      }
+    });
+  })();
 
 })();
