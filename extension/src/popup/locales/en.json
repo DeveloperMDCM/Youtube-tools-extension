@@ -46,6 +46,7 @@
   "btn.repeat": "Repeat video",
   "btn.bookmark": "Bookmarks",
   "btn.continue": "Continue watching list",
+  "btn.transcript": "Transcript (copy / download .txt)",
   "btn.mp4": "Download MP4",
   "btn.mp3": "Download MP3",
   "btn.external": "External download",

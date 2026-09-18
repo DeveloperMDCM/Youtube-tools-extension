@@ -199,6 +199,8 @@
       ts: 0,
     },
     downloadClickHandlerInitialized: false,
+    transcriptClickHandlerInitialized: false,
+    transcriptPanelOpen: false,
     shortsObserver: null,
     statsObserver: null,
     statsIntervalId: null,

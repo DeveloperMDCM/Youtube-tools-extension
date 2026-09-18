@@ -11,6 +11,7 @@ const BUTTONS: Array<{ key: keyof YtSettings; labelKey: string }> = [
   { key: 'btnRepeat', labelKey: 'btn.repeat' },
   { key: 'btnBookmark', labelKey: 'btn.bookmark' },
   { key: 'btnContinueWatching', labelKey: 'btn.continue' },
+  { key: 'btnTranscript', labelKey: 'btn.transcript' },
   { key: 'btnDownloadMp4', labelKey: 'btn.mp4' },
   { key: 'btnDownloadMp3', labelKey: 'btn.mp3' },
   { key: 'btnExternalDownload', labelKey: 'btn.external' },

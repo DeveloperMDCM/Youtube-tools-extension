@@ -40,6 +40,7 @@ Features are **shared** (same engine). Prefer the **extension** for a modern pop
 - Download MP4 / MP3 up to 8K
 - Default video player quality
 - Copy video description
+- Transcript: copy / download .txt (multi-language, optional timestamps)
 - Playback stats
 - Hide comments / hide sidebar
 - Cinematic mode + sync with YouTube ambient mode

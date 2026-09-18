@@ -123,6 +123,7 @@
       btnRepeat: readBtnToggle('btn-repeat-toggle'),
       btnBookmark: readBtnToggle('btn-bookmark-toggle'),
       btnContinueWatching: readBtnToggle('btn-continue-toggle'),
+      btnTranscript: readBtnToggle('btn-transcript-toggle'),
       btnDownloadMp4: readBtnToggle('btn-mp4-toggle'),
       btnDownloadMp3: readBtnToggle('btn-mp3-toggle'),
       btnExternalDownload: readBtnToggle('btn-external-toggle'),
@@ -197,6 +198,7 @@
     setBtn('btn-repeat-toggle', settings.btnRepeat);
     setBtn('btn-bookmark-toggle', settings.btnBookmark);
     setBtn('btn-continue-toggle', settings.btnContinueWatching);
+    setBtn('btn-transcript-toggle', settings.btnTranscript);
     setBtn('btn-mp4-toggle', settings.btnDownloadMp4);
     setBtn('btn-mp3-toggle', settings.btnDownloadMp3);
     setBtn('btn-external-toggle', settings.btnExternalDownload);
@@ -500,6 +502,7 @@
     setVisible('#yt-bookmark-toggle', showBookmarks);
     const showContinue = !!settings.continueWatching && settings.btnContinueWatching !== false;
     setVisible('#yt-cw-history-toggle', showContinue);
+    setVisible('#yt-transcript-btn', settings.btnTranscript !== false);
     setVisible('.btn1', settings.btnDownloadMp4 !== false);
     setVisible('.btn2', settings.btnDownloadMp3 !== false);
     setVisible('.btn3', settings.btnDownloadMp4 !== false || settings.btnDownloadMp3 !== false);
@@ -566,6 +569,7 @@
       setCheck('btn-repeat-toggle', settings.btnRepeat !== false);
       setCheck('btn-bookmark-toggle', settings.btnBookmark !== false);
       setCheck('btn-continue-toggle', settings.btnContinueWatching !== false);
+      setCheck('btn-transcript-toggle', settings.btnTranscript !== false);
       setCheck('btn-mp4-toggle', settings.btnDownloadMp4 !== false);
       setCheck('btn-mp3-toggle', settings.btnDownloadMp3 !== false);
       setCheck('btn-external-toggle', settings.btnExternalDownload !== false);
@@ -635,6 +639,7 @@
           btnRepeat: stored.btnRepeat !== false,
           btnBookmark: stored.btnBookmark !== false,
           btnContinueWatching: stored.btnContinueWatching !== false,
+          btnTranscript: stored.btnTranscript !== false,
           btnDownloadMp4: stored.btnDownloadMp4 !== false,
           btnDownloadMp3: stored.btnDownloadMp3 !== false,
           btnExternalDownload: stored.btnExternalDownload !== false,
@@ -696,6 +701,7 @@
         btnRepeat: readBtnToggle('btn-repeat-toggle'),
         btnBookmark: readBtnToggle('btn-bookmark-toggle'),
         btnContinueWatching: readBtnToggle('btn-continue-toggle'),
+        btnTranscript: readBtnToggle('btn-transcript-toggle'),
         btnDownloadMp4: readBtnToggle('btn-mp4-toggle'),
         btnDownloadMp3: readBtnToggle('btn-mp3-toggle'),
         btnExternalDownload: readBtnToggle('btn-external-toggle'),

@@ -146,6 +146,12 @@
 
   `;
 
+  const transcriptBtn = `
+  <button title="Transcript (copy / download .txt)" type="button" id="yt-transcript-btn" class="botones_div">
+  <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M9 9h1" /><path d="M9 13h6" /><path d="M9 17h6" /></svg>
+</button>
+  `;
+
   const checkUpdates = `
   <button title="Check new updates" type="button" class="checked_updates botones_div">
   <svg width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" /><path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" /></svg>
@@ -208,6 +214,7 @@
       ${bookmarkAddBtn}
       ${bookmarkToggleBtn}
       ${continueWatchingHistoryBtn}
+      ${transcriptBtn}
       ${downloadMp4Mp3}
       ${donwloadExternal}
       ${viewExternalVideo}
@@ -217,6 +224,7 @@
       </div>
       <div id="yt-bookmarks-panel" class="yt-bookmarks-panel" style="display:none;"></div>
       <div id="yt-continue-watching-panel" class="yt-continue-watching-panel" style="display:none;"></div>
+      <div id="yt-transcript-panel" class="yt-transcript-panel" style="display:none;"></div>
       <div>
       </div>
     </form>
