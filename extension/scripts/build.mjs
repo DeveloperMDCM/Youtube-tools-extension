@@ -48,6 +48,8 @@ export function runYoutubeTools() {
   const GM_setValue = globalThis.GM_setValue.bind(globalThis);
   const GM_addStyle = globalThis.GM_addStyle.bind(globalThis);
   const GM_registerMenuCommand = globalThis.GM_registerMenuCommand.bind(globalThis);
+  const GM_xmlhttpRequest = globalThis.GM_xmlhttpRequest.bind(globalThis);
+  const GM = globalThis.GM || { xmlHttpRequest: GM_xmlhttpRequest };
   const unsafeWindow = globalThis.unsafeWindow || window;
   const iziToast = globalThis.iziToast;
 

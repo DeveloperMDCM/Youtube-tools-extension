@@ -6,6 +6,8 @@ export function runYoutubeTools() {
   const GM_setValue = globalThis.GM_setValue.bind(globalThis);
   const GM_addStyle = globalThis.GM_addStyle.bind(globalThis);
   const GM_registerMenuCommand = globalThis.GM_registerMenuCommand.bind(globalThis);
+  const GM_xmlhttpRequest = globalThis.GM_xmlhttpRequest.bind(globalThis);
+  const GM = globalThis.GM || { xmlHttpRequest: GM_xmlhttpRequest };
   const unsafeWindow = globalThis.unsafeWindow || window;
   const iziToast = globalThis.iziToast;
 
@@ -334,9 +336,13 @@ export function runYoutubeTools() {
       const gmXhr =
         typeof GM_xmlhttpRequest === 'function'
           ? GM_xmlhttpRequest
-          : typeof GM !== 'undefined' && typeof GM.xmlHttpRequest === 'function'
-            ? GM.xmlHttpRequest.bind(GM)
-            : null;
+          : typeof globalThis.GM_xmlhttpRequest === 'function'
+            ? globalThis.GM_xmlhttpRequest.bind(globalThis)
+            : typeof GM !== 'undefined' && typeof GM.xmlHttpRequest === 'function'
+              ? GM.xmlHttpRequest.bind(GM)
+              : typeof globalThis.GM?.xmlHttpRequest === 'function'
+                ? globalThis.GM.xmlHttpRequest.bind(globalThis.GM)
+                : null;
 
       if (gmXhr) {
         return new Promise((resolve, reject) => {

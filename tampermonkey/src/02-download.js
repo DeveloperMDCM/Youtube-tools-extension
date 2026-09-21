@@ -49,9 +49,13 @@
       const gmXhr =
         typeof GM_xmlhttpRequest === 'function'
           ? GM_xmlhttpRequest
-          : typeof GM !== 'undefined' && typeof GM.xmlHttpRequest === 'function'
-            ? GM.xmlHttpRequest.bind(GM)
-            : null;
+          : typeof globalThis.GM_xmlhttpRequest === 'function'
+            ? globalThis.GM_xmlhttpRequest.bind(globalThis)
+            : typeof GM !== 'undefined' && typeof GM.xmlHttpRequest === 'function'
+              ? GM.xmlHttpRequest.bind(GM)
+              : typeof globalThis.GM?.xmlHttpRequest === 'function'
+                ? globalThis.GM.xmlHttpRequest.bind(globalThis.GM)
+                : null;
 
       if (gmXhr) {
         return new Promise((resolve, reject) => {

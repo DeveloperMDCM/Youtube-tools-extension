@@ -84,47 +84,57 @@ export function installGmPolyfill() {
     /* Extension uses popup instead of TM menu */
   };
 
-  // Bypass page CORS via extension host_permissions + fetch
+  // Privileged XHR via background service worker (true CORS bypass, like Tampermonkey)
   root.GM_xmlhttpRequest = (details: GmXhrDetails) => {
-    const ctrl = new AbortController();
-    const timeoutMs = Number(details.timeout) || 0;
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    if (timeoutMs > 0) {
-      timer = setTimeout(() => {
-        ctrl.abort();
-        details.ontimeout?.();
-      }, timeoutMs);
-    }
+    let aborted = false;
+    const payload = {
+      type: 'GM_XHR' as const,
+      method: details.method || 'GET',
+      url: details.url,
+      headers: details.headers || {},
+      data: details.data,
+      timeout: details.timeout,
+      anonymous: details.anonymous,
+    };
 
-    const headers = new Headers(details.headers || {});
-    fetch(details.url, {
-      method: (details.method || 'GET').toUpperCase(),
-      headers,
-      body: details.data,
-      signal: ctrl.signal,
-      credentials: details.anonymous ? 'omit' : 'include',
-    })
-      .then(async (res) => {
-        const responseText = await res.text();
+    try {
+      chrome.runtime.sendMessage(payload, (response) => {
+        if (aborted) {
+          details.onabort?.();
+          return;
+        }
+        const lastErr = chrome.runtime.lastError;
+        if (lastErr) {
+          details.onerror?.(lastErr);
+          return;
+        }
+        if (!response) {
+          details.onerror?.(new Error('Empty GM_XHR response'));
+          return;
+        }
+        if (!response.ok) {
+          if (response.aborted || response.error === 'timeout') {
+            details.ontimeout?.();
+          } else {
+            details.onerror?.(new Error(response.error || 'GM_XHR failed'));
+          }
+          return;
+        }
         details.onload?.({
-          status: res.status,
-          statusText: res.statusText,
-          responseText,
-          response: responseText,
-          finalUrl: res.url,
+          status: Number(response.status) || 0,
+          statusText: String(response.statusText || ''),
+          responseText: String(response.responseText ?? ''),
+          response: response.responseText ?? '',
+          finalUrl: String(response.finalUrl || details.url),
         });
-      })
-      .catch((err) => {
-        if (ctrl.signal.aborted && details.ontimeout) return;
-        details.onerror?.(err);
-      })
-      .finally(() => {
-        if (timer) clearTimeout(timer);
       });
+    } catch (err) {
+      details.onerror?.(err);
+    }
 
     return {
       abort: () => {
-        ctrl.abort();
+        aborted = true;
         details.onabort?.();
       },
     };
