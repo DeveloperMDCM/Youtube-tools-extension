@@ -5,7 +5,15 @@
   "version": "2.0.0",
   "description": "Extra tools for YouTube: themes, dislikes, downloads and more.",
   "permissions": ["storage", "activeTab", "tabs"],
-  "host_permissions": ["*://www.youtube.com/*"],
+  "host_permissions": [
+    "*://www.youtube.com/*",
+    "*://*.savenow.to/*",
+    "*://savenow.to/*",
+    "*://*.lbserver.xyz/*",
+    "*://lbserver.xyz/*",
+    "*://dubs.io/*",
+    "*://*.dubs.io/*"
+  ],
   "action": {
     "default_title": "Youtube Tools",
     "default_icon": {

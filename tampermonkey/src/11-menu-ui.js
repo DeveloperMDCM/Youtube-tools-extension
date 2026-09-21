@@ -410,7 +410,7 @@
           </div>
           <div class="yt-version-chip">
             <div class="label">Script</div>
-            <div class="value">v2.5</div>
+            <div class="value">v2.5.1</div>
           </div>
         </div>
         <div class="yt-action-grid">
@@ -614,7 +614,7 @@
       <div class="popup-footer-versions">
         <span>Ext v2.0.0</span>
         <span>·</span>
-        <span>Script v2.5</span>
+        <span>Script v2.5.1</span>
       </div>
       <a href="https://github.com/DeveloperMDCM" target="_blank" rel="noreferrer">
         <i class="fa-brands fa-github"></i> DeveloperMDCM

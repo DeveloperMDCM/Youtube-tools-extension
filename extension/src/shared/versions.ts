@@ -1,5 +1,5 @@
 /** Keep in sync with tampermonkey/src/header.meta.js @version */
-export const USERSCRIPT_VERSION = '2.5';
+export const USERSCRIPT_VERSION = '2.5.1';
 
 /** Fallback when chrome.runtime is unavailable (Vite preview) */
 export const EXTENSION_VERSION_FALLBACK = '2.0.0';

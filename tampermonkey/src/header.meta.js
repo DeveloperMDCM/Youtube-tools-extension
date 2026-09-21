@@ -75,7 +75,7 @@
 // @description:en Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @description Youtube Tools All in one local Download mp4, MP3 HIGT QUALITY
 // @homepage     https://github.com/DeveloperMDCM/
-// @version      2.5
+// @version      2.5.1
 // @author       DeveloperMDCM
 // @match        *://www.youtube.com/*
 // @exclude      *://music.youtube.com/*
@@ -85,9 +85,16 @@
 // @grant        GM_addStyle
 // @grant        GM_setValue
 // @grant        GM_getValue
+// @grant        GM_xmlhttpRequest
 // @grant        unsafeWindow
 // @run-at       document-end
 // @grant        GM_registerMenuCommand
+// @connect      p.savenow.to
+// @connect      savenow.to
+// @connect      p.lbserver.xyz
+// @connect      lbserver.xyz
+// @connect      dubs.io
+// @connect      *
 // @require      https://cdn.jsdelivr.net/npm/izitoast@1.4.0/dist/js/iziToast.min.js
 // @compatible chrome
 // @compatible firefox

@@ -44,16 +44,60 @@
     progressFill.style.width = '0%';
     progressText.textContent = '0%';
 
-    const fetchJsonWithTimeout = async (url, timeoutMs = 20000) => {
+    // Prefer GM_xmlhttpRequest so provider calls are not blocked by page CORS.
+    const fetchJsonWithTimeout = (url, timeoutMs = 20000) => {
+      const gmXhr =
+        typeof GM_xmlhttpRequest === 'function'
+          ? GM_xmlhttpRequest
+          : typeof GM !== 'undefined' && typeof GM.xmlHttpRequest === 'function'
+            ? GM.xmlHttpRequest.bind(GM)
+            : null;
+
+      if (gmXhr) {
+        return new Promise((resolve, reject) => {
+          let settled = false;
+          const done = (fn, value) => {
+            if (settled) return;
+            settled = true;
+            fn(value);
+          };
+          gmXhr({
+            method: 'GET',
+            url: String(url),
+            timeout: timeoutMs,
+            anonymous: true,
+            headers: {
+              Accept: 'application/json, text/plain, */*',
+            },
+            onload: (res) => {
+              const status = Number(res.status) || 0;
+              if (status < 200 || status >= 300) {
+                done(reject, new Error(`HTTP ${status}`));
+                return;
+              }
+              try {
+                const text = res.responseText ?? '';
+                done(resolve, text ? JSON.parse(text) : {});
+              } catch (err) {
+                done(reject, err instanceof Error ? err : new Error(String(err)));
+              }
+            },
+            onerror: () => done(reject, new Error('Network error')),
+            ontimeout: () => done(reject, new Error('Request timeout')),
+            onabort: () => done(reject, new Error('Request aborted')),
+          });
+        });
+      }
+
+      // Fallback (extension polyfill should provide GM_xmlhttpRequest)
       const ctrl = new AbortController();
       const t = setTimeout(() => ctrl.abort(), timeoutMs);
-      try {
-        const res = await fetch(url, { signal: ctrl.signal });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return await res.json();
-      } finally {
-        clearTimeout(t);
-      }
+      return fetch(url, { signal: ctrl.signal })
+        .then(async (res) => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
+        .finally(() => clearTimeout(t));
     };
 
     const setErrorState = () => {

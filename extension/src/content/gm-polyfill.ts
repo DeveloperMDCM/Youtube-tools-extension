@@ -27,8 +27,30 @@ export function installGmPolyfill() {
     GM_setValue?: (key: string, value: unknown) => void;
     GM_addStyle?: (css: string) => HTMLStyleElement;
     GM_registerMenuCommand?: (name: string, fn: () => void) => void;
+    GM_xmlhttpRequest?: (details: GmXhrDetails) => { abort: () => void };
+    GM?: { xmlHttpRequest?: (details: GmXhrDetails) => { abort: () => void } };
     unsafeWindow?: Window;
     iziToast?: unknown;
+  };
+
+  type GmXhrDetails = {
+    method?: string;
+    url: string;
+    headers?: Record<string, string>;
+    data?: string;
+    timeout?: number;
+    anonymous?: boolean;
+    responseType?: string;
+    onload?: (res: {
+      status: number;
+      statusText: string;
+      responseText: string;
+      response: unknown;
+      finalUrl: string;
+    }) => void;
+    onerror?: (res?: unknown) => void;
+    ontimeout?: () => void;
+    onabort?: () => void;
   };
 
   root.GM_info = {
@@ -61,6 +83,54 @@ export function installGmPolyfill() {
   root.GM_registerMenuCommand = () => {
     /* Extension uses popup instead of TM menu */
   };
+
+  // Bypass page CORS via extension host_permissions + fetch
+  root.GM_xmlhttpRequest = (details: GmXhrDetails) => {
+    const ctrl = new AbortController();
+    const timeoutMs = Number(details.timeout) || 0;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    if (timeoutMs > 0) {
+      timer = setTimeout(() => {
+        ctrl.abort();
+        details.ontimeout?.();
+      }, timeoutMs);
+    }
+
+    const headers = new Headers(details.headers || {});
+    fetch(details.url, {
+      method: (details.method || 'GET').toUpperCase(),
+      headers,
+      body: details.data,
+      signal: ctrl.signal,
+      credentials: details.anonymous ? 'omit' : 'include',
+    })
+      .then(async (res) => {
+        const responseText = await res.text();
+        details.onload?.({
+          status: res.status,
+          statusText: res.statusText,
+          responseText,
+          response: responseText,
+          finalUrl: res.url,
+        });
+      })
+      .catch((err) => {
+        if (ctrl.signal.aborted && details.ontimeout) return;
+        details.onerror?.(err);
+      })
+      .finally(() => {
+        if (timer) clearTimeout(timer);
+      });
+
+    return {
+      abort: () => {
+        ctrl.abort();
+        details.onabort?.();
+      },
+    };
+  };
+  root.GM = root.GM || {};
+  root.GM.xmlHttpRequest = root.GM_xmlhttpRequest;
 
   root.unsafeWindow = window;
 }
