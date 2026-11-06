@@ -6,7 +6,13 @@ Upstream: https://github.com/DeveloperMDCM/Youtube-tools-extension
 
 ## Start
 
-Node.js is the only dependency for the userscript workflow; no npm install is needed.
+Node.js is required for the userscript workflow. Local downloads also require
+Python, ffmpeg and Node.js on PATH. Install the downloader and its challenge
+solver into the ignored local directory with:
+
+```powershell
+py -m pip install --upgrade --target .local/python-deps yt-dlp yt-dlp-ejs
+```
 
 ```powershell
 npm run dev:userscript
@@ -35,9 +41,10 @@ reports startup errors. Browser checks remain necessary after engine changes.
 The server listens only on 127.0.0.1:8766 and serves a fixed set of endpoints, never
 arbitrary local files. Invalid builds keep the last good code. A stopped server
 does not stop the installed script; existing and new pages still run the last
-installed build. The server is needed only to install a new build. The development
-wrapper makes no background requests to localhost, avoiding Tampermonkey's local
-network permission prompts.
+installed build. The server must remain running for local downloads. The download
+buttons send the video ID and quality to the local service, which writes to the
+Windows Downloads folder. The service accepts only supported formats and uses a
+local token. It reports success only when the output file exists.
 
 The development script's update/download URLs point to loopback. Each build has
 a new version. All source changes take effect after updating the installed script.
@@ -72,4 +79,4 @@ The corrected compiled development build was verified in the live Chrome profile
 the green `YT Tools LOCAL` badge and update button appeared, the player toolbar
 rendered, and the top-right gear opened the YouTube Tools settings panel. The
 original script remains disabled during testing. The development wrapper has no
-runtime evaluation or background localhost requests.
+runtime evaluation.

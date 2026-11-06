@@ -4,6 +4,7 @@
   if (window.top !== window.self) return;
   const base = 'http://127.0.0.1:8766';
   const revision = '__LOCAL_BUILD_REVISION__';
+  const localDownloadToken = '__LOCAL_DOWNLOAD_TOKEN__';
   const installUrl = base + '/youtube-tools-local-dev.user.js';
   let badge;
   let updateButton;
