@@ -67,3 +67,9 @@ private Tampermonkey settings. The installed script was also exported through
 Tampermonkey to `.local/backups/installed-2.5.2.user.js`. Compared with the repository build, differences are
 the version/update metadata and additional GM request fallbacks in the repository.
 The original browser installation is preserved.
+
+The corrected compiled development build was verified in the live Chrome profile:
+the green `YT Tools LOCAL` badge and update button appeared, the player toolbar
+rendered, and the top-right gear opened the YouTube Tools settings panel. The
+original script remains disabled during testing. The development wrapper has no
+runtime evaluation or background localhost requests.
