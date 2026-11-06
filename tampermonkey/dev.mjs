@@ -116,6 +116,7 @@ const server = createServer((request, response) => {
         const ext = h > 1080 ? 'webm' : 'mp4';
         const aext = ext === 'mp4' ? 'm4a' : 'webm';
         args.push('-f', `bv*[ext=${ext}][height<=${h}]+ba[ext=${aext}]/b[ext=${ext}][height<=${h}]/b[height<=${h}]`, '--merge-output-format', ext);
+        if (ext === 'mp4') args.push('--embed-thumbnail', '--convert-thumbnails', 'jpg');
       }
       args.push(`https://www.youtube.com/watch?v=${input.videoId}`);
       const child = spawn('py', args, { windowsHide: true, env: { ...process.env, PYTHONPATH: join(root, '.local', 'python-deps'), PYTHONIOENCODING: 'utf-8' } });
