@@ -1,88 +1,68 @@
-// Development loader body. dev.mjs adds metadata from src/header.meta.js.
+// Development wrapper. The builder inserts the engine as ordinary source code.
 (() => {
   'use strict';
   if (window.top !== window.self) return;
   const base = 'http://127.0.0.1:8766';
-  let revision;
+  const revision = '__LOCAL_BUILD_REVISION__';
+  const installUrl = base + '/youtube-tools-local-dev.user.js';
   let timer;
-  let reloading = false;
-  let automatic = GM_getValue('ytToolsLocalAutoReload', true);
+  let badge;
+  let updateButton;
 
-  function request(route) {
-    return new Promise((resolve, reject) => {
-      GM_xmlhttpRequest({
-        method: 'GET', url: base + route + '?t=' + Date.now(), timeout: 5000,
-        onload: response => response.status === 200
-          ? resolve(response.responseText)
-          : reject(new Error('Local server returned ' + response.status)),
-        onerror: () => reject(new Error('Local server is unavailable')),
-        ontimeout: () => reject(new Error('Local server timed out')),
-      });
-    });
-  }
-
-  function showStatus(message, failed = false) {
-    let badge = document.getElementById('yt-tools-local-dev');
+  function showStatus(message, failed = false, updateReady = false) {
     if (!badge) {
       badge = document.createElement('div');
       badge.id = 'yt-tools-local-dev';
       badge.setAttribute('role', 'status');
       Object.assign(badge.style, {
         position: 'fixed', bottom: '12px', left: '12px', zIndex: '2147483647',
-        padding: '7px 12px', borderRadius: '6px', color: '#fff',
-        font: '12px system-ui', pointerEvents: 'none',
+        padding: '9px 12px', borderRadius: '6px', color: '#fff',
+        font: '14px system-ui', display: 'flex', alignItems: 'center', gap: '12px',
       });
+      const label = document.createElement('span');
+      badge.appendChild(label);
+      updateButton = document.createElement('button');
+      updateButton.textContent = 'Update local build';
+      updateButton.type = 'button';
+      Object.assign(updateButton.style, { padding: '5px 9px', color: '#111', background: '#fff' });
+      updateButton.addEventListener('click', () => window.open(installUrl, '_blank'));
+      badge.appendChild(updateButton);
       document.documentElement.appendChild(badge);
     }
     badge.style.background = failed ? '#a12525' : '#1d4c35';
-    badge.textContent = message;
+    badge.firstChild.textContent = message;
+    updateButton.hidden = !updateReady;
   }
 
-  GM_registerMenuCommand('Local development: toggle automatic reload', () => {
-    automatic = !automatic;
-    GM_setValue('ytToolsLocalAutoReload', automatic);
-    showStatus('YT Tools LOCAL: automatic reload ' + (automatic ? 'on' : 'off'));
-  });
-  GM_registerMenuCommand('Local development: reload latest build', () => location.reload());
+  GM_registerMenuCommand('Local development: install latest build', () => window.open(installUrl, '_blank'));
+  GM_registerMenuCommand('Local development: refresh YouTube', () => location.reload());
 
-  async function start() {
-    try {
-      // One JSON response pairs the exact source with its content hash.
-      const payload = JSON.parse(await request('/bundle'));
-      if (typeof payload.code !== 'string' || typeof payload.revision !== 'string') {
-        throw new Error('Invalid local build');
-      }
-      revision = payload.revision;
-      const run = new Function(
-        'GM_info', 'GM_addStyle', 'GM_setValue', 'GM_getValue',
-        'GM_xmlhttpRequest', 'unsafeWindow', 'GM_registerMenuCommand', 'iziToast',
-        payload.code + '\n//# sourceURL=youtube-tools-local-runtime.js',
-      );
-      // Keep storage, privileged requests and unsafeWindow in the userscript sandbox.
-      run(GM_info, GM_addStyle, GM_setValue, GM_getValue,
-        GM_xmlhttpRequest, unsafeWindow, GM_registerMenuCommand, iziToast);
-      showStatus('YT Tools LOCAL ' + revision + ' | live reload ' + (automatic ? 'on' : 'off'));
-      timer = setInterval(async () => {
-        if (reloading) return;
+  try {
+    // __LOCAL_ENGINE__
+    showStatus('YT Tools LOCAL ' + revision);
+  } catch (error) {
+    console.error('[YouTube Tools local development]', error);
+    showStatus('YT Tools LOCAL: ' + error.message, true);
+    return;
+  }
+
+  timer = setInterval(() => {
+    GM_xmlhttpRequest({
+      method: 'GET', url: base + '/revision?t=' + Date.now(), timeout: 5000,
+      onload: response => {
         try {
-          const next = JSON.parse(await request('/revision'));
-          if (next.error) {
-            showStatus('YT Tools LOCAL: build failed; keeping current version', true);
-          } else if (next.revision !== revision) {
-            if (automatic) { reloading = true; location.reload(); }
-            else showStatus('YT Tools LOCAL: new build ready; refresh YouTube');
-          } else {
-            showStatus('YT Tools LOCAL ' + revision + ' | live reload ' + (automatic ? 'on' : 'off'));
-          }
+          if (response.status !== 200) throw new Error('Server unavailable');
+          const next = JSON.parse(response.responseText);
+          if (next.error) showStatus('YT Tools LOCAL: build failed; keeping current version', true);
+          else if (next.revision !== revision) showStatus('YT Tools LOCAL: new build ready', false, true);
+          else showStatus('YT Tools LOCAL ' + revision);
         } catch {
-          showStatus('YT Tools LOCAL: server stopped; current page still running', true);
+          showStatus('YT Tools LOCAL: server stopped; installed build still running', true);
         }
-      }, 1500);
-      window.addEventListener('pagehide', () => clearInterval(timer), { once: true });
-    } catch (error) {
-      console.error('[YouTube Tools local development]', error);
-      showStatus('YT Tools LOCAL: could not load; start npm run dev:userscript and refresh', true);
-    }
-  }
-  start();
+      },
+      onerror: () => showStatus('YT Tools LOCAL: server stopped; installed build still running', true),
+      ontimeout: () => showStatus('YT Tools LOCAL: server not responding; installed build still running', true),
+    });
+  }, 1500);
+  window.addEventListener('pagehide', () => clearInterval(timer), { once: true });
 })();

@@ -23,21 +23,23 @@ localStorage for some appearance settings, so those remain shared on that origin
 ## Edit and inspect
 
 Edit modules and CSS under `tampermonkey/src/`. The watcher rebuilds and syntax-checks
-the code. The loader requests that code from loopback, using the existing GM grants,
-and polls its revision every 1.5 seconds. A changed build reloads the YouTube page.
-Use Tampermonkey's **Local development: toggle automatic reload** command to pause
-reloads while watching a video. A badge on YouTube identifies the active build.
+the code. Tampermonkey installs the complete compiled source, and a status badge
+polls the local build revision every 1.5 seconds. On a changed build, click
+**Update local build**, accept Tampermonkey's update, then refresh YouTube.
+The Tampermonkey menu also has **Local development: install latest build**.
 
-The loader executes the locally fetched source in its userscript sandbox, passing
-through the GM APIs and iziToast. Its first execution in the real Tampermonkey
-sandbox must be verified in Chrome; Node checks cannot verify browser sandbox/CSP behavior.
+The engine is embedded as ordinary source code, without runtime eval or a Function
+constructor. This avoids YouTube's Trusted Types restriction that blocked the
+initial dynamic loader. A green badge identifies the installed build; a red badge
+reports startup errors. Browser checks remain necessary after engine changes.
 
 The server listens only on 127.0.0.1:8766 and serves a fixed set of endpoints, never
 arbitrary local files. Invalid builds keep the last good code. A stopped server
-does not stop an already loaded page; a new page needs the server running.
+does not stop the installed script; existing and new pages still run the last
+installed build, with an offline status until the server is restarted.
 
-The loader has no automatic update URL. Its own metadata or loader changes require
-reinstalling the development userscript. Source module and CSS changes need no reinstall.
+The development script's update/download URLs point to loopback. Each build has
+a new version. All source changes take effect after updating the installed script.
 The upstream update notification is suppressed only in the development response.
 
 ## Check a release build

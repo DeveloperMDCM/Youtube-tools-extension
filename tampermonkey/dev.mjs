@@ -27,7 +27,8 @@ function build() {
     const code = built.slice(built.indexOf('// ==/UserScript==') + '// ==/UserScript=='.length)
       .replace('  async function checkNewVersion() {', '  async function checkNewVersion() { return;');
     new Script(code, { filename: 'youtube-tools-local-runtime.js' });
-    const revision = createHash('sha256').update(code).digest('hex').slice(0, 12);
+    const wrapper = readFileSync(join(here, 'dev-loader.js'), 'utf8');
+    const revision = createHash('sha256').update(code).update(wrapper).digest('hex').slice(0, 12);
     const header = built.slice(0, built.indexOf('// ==/UserScript=='))
       .split(/\r?\n/)
       .filter(line => !/^\/\/ @(?:name(?::\S+)?|namespace|homepage|updateURL|downloadURL|version|description(?::\S+)?)\s/.test(line));
@@ -35,14 +36,16 @@ function build() {
       '// @name         YouTube Tools - Local Development',
       '// @namespace    https://github.com/neuronsarealsocool/Youtube-tools-extension/local-dev',
       '// @homepage     https://github.com/neuronsarealsocool/Youtube-tools-extension',
-      '// @description  Runs this local checkout on YouTube. Keep the original script disabled while testing.',
-      '// @version      1.0.0',
-      '// @updateURL    none',
-      '// @downloadURL  none',
+      '// @description  Compiled local build with update detection. Keep the original script disabled while testing.',
+      '// @version      1.0.1.' + Date.now(),
+      '// @updateURL    ' + base + '/youtube-tools-local-dev.user.js',
+      '// @downloadURL  ' + base + '/youtube-tools-local-dev.user.js',
       '// @noframes',
       '// ==/UserScript==',
     );
-    const nextLoader = header.join('\n') + '\n\n' + readFileSync(join(here, 'dev-loader.js'), 'utf8');
+    const nextLoader = header.join('\n') + '\n\n' + wrapper
+      .replace("'__LOCAL_BUILD_REVISION__'", JSON.stringify(revision))
+      .replace('// __LOCAL_ENGINE__', () => code);
     new Script(nextLoader, { filename: 'youtube-tools-local-dev.user.js' });
     writeFileSync(join(output, 'youtube-tools-local-dev.user.js'), nextLoader);
     bundle = { revision, code };
@@ -78,7 +81,7 @@ const server = createServer((request, response) => {
       '<h1>YouTube Tools local development</h1><p>The local build watcher is running.</p>' +
       '<p><a href="/youtube-tools-local-dev.user.js">Install local development userscript</a></p>' +
       '<p>Disable the original YouTube Tools script while testing. The development copy uses separate Tampermonkey storage.</p>' +
-      '<p>Edit tampermonkey/src/. Valid builds trigger a YouTube reload. Toggle reload in the Tampermonkey menu.</p>';
+      '<p>Edit tampermonkey/src/. When the badge reports a new build, click Update local build, accept the update, then refresh YouTube.</p>';
   } else { response.writeHead(404).end(); return; }
   response.writeHead(200, {
     'Content-Type': type, 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff',
@@ -91,6 +94,7 @@ server.listen(8766, '127.0.0.1', () => console.log(`Development server: ${base}`
 const queueBuild = () => { clearTimeout(pending); pending = setTimeout(build, 200); };
 const sourceWatcher = watch(join(here, 'src'), queueBuild);
 const buildWatcher = watch(join(here, 'build.mjs'), queueBuild);
-function stop() { clearTimeout(pending); sourceWatcher.close(); buildWatcher.close(); server.close(); }
+const wrapperWatcher = watch(join(here, 'dev-loader.js'), queueBuild);
+function stop() { clearTimeout(pending); sourceWatcher.close(); buildWatcher.close(); wrapperWatcher.close(); server.close(); }
 process.on('SIGINT', stop);
 process.on('SIGTERM', stop);
