@@ -36,7 +36,7 @@ function build() {
       '// @name         YouTube Tools - Local Development',
       '// @namespace    https://github.com/neuronsarealsocool/Youtube-tools-extension/local-dev',
       '// @homepage     https://github.com/neuronsarealsocool/Youtube-tools-extension',
-      '// @description  Compiled local build with update detection. Keep the original script disabled while testing.',
+      '// @description  Compiled local build. Use Update local build after editing sources. Keep the original script disabled while testing.',
       '// @version      1.0.1.' + Date.now(),
       '// @updateURL    ' + base + '/youtube-tools-local-dev.user.js',
       '// @downloadURL  ' + base + '/youtube-tools-local-dev.user.js',
@@ -81,7 +81,7 @@ const server = createServer((request, response) => {
       '<h1>YouTube Tools local development</h1><p>The local build watcher is running.</p>' +
       '<p><a href="/youtube-tools-local-dev.user.js">Install local development userscript</a></p>' +
       '<p>Disable the original YouTube Tools script while testing. The development copy uses separate Tampermonkey storage.</p>' +
-      '<p>Edit tampermonkey/src/. When the badge reports a new build, click Update local build, accept the update, then refresh YouTube.</p>';
+      '<p>Edit tampermonkey/src/. Click Update local build, accept the update, then refresh YouTube.</p>';
   } else { response.writeHead(404).end(); return; }
   response.writeHead(200, {
     'Content-Type': type, 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff',

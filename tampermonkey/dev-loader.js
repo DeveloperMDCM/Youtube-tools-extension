@@ -5,11 +5,10 @@
   const base = 'http://127.0.0.1:8766';
   const revision = '__LOCAL_BUILD_REVISION__';
   const installUrl = base + '/youtube-tools-local-dev.user.js';
-  let timer;
   let badge;
   let updateButton;
 
-  function showStatus(message, failed = false, updateReady = false) {
+  function showStatus(message, failed = false) {
     if (!badge) {
       badge = document.createElement('div');
       badge.id = 'yt-tools-local-dev';
@@ -31,7 +30,7 @@
     }
     badge.style.background = failed ? '#a12525' : '#1d4c35';
     badge.firstChild.textContent = message;
-    updateButton.hidden = !updateReady;
+    updateButton.hidden = false;
   }
 
   GM_registerMenuCommand('Local development: install latest build', () => window.open(installUrl, '_blank'));
@@ -46,23 +45,4 @@
     return;
   }
 
-  timer = setInterval(() => {
-    GM_xmlhttpRequest({
-      method: 'GET', url: base + '/revision?t=' + Date.now(), timeout: 5000,
-      onload: response => {
-        try {
-          if (response.status !== 200) throw new Error('Server unavailable');
-          const next = JSON.parse(response.responseText);
-          if (next.error) showStatus('YT Tools LOCAL: build failed; keeping current version', true);
-          else if (next.revision !== revision) showStatus('YT Tools LOCAL: new build ready', false, true);
-          else showStatus('YT Tools LOCAL ' + revision);
-        } catch {
-          showStatus('YT Tools LOCAL: server stopped; installed build still running', true);
-        }
-      },
-      onerror: () => showStatus('YT Tools LOCAL: server stopped; installed build still running', true),
-      ontimeout: () => showStatus('YT Tools LOCAL: server not responding; installed build still running', true),
-    });
-  }, 1500);
-  window.addEventListener('pagehide', () => clearInterval(timer), { once: true });
 })();

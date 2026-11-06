@@ -23,8 +23,7 @@ localStorage for some appearance settings, so those remain shared on that origin
 ## Edit and inspect
 
 Edit modules and CSS under `tampermonkey/src/`. The watcher rebuilds and syntax-checks
-the code. Tampermonkey installs the complete compiled source, and a status badge
-polls the local build revision every 1.5 seconds. On a changed build, click
+the code. Tampermonkey installs the complete compiled source. After editing, click
 **Update local build**, accept Tampermonkey's update, then refresh YouTube.
 The Tampermonkey menu also has **Local development: install latest build**.
 
@@ -36,7 +35,9 @@ reports startup errors. Browser checks remain necessary after engine changes.
 The server listens only on 127.0.0.1:8766 and serves a fixed set of endpoints, never
 arbitrary local files. Invalid builds keep the last good code. A stopped server
 does not stop the installed script; existing and new pages still run the last
-installed build, with an offline status until the server is restarted.
+installed build. The server is needed only to install a new build. The development
+wrapper makes no background requests to localhost, avoiding Tampermonkey's local
+network permission prompts.
 
 The development script's update/download URLs point to loopback. Each build has
 a new version. All source changes take effect after updating the installed script.
