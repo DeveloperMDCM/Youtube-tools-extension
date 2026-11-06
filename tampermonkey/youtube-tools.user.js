@@ -382,9 +382,30 @@
   }
 
   // --- 02-download.js ---
+  function resetDownloadState(container) {
+    if (!container) return;
+    container.__ytDownloadGeneration = (container.__ytDownloadGeneration || 0) + 1;
+    if (container.__ytDownloadPoll) clearInterval(container.__ytDownloadPoll);
+    container.__ytDownloadPoll = null;
+    container.classList.remove('completed');
+    for (const name of ['downloading', 'urlOpened', 'lastDownloadUrl']) delete container.dataset[name];
+    const show = (selector, value) => { const node = container.querySelector(selector); if (node) node.style.display = value; };
+    show('.download-btn', 'block');
+    show('.retry-btn', 'none');
+    show('.progress-retry-btn', 'none');
+    show('.download-again-btn', 'none');
+    show('.progress-container', 'none');
+    const fill = container.querySelector('.progress-fill');
+    const progress = container.querySelector('.progress-text');
+    if (fill) fill.style.width = '0%';
+    if (progress) progress.textContent = '0%';
+  }
+
   async function startLocalDownload(format, container) {
     if (container.dataset.downloading === 'true') return;
     const videoId = paramsVideoURL();
+    const generation = container.__ytDownloadGeneration || 0;
+    const isCurrent = () => (container.__ytDownloadGeneration || 0) === generation;
     const download = container.querySelector('.download-btn');
     const retry = container.querySelector('.retry-btn');
     const progress = container.querySelector('.progress-container');
@@ -414,10 +435,12 @@
     try {
       const base = 'http://127.0.0.1:8766/local-download';
       const job = await request('POST', base, { videoId, format: String(format) });
+      if (!isCurrent()) return;
       let state;
       do {
         await new Promise(resolve => setTimeout(resolve, 1500));
         state = await request('GET', `${base}?id=${encodeURIComponent(job.id)}`);
+        if (!isCurrent()) return;
         progressText.textContent = state.message;
         const percent = state.message.match(/(\d+(?:\.\d+)?)%/);
         if (percent) progressFill.style.width = `${percent[1]}%`;
@@ -429,6 +452,7 @@
       container.classList.add('completed');
       container.dataset.downloading = 'false';
     } catch (error) {
+      if (!isCurrent()) return;
       label.textContent = error.message;
       progress.style.display = 'none'; retry.style.display = 'block';
       container.dataset.downloading = 'false';
@@ -6932,6 +6956,7 @@ a.icon-btn-mdcm {
       const progressContainer = downloadContainer.querySelector('.progress-container');
 
       // Update UI
+      resetDownloadState(downloadContainer);
       downloadContainer.classList.add('video');
       downloadContainer.classList.remove('ocultarframe');
       downloadText.textContent = `Download ${quality.toUpperCase()} And Please Wait...`;
@@ -6962,6 +6987,7 @@ a.icon-btn-mdcm {
       const progressContainer = downloadContainer.querySelector('.progress-container');
 
       // Update UI
+      resetDownloadState(downloadContainer);
       downloadContainer.classList.add('audio');
       downloadContainer.classList.remove('ocultarframeaudio');
       downloadText.textContent = `Download ${format.toUpperCase()} And Please Wait...`;
@@ -7640,7 +7666,22 @@ a.icon-btn-mdcm {
     }
   });
 
+  let downloadVideoId = paramsVideoURL();
   document.addEventListener('yt-navigate-finish', () => {
+    const currentVideoId = paramsVideoURL();
+    if (downloadVideoId !== currentVideoId) {
+      for (const [id, hiddenClass] of [['descargando', 'ocultarframe'], ['descargandomp3', 'ocultarframeaudio']]) {
+        const container = $id(id);
+        if (container) {
+          resetDownloadState(container);
+          container.classList.add(hiddenClass);
+          delete container.dataset.quality;
+        }
+      }
+      document.querySelector('.formulariodescarga')?.reset();
+      document.querySelector('.formulariodescargaaudio')?.reset();
+      downloadVideoId = currentVideoId;
+    }
     if (!document.location.href.includes('watch')) {
       hideCanvas();
     }
@@ -8206,6 +8247,7 @@ a.icon-btn-mdcm {
   (() => {
     let panel;
     let button;
+    let panelVideoId = paramsVideoURL();
     const element = (tag, className, text) => {
       const node = document.createElement(tag);
       if (className) node.className = className;
@@ -8260,6 +8302,8 @@ a.icon-btn-mdcm {
       panel.appendChild(box);
       select.addEventListener('change', () => {
         if (!select.value) return;
+        resetDownloadState(box);
+        text.textContent = 'Download video';
         box.hidden = false;
         box.dataset.quality = select.value;
         quality.textContent = ' ' + select.options[select.selectedIndex].text;
@@ -8318,7 +8362,14 @@ a.icon-btn-mdcm {
     });
     observer.observe(document.documentElement, { childList: true, subtree: true });
     document.addEventListener('yt-navigate-start', closePanel);
-    document.addEventListener('yt-navigate-finish', ensurePlayerButton);
+    document.addEventListener('yt-navigate-finish', () => {
+      const currentVideoId = paramsVideoURL();
+      if (currentVideoId !== panelVideoId) {
+        if (panel) { resetDownloadState(panel.querySelector('.download-container')); panel.remove(); panel = null; }
+        panelVideoId = currentVideoId;
+      }
+      ensurePlayerButton();
+    });
     ensurePlayerButton();
   })();
 

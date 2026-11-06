@@ -1984,6 +1984,7 @@
       const progressContainer = downloadContainer.querySelector('.progress-container');
 
       // Update UI
+      resetDownloadState(downloadContainer);
       downloadContainer.classList.add('video');
       downloadContainer.classList.remove('ocultarframe');
       downloadText.textContent = `Download ${quality.toUpperCase()} And Please Wait...`;
@@ -2014,6 +2015,7 @@
       const progressContainer = downloadContainer.querySelector('.progress-container');
 
       // Update UI
+      resetDownloadState(downloadContainer);
       downloadContainer.classList.add('audio');
       downloadContainer.classList.remove('ocultarframeaudio');
       downloadText.textContent = `Download ${format.toUpperCase()} And Please Wait...`;
@@ -2692,7 +2694,22 @@
     }
   });
 
+  let downloadVideoId = paramsVideoURL();
   document.addEventListener('yt-navigate-finish', () => {
+    const currentVideoId = paramsVideoURL();
+    if (downloadVideoId !== currentVideoId) {
+      for (const [id, hiddenClass] of [['descargando', 'ocultarframe'], ['descargandomp3', 'ocultarframeaudio']]) {
+        const container = $id(id);
+        if (container) {
+          resetDownloadState(container);
+          container.classList.add(hiddenClass);
+          delete container.dataset.quality;
+        }
+      }
+      document.querySelector('.formulariodescarga')?.reset();
+      document.querySelector('.formulariodescargaaudio')?.reset();
+      downloadVideoId = currentVideoId;
+    }
     if (!document.location.href.includes('watch')) {
       hideCanvas();
     }

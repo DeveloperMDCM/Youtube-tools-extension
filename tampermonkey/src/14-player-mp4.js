@@ -2,6 +2,7 @@
   (() => {
     let panel;
     let button;
+    let panelVideoId = paramsVideoURL();
     const element = (tag, className, text) => {
       const node = document.createElement(tag);
       if (className) node.className = className;
@@ -56,6 +57,8 @@
       panel.appendChild(box);
       select.addEventListener('change', () => {
         if (!select.value) return;
+        resetDownloadState(box);
+        text.textContent = 'Download video';
         box.hidden = false;
         box.dataset.quality = select.value;
         quality.textContent = ' ' + select.options[select.selectedIndex].text;
@@ -114,6 +117,13 @@
     });
     observer.observe(document.documentElement, { childList: true, subtree: true });
     document.addEventListener('yt-navigate-start', closePanel);
-    document.addEventListener('yt-navigate-finish', ensurePlayerButton);
+    document.addEventListener('yt-navigate-finish', () => {
+      const currentVideoId = paramsVideoURL();
+      if (currentVideoId !== panelVideoId) {
+        if (panel) { resetDownloadState(panel.querySelector('.download-container')); panel.remove(); panel = null; }
+        panelVideoId = currentVideoId;
+      }
+      ensurePlayerButton();
+    });
     ensurePlayerButton();
   })();

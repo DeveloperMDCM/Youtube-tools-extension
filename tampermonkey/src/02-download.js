@@ -3,9 +3,30 @@
 // Source lines 370-611 of youtube_script_new_ui.js
 // =============================================================================
 
+  function resetDownloadState(container) {
+    if (!container) return;
+    container.__ytDownloadGeneration = (container.__ytDownloadGeneration || 0) + 1;
+    if (container.__ytDownloadPoll) clearInterval(container.__ytDownloadPoll);
+    container.__ytDownloadPoll = null;
+    container.classList.remove('completed');
+    for (const name of ['downloading', 'urlOpened', 'lastDownloadUrl']) delete container.dataset[name];
+    const show = (selector, value) => { const node = container.querySelector(selector); if (node) node.style.display = value; };
+    show('.download-btn', 'block');
+    show('.retry-btn', 'none');
+    show('.progress-retry-btn', 'none');
+    show('.download-again-btn', 'none');
+    show('.progress-container', 'none');
+    const fill = container.querySelector('.progress-fill');
+    const progress = container.querySelector('.progress-text');
+    if (fill) fill.style.width = '0%';
+    if (progress) progress.textContent = '0%';
+  }
+
   async function startLocalDownload(format, container) {
     if (container.dataset.downloading === 'true') return;
     const videoId = paramsVideoURL();
+    const generation = container.__ytDownloadGeneration || 0;
+    const isCurrent = () => (container.__ytDownloadGeneration || 0) === generation;
     const download = container.querySelector('.download-btn');
     const retry = container.querySelector('.retry-btn');
     const progress = container.querySelector('.progress-container');
@@ -35,10 +56,12 @@
     try {
       const base = 'http://127.0.0.1:8766/local-download';
       const job = await request('POST', base, { videoId, format: String(format) });
+      if (!isCurrent()) return;
       let state;
       do {
         await new Promise(resolve => setTimeout(resolve, 1500));
         state = await request('GET', `${base}?id=${encodeURIComponent(job.id)}`);
+        if (!isCurrent()) return;
         progressText.textContent = state.message;
         const percent = state.message.match(/(\d+(?:\.\d+)?)%/);
         if (percent) progressFill.style.width = `${percent[1]}%`;
@@ -50,6 +73,7 @@
       container.classList.add('completed');
       container.dataset.downloading = 'false';
     } catch (error) {
+      if (!isCurrent()) return;
       label.textContent = error.message;
       progress.style.display = 'none'; retry.style.display = 'block';
       container.dataset.downloading = 'false';
