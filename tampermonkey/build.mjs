@@ -30,6 +30,7 @@ const MODULES = [
   '11-menu-ui.js',
   '12-app.js',
   '13-transcript.js',
+  '14-player-mp4.js',
 ];
 
 function read(file) {

@@ -27,6 +27,11 @@
       updateButton.addEventListener('click', () => window.open(installUrl, '_blank'));
       badge.appendChild(updateButton);
       document.documentElement.appendChild(badge);
+      const updateVisibility = () => {
+        badge.style.display = document.fullscreenElement ? 'none' : 'flex';
+      };
+      document.addEventListener('fullscreenchange', updateVisibility);
+      updateVisibility();
     }
     badge.style.background = failed ? '#a12525' : '#1d4c35';
     badge.firstChild.textContent = message;

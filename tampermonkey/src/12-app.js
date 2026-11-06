@@ -480,6 +480,8 @@
   }
 
   function syncPlayerButtonsVisibility(settings) {
+    const playerMp4 = document.getElementById('yt-tools-player-mp4');
+    if (playerMp4) playerMp4.hidden = settings.btnDownloadMp4 === false;
     const root = $e('.containerButtons');
     if (!root) return;
     const setVisible = (selector, visible) => {
