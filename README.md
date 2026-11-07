@@ -25,7 +25,7 @@ The player controls can be enabled or disabled with the corresponding YouTube To
 
 ## Start and update later
 
-Start **Start YouTube Tools.cmd** each time you want local video or audio downloads, and leave its window open. It does not currently start automatically with Windows. The transcript button does not need the local service once the userscript is installed.
+Start **Start YouTube Tools.cmd** each time you want local video or audio downloads, and leave its window open. To start it automatically in the background when you sign in to Windows, double-click **Enable YouTube Tools Startup.cmd** after completing setup. To turn that off, double-click **Disable YouTube Tools Startup.cmd**. This applies only to your Windows account. If you move the project folder, enable startup again from its new location. The transcript button does not need the local service once the userscript is installed.
 
 To update, download and extract the newer project version, start its launcher, visit [http://127.0.0.1:8766/](http://127.0.0.1:8766/) and choose **Install or update**. Alternatively, with YouTube open, use the Tampermonkey menu **YouTube Tools: install or update**. Accept the update and refresh YouTube. Don't run two copies of the local service at the same time.
 
@@ -34,7 +34,7 @@ The tools downloaded into `.local/bin` are pinned and checksum-verified. Updatin
 ## Troubleshooting
 
 - **No player buttons:** refresh YouTube, confirm the local userscript is enabled and that Tampermonkey has permission to run user scripts. Check the YouTube Tools settings if a button is hidden.
-- **Local service unavailable:** start the launcher and leave it open. If setup reports an error, check the window for details and your internet connection. Port `127.0.0.1:8766` must be available.
+- **Local service unavailable:** start the launcher and leave it open. If setup reports an error, check the window for details and your internet connection. For automatic startup, check `.local/dev/startup.log`. Port `127.0.0.1:8766` must be available.
 - **No transcript or wrong language:** not every video has captions or translation for every language. Change the default transcript language in settings or use the existing transcript panel to select an available caption track.
 - **Download fails:** YouTube or yt-dlp may have changed, or the video may be unavailable. Update the project and try again. The existing public-provider paths in the upstream extension are separate from this local-service setup.
 - **Can't find the file:** check the Windows Downloads folder for video and audio, and Chrome's Downloads page for transcripts.
