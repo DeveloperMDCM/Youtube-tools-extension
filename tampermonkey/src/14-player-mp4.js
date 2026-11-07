@@ -2,6 +2,7 @@
   (() => {
     let panel;
     let button;
+    let transcriptButton;
     let panelVideoId = paramsVideoURL();
     const element = (tag, className, text) => {
       const node = document.createElement(tag);
@@ -29,13 +30,6 @@
       close.addEventListener('click', closePanel);
       header.appendChild(close);
       panel.appendChild(header);
-      const select = element('select', 'yt-tools-player-quality');
-      select.setAttribute('aria-label', 'Video quality');
-      [['', 'Choose video quality'], ['144', '144p MP4'], ['240', '240p MP4'],
-        ['360', '360p MP4'], ['480', '480p MP4'], ['720', '720p HD MP4'],
-        ['1080', '1080p Full HD MP4'], ['4k', '2160p 4K WEBM'], ['8k', '4320p 8K WEBM']]
-        .forEach(([value, label]) => { const option = element('option', '', label); option.value = value; select.appendChild(option); });
-      panel.appendChild(select);
       const box = element('div', 'download-container yt-tools-player-download-box');
       box.dataset.type = 'video';
       box.hidden = true;
@@ -55,14 +49,6 @@
       progress.append(bar, element('span', 'progress-text', '0%'));
       box.append(text, quality, download, retry, progressRetry, again, progress);
       panel.appendChild(box);
-      select.addEventListener('change', () => {
-        if (!select.value) return;
-        resetDownloadState(box);
-        text.textContent = 'Download video';
-        box.hidden = false;
-        box.dataset.quality = select.value;
-        quality.textContent = ' ' + select.options[select.selectedIndex].text;
-      });
       panel.addEventListener('click', event => {
         const target = event.target.closest('button');
         if (target && box.contains(target)) {
@@ -99,19 +85,60 @@
           if (!panel || panel.parentElement !== player) createPanel(player);
           panel.hidden = !panel.hidden;
           button.setAttribute('aria-expanded', String(!panel.hidden));
-          if (!panel.hidden) panel.querySelector('select').focus();
+          if (!panel.hidden) {
+            const box = panel.querySelector('.download-container');
+            if (!box.dataset.started) {
+              const configured = readJsonGM('ytSettingsMDCM', {}).defaultMp4Quality;
+              const quality = ['144', '240', '360', '480', '720', '1080'].includes(configured) ? configured : '720';
+              box.dataset.started = 'true';
+              box.dataset.quality = quality;
+              box.hidden = false;
+              box.querySelector('.download-quality').textContent = ` ${quality}p MP4`;
+              startDownloadVideoOrAudio(quality, box);
+            }
+          }
         });
         play.insertAdjacentElement('afterend', button);
       }
       const settings = readJsonGM('ytSettingsMDCM', {});
       button.hidden = settings.btnDownloadMp4 === false;
+      if (transcriptButton?.parentElement !== controls) {
+        transcriptButton = element('button', 'ytp-button yt-tools-player-transcript', 'Transcript ↓');
+        transcriptButton.type = 'button';
+        transcriptButton.id = 'yt-tools-player-transcript';
+        transcriptButton.title = 'Download transcript as Markdown';
+        transcriptButton.setAttribute('aria-label', 'Download transcript as Markdown');
+        transcriptButton.addEventListener('click', async event => {
+          event.preventDefault(); event.stopPropagation();
+          if (transcriptButton.disabled) return;
+          const currentButton = transcriptButton;
+          currentButton.disabled = true;
+          currentButton.textContent = 'Loading…';
+          const status = element('div', 'yt-tools-transcript-status', 'Preparing transcript…');
+          status.setAttribute('role', 'status');
+          player.appendChild(status);
+          try {
+            await ytTranscriptDownloadDefault();
+            status.textContent = 'Transcript downloaded';
+          } catch (error) {
+            status.textContent = error.message || 'Could not download transcript.';
+            console.warn('[YouTube Tools] transcript download:', error);
+          } finally {
+            currentButton.disabled = false;
+            currentButton.textContent = 'Transcript ↓';
+            setTimeout(() => status.remove(), 6000);
+          }
+        });
+        button.insertAdjacentElement('afterend', transcriptButton);
+      }
+      transcriptButton.hidden = settings.btnTranscript === false;
     }
 
     let scheduled = false;
     const observer = new MutationObserver(() => {
       if (scheduled) return;
       const controls = document.querySelector('#movie_player .ytp-left-controls');
-      if (controls && button?.parentElement === controls) return;
+      if (controls && button?.parentElement === controls && transcriptButton?.parentElement === controls) return;
       scheduled = true;
       requestAnimationFrame(() => { scheduled = false; ensurePlayerButton(); });
     });

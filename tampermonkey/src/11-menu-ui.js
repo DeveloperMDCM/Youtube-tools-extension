@@ -489,6 +489,21 @@
             </select>
           </div>
           <div class="yt-field">
+            <label class="yt-field-label" for="default-mp4-quality">Default MP4 download resolution</label>
+            <select class="yt-select" id="default-mp4-quality">
+              <option value="144">144p</option>
+              <option value="240">240p</option>
+              <option value="360">360p</option>
+              <option value="480">480p</option>
+              <option value="720" selected>720p HD</option>
+              <option value="1080">1080p Full HD</option>
+            </select>
+          </div>
+          <div class="yt-field">
+            <label class="yt-field-label" for="default-transcript-language">Default transcript language</label>
+            <select class="yt-select" id="default-transcript-language">${languageOptionsHTML}</select>
+          </div>
+          <div class="yt-field">
             <label class="yt-field-label" for="select-languages-comments-select">Language for translate comments</label>
             <select class="yt-select" id="select-languages-comments-select">${languageOptionsHTML}</select>
           </div>

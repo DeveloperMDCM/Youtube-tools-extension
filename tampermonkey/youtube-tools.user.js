@@ -4002,6 +4002,10 @@ a.icon-btn-mdcm {
 /* MP4 control and panel stay within the player, including in fullscreen. */
 #movie_player .yt-tools-player-mp4 { width: 48px; font-size: 13px; font-weight: 700; vertical-align: top; }
 #movie_player .yt-tools-player-mp4[hidden], #movie_player .yt-tools-player-download[hidden], #movie_player .yt-tools-player-download-box[hidden] { display: none !important; }
+#movie_player .yt-tools-player-transcript[hidden] { display: none !important; }
+#movie_player .yt-tools-player-transcript { width: 86px; font-size: 12px; font-weight: 600; }
+#movie_player .yt-tools-player-transcript:disabled { opacity: .6; }
+#movie_player .yt-tools-transcript-status { position: absolute; left: 16px; bottom: 65px; z-index: 105; max-width: min(420px, calc(100% - 32px)); padding: 10px 14px; border-radius: 8px; background: #202020; color: #fff; font: 14px/1.4 Arial, sans-serif; box-shadow: 0 4px 18px #0009; }
 #movie_player .yt-tools-player-download { position: absolute; left: 16px; bottom: 65px; z-index: 100; width: min(320px, calc(100% - 32px)); box-sizing: border-box; padding: 16px; border-radius: 12px; background: #202020; color: #fff; font: 14px/1.4 Arial, sans-serif; box-shadow: 0 4px 18px #0009; }
 #movie_player .yt-tools-player-download-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 #movie_player .yt-tools-player-close { border: 0; background: transparent; color: white; font-size: 24px; cursor: pointer; }
@@ -4817,6 +4821,21 @@ a.icon-btn-mdcm {
             </select>
           </div>
           <div class="yt-field">
+            <label class="yt-field-label" for="default-mp4-quality">Default MP4 download resolution</label>
+            <select class="yt-select" id="default-mp4-quality">
+              <option value="144">144p</option>
+              <option value="240">240p</option>
+              <option value="360">360p</option>
+              <option value="480">480p</option>
+              <option value="720" selected>720p HD</option>
+              <option value="1080">1080p Full HD</option>
+            </select>
+          </div>
+          <div class="yt-field">
+            <label class="yt-field-label" for="default-transcript-language">Default transcript language</label>
+            <select class="yt-select" id="default-transcript-language">${languageOptionsHTML}</select>
+          </div>
+          <div class="yt-field">
             <label class="yt-field-label" for="select-languages-comments-select">Language for translate comments</label>
             <select class="yt-select" id="select-languages-comments-select">${languageOptionsHTML}</select>
           </div>
@@ -5087,6 +5106,8 @@ a.icon-btn-mdcm {
       // fontSize: $id('font-size-slider').value,
       playerSize: $id('player-size-slider').value,
       selectVideoQuality: $id('select-video-qualitys-select').value,
+      defaultMp4Quality: $id('default-mp4-quality').value,
+      defaultTranscriptLanguage: $id('default-transcript-language').value,
       languagesComments: $id('select-languages-comments-select').value,
       btnThumbnail: readBtnToggle('btn-thumbnail-toggle'),
       btnBuffer: readBtnToggle('btn-buffer-toggle'),
@@ -5158,6 +5179,8 @@ a.icon-btn-mdcm {
     // $id('font-size-slider').value = settings.fontSize || 16;
     $id('player-size-slider').value = settings.playerSize || 100;
     $id('select-video-qualitys-select').value = settings.selectVideoQuality || 'user';
+    $id('default-mp4-quality').value = ['144', '240', '360', '480', '720', '1080'].includes(settings.defaultMp4Quality) ? settings.defaultMp4Quality : '720';
+    $id('default-transcript-language').value = Object.hasOwn(languagesTranslate, settings.defaultTranscriptLanguage) ? settings.defaultTranscriptLanguage : 'en';
     $id('select-languages-comments-select').value = settings.languagesComments || 'en';
     const setBtn = (id, value) => {
       const el = $id(id);
@@ -5454,6 +5477,8 @@ a.icon-btn-mdcm {
   function syncPlayerButtonsVisibility(settings) {
     const playerMp4 = document.getElementById('yt-tools-player-mp4');
     if (playerMp4) playerMp4.hidden = settings.btnDownloadMp4 === false;
+    const playerTranscript = $id('yt-tools-player-transcript');
+    if (playerTranscript) playerTranscript.hidden = settings.btnTranscript === false;
     const root = $e('.containerButtons');
     if (!root) return;
     const setVisible = (selector, visible) => {
@@ -7529,6 +7554,8 @@ a.icon-btn-mdcm {
   }
 
   bindSelectOnce('select-video-qualitys-select');
+  bindSelectOnce('default-mp4-quality');
+  bindSelectOnce('default-transcript-language');
   bindSelectOnce('select-languages-comments-select');
   bindSelectOnce('select-wave-visualizer-select');
 
@@ -7958,27 +7985,51 @@ a.icon-btn-mdcm {
     return out;
   }
 
-  function ytTranscriptFilename() {
-    const id = getCurrentVideoId() || 'video';
+  function ytTranscriptVideoTitle() {
     let title = '';
     try {
       title = $e('h1.style-scope.ytd-watch-metadata')?.innerText || '';
       if (!title) title = (document.title || '').replace(/\s*-\s*YouTube\s*$/, '');
     } catch (e) {}
-    title = String(title).replace(/[\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80);
-    return `${title || id} - transcript.txt`;
+    return String(title).replace(/\s+/g, ' ').trim();
   }
 
-  function ytTranscriptDownloadText(text) {
-    const blob = new Blob([`\uFEFF${text}`], { type: 'text/plain;charset=utf-8' });
+  function ytTranscriptFilename(title = ytTranscriptVideoTitle(), id = getCurrentVideoId() || 'video') {
+    const safeTitle = String(title).replace(/[\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80);
+    return `${safeTitle || id} - transcript.md`;
+  }
+
+  function ytTranscriptDownloadText(text, title = ytTranscriptVideoTitle(), videoId = getCurrentVideoId()) {
+    const heading = (title || 'Transcript').replace(/[\r\n]+/g, ' ').replace(/([\\`*_\[\]])/g, '\\$1');
+    const markdown = `# ${heading}\n\n${videoId ? `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}\n\n` : ''}${text.replace(/\n/g, '  \n')}\n`;
+    const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = $cl('a');
     link.href = url;
-    link.download = ytTranscriptFilename();
+    link.download = ytTranscriptFilename(title, videoId);
     document.body.appendChild(link);
     link.click();
     link.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1500);
+  }
+
+  async function ytTranscriptDownloadDefault() {
+    const videoId = getCurrentVideoId();
+    if (!videoId) throw new Error('Open a video to download its transcript.');
+    const title = ytTranscriptVideoTitle();
+    const language = readJsonGM('ytSettingsMDCM', {}).defaultTranscriptLanguage || 'en';
+    const tracks = ytTranscriptGetTracks(await ytTranscriptResolvePlayerResponse(videoId));
+    if (!tracks.length) throw new Error('No transcript is available for this video.');
+    const code = language.toLowerCase();
+    const matching = tracks.filter(track => {
+      const trackCode = String(track.languageCode || '').toLowerCase();
+      return trackCode === code || trackCode.startsWith(`${code}-`);
+    });
+    const track = matching.find(item => item.kind !== 'asr') || matching[0] || tracks.find(item => item.isTranslatable);
+    if (!track) throw new Error(`No ${languagesTranslate[language] || language} transcript or translation is available.`);
+    const cues = await ytTranscriptFetchCues(track, matching.length ? '' : language);
+    if (!cues.length) throw new Error(`No ${languagesTranslate[language] || language} transcript content was returned.`);
+    ytTranscriptDownloadText(ytTranscriptBuildText(cues, true), title, videoId);
   }
 
   async function ytTranscriptCopyText(text) {
@@ -8082,7 +8133,7 @@ a.icon-btn-mdcm {
       </div>
       <div class="yt-tr-actions">
         <button type="button" class="yt-tr-btn" id="yt-tr-copy" disabled><i class="fa-solid fa-copy"></i> Copy</button>
-        <button type="button" class="yt-tr-btn primary" id="yt-tr-download" disabled><i class="fa-solid fa-download"></i> Download .txt</button>
+        <button type="button" class="yt-tr-btn primary" id="yt-tr-download" disabled><i class="fa-solid fa-download"></i> Download .md</button>
       </div>
       <div class="yt-tr-status" id="yt-tr-status"></div>
       <pre class="yt-tr-preview" id="yt-tr-preview"></pre>
@@ -8119,7 +8170,7 @@ a.icon-btn-mdcm {
     $id('yt-tr-download')?.addEventListener('click', () => {
       if (!__ytTranscriptState.text) return;
       ytTranscriptDownloadText(__ytTranscriptState.text);
-      ytTranscriptSetStatus('Transcript downloaded as .txt', 'ok');
+      ytTranscriptSetStatus('Transcript downloaded as .md', 'ok');
       Notify('success', 'Transcript downloaded');
     });
   }
@@ -8247,6 +8298,7 @@ a.icon-btn-mdcm {
   (() => {
     let panel;
     let button;
+    let transcriptButton;
     let panelVideoId = paramsVideoURL();
     const element = (tag, className, text) => {
       const node = document.createElement(tag);
@@ -8274,13 +8326,6 @@ a.icon-btn-mdcm {
       close.addEventListener('click', closePanel);
       header.appendChild(close);
       panel.appendChild(header);
-      const select = element('select', 'yt-tools-player-quality');
-      select.setAttribute('aria-label', 'Video quality');
-      [['', 'Choose video quality'], ['144', '144p MP4'], ['240', '240p MP4'],
-        ['360', '360p MP4'], ['480', '480p MP4'], ['720', '720p HD MP4'],
-        ['1080', '1080p Full HD MP4'], ['4k', '2160p 4K WEBM'], ['8k', '4320p 8K WEBM']]
-        .forEach(([value, label]) => { const option = element('option', '', label); option.value = value; select.appendChild(option); });
-      panel.appendChild(select);
       const box = element('div', 'download-container yt-tools-player-download-box');
       box.dataset.type = 'video';
       box.hidden = true;
@@ -8300,14 +8345,6 @@ a.icon-btn-mdcm {
       progress.append(bar, element('span', 'progress-text', '0%'));
       box.append(text, quality, download, retry, progressRetry, again, progress);
       panel.appendChild(box);
-      select.addEventListener('change', () => {
-        if (!select.value) return;
-        resetDownloadState(box);
-        text.textContent = 'Download video';
-        box.hidden = false;
-        box.dataset.quality = select.value;
-        quality.textContent = ' ' + select.options[select.selectedIndex].text;
-      });
       panel.addEventListener('click', event => {
         const target = event.target.closest('button');
         if (target && box.contains(target)) {
@@ -8344,19 +8381,60 @@ a.icon-btn-mdcm {
           if (!panel || panel.parentElement !== player) createPanel(player);
           panel.hidden = !panel.hidden;
           button.setAttribute('aria-expanded', String(!panel.hidden));
-          if (!panel.hidden) panel.querySelector('select').focus();
+          if (!panel.hidden) {
+            const box = panel.querySelector('.download-container');
+            if (!box.dataset.started) {
+              const configured = readJsonGM('ytSettingsMDCM', {}).defaultMp4Quality;
+              const quality = ['144', '240', '360', '480', '720', '1080'].includes(configured) ? configured : '720';
+              box.dataset.started = 'true';
+              box.dataset.quality = quality;
+              box.hidden = false;
+              box.querySelector('.download-quality').textContent = ` ${quality}p MP4`;
+              startDownloadVideoOrAudio(quality, box);
+            }
+          }
         });
         play.insertAdjacentElement('afterend', button);
       }
       const settings = readJsonGM('ytSettingsMDCM', {});
       button.hidden = settings.btnDownloadMp4 === false;
+      if (transcriptButton?.parentElement !== controls) {
+        transcriptButton = element('button', 'ytp-button yt-tools-player-transcript', 'Transcript ↓');
+        transcriptButton.type = 'button';
+        transcriptButton.id = 'yt-tools-player-transcript';
+        transcriptButton.title = 'Download transcript as Markdown';
+        transcriptButton.setAttribute('aria-label', 'Download transcript as Markdown');
+        transcriptButton.addEventListener('click', async event => {
+          event.preventDefault(); event.stopPropagation();
+          if (transcriptButton.disabled) return;
+          const currentButton = transcriptButton;
+          currentButton.disabled = true;
+          currentButton.textContent = 'Loading…';
+          const status = element('div', 'yt-tools-transcript-status', 'Preparing transcript…');
+          status.setAttribute('role', 'status');
+          player.appendChild(status);
+          try {
+            await ytTranscriptDownloadDefault();
+            status.textContent = 'Transcript downloaded';
+          } catch (error) {
+            status.textContent = error.message || 'Could not download transcript.';
+            console.warn('[YouTube Tools] transcript download:', error);
+          } finally {
+            currentButton.disabled = false;
+            currentButton.textContent = 'Transcript ↓';
+            setTimeout(() => status.remove(), 6000);
+          }
+        });
+        button.insertAdjacentElement('afterend', transcriptButton);
+      }
+      transcriptButton.hidden = settings.btnTranscript === false;
     }
 
     let scheduled = false;
     const observer = new MutationObserver(() => {
       if (scheduled) return;
       const controls = document.querySelector('#movie_player .ytp-left-controls');
-      if (controls && button?.parentElement === controls) return;
+      if (controls && button?.parentElement === controls && transcriptButton?.parentElement === controls) return;
       scheduled = true;
       requestAnimationFrame(() => { scheduled = false; ensurePlayerButton(); });
     });

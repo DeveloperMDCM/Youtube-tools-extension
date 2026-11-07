@@ -115,6 +115,8 @@
       // fontSize: $id('font-size-slider').value,
       playerSize: $id('player-size-slider').value,
       selectVideoQuality: $id('select-video-qualitys-select').value,
+      defaultMp4Quality: $id('default-mp4-quality').value,
+      defaultTranscriptLanguage: $id('default-transcript-language').value,
       languagesComments: $id('select-languages-comments-select').value,
       btnThumbnail: readBtnToggle('btn-thumbnail-toggle'),
       btnBuffer: readBtnToggle('btn-buffer-toggle'),
@@ -186,6 +188,8 @@
     // $id('font-size-slider').value = settings.fontSize || 16;
     $id('player-size-slider').value = settings.playerSize || 100;
     $id('select-video-qualitys-select').value = settings.selectVideoQuality || 'user';
+    $id('default-mp4-quality').value = ['144', '240', '360', '480', '720', '1080'].includes(settings.defaultMp4Quality) ? settings.defaultMp4Quality : '720';
+    $id('default-transcript-language').value = Object.hasOwn(languagesTranslate, settings.defaultTranscriptLanguage) ? settings.defaultTranscriptLanguage : 'en';
     $id('select-languages-comments-select').value = settings.languagesComments || 'en';
     const setBtn = (id, value) => {
       const el = $id(id);
@@ -482,6 +486,8 @@
   function syncPlayerButtonsVisibility(settings) {
     const playerMp4 = document.getElementById('yt-tools-player-mp4');
     if (playerMp4) playerMp4.hidden = settings.btnDownloadMp4 === false;
+    const playerTranscript = $id('yt-tools-player-transcript');
+    if (playerTranscript) playerTranscript.hidden = settings.btnTranscript === false;
     const root = $e('.containerButtons');
     if (!root) return;
     const setVisible = (selector, visible) => {
@@ -2557,6 +2563,8 @@
   }
 
   bindSelectOnce('select-video-qualitys-select');
+  bindSelectOnce('default-mp4-quality');
+  bindSelectOnce('default-transcript-language');
   bindSelectOnce('select-languages-comments-select');
   bindSelectOnce('select-wave-visualizer-select');
 
