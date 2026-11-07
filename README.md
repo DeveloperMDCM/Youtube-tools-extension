@@ -7,7 +7,7 @@ This fork of [DeveloperMDCM's YouTube Tools](https://github.com/DeveloperMDCM/Yo
 This setup supports **64-bit Windows**, Chrome, and Tampermonkey. You need internet access for the initial setup. The local service automatically downloads pinned copies of Node.js, yt-dlp, FFmpeg and FFprobe into the project folder and verifies their checksums. You don't need to install those tools, Python, or npm system-wide.
 
 1. Install [Tampermonkey](https://www.tampermonkey.net/) in Chrome. In Chrome's Tampermonkey extension settings, enable **Allow User Scripts** if available. See [Tampermonkey's instructions](https://www.tampermonkey.net/faq.php?q=Q209) if the option is missing.
-2. [Download the project ZIP](https://github.com/neuronsarealsocool/Youtube-tools-extension/archive/refs/heads/dev/live-testing.zip) and **extract it** to a folder you intend to keep. Do not run it from inside the ZIP.
+2. [Download the project ZIP](https://github.com/neuronsarealsocool/Youtube-tools-extension/archive/refs/heads/master.zip) and **extract it** to a folder you intend to keep. Do not run it from inside the ZIP.
 3. In the extracted folder, double-click **Start YouTube Tools.cmd**. The first start downloads the local tools and may take several minutes. Wait until the window says YouTube Tools is ready, and leave it open while downloading.
 4. Open [http://127.0.0.1:8766/](http://127.0.0.1:8766/) in Chrome. Click **Install or update the YouTube Tools userscript** and confirm the installation in Tampermonkey. If Tampermonkey asks to allow connections to the local service, allow them.
 5. If you already have another YouTube Tools userscript enabled, disable the older one in the Tampermonkey dashboard to avoid duplicate controls. Refresh YouTube.
