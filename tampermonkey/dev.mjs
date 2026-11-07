@@ -65,7 +65,7 @@ function build() {
       '// @name         YouTube Tools - Local Development',
       '// @namespace    https://github.com/neuronsarealsocool/Youtube-tools-extension/local-dev',
       '// @homepage     https://github.com/neuronsarealsocool/Youtube-tools-extension',
-      '// @description  Compiled local build. Use Update local build after editing sources. Keep the original script disabled while testing.',
+      '// @description  YouTube Tools with local video downloads and Markdown transcripts.',
       '// @version      1.0.1.' + Date.now(),
       '// @updateURL    ' + base + '/youtube-tools-local-dev.user.js',
       '// @downloadURL  ' + base + '/youtube-tools-local-dev.user.js',
@@ -114,7 +114,7 @@ const server = createServer((request, response) => {
       try { input = JSON.parse(body); } catch { response.writeHead(400).end(); return; }
       const qualities = ['144', '240', '360', '480', '720', '1080', '4k', '8k'];
       const audio = ['mp3', 'm4a', 'aac', 'opus', 'ogg', 'flac', 'wav', 'webm'];
-      if (!/^[A-Za-z0-9_-]{11}$/.test(input.videoId) || ![...qualities, ...audio].includes(input.format)) { response.writeHead(400).end(); return; }
+      if (!input || typeof input !== 'object' || typeof input.videoId !== 'string' || !/^[A-Za-z0-9_-]{11}$/.test(input.videoId) || ![...qualities, ...audio].includes(input.format)) { response.writeHead(400).end(); return; }
       if ([...jobs.values()].some(job => job.state === 'running')) { response.writeHead(409).end(JSON.stringify({ error: 'Another download is in progress.' })); return; }
       const id = randomUUID();
       const job = { state: 'running', message: 'Downloading to your Downloads folder…' };
@@ -163,11 +163,13 @@ const server = createServer((request, response) => {
     body = loader; type = 'application/javascript; charset=utf-8';
   } else if (route === '/') {
     type = 'text/html; charset=utf-8';
-    body = '<!doctype html><meta charset="utf-8"><title>YouTube Tools local development</title>' +
-      '<h1>YouTube Tools local development</h1><p>The local build watcher is running.</p>' +
-      '<p><a href="/youtube-tools-local-dev.user.js">Install local development userscript</a></p>' +
-      '<p>Disable the original YouTube Tools script while testing. The development copy uses separate Tampermonkey storage.</p>' +
-      '<p>Edit tampermonkey/src/. Click Update local build, accept the update, then refresh YouTube.</p>';
+    body = '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Install YouTube Tools</title>' +
+      '<style>body{font:16px/1.6 system-ui;max-width:660px;margin:3rem auto;padding:0 1.25rem;color:#222}a{color:#b20d0d}li{margin:.6rem 0}</style>' +
+      '<h1>YouTube Tools</h1><p>The local download service is running.</p>' +
+      '<ol><li>Install Tampermonkey in your browser and enable its permission to run userscripts.</li>' +
+      '<li><a href="/youtube-tools-local-dev.user.js">Install or update the YouTube Tools userscript</a>, then confirm in Tampermonkey.</li>' +
+      '<li>Disable any other YouTube Tools script to avoid duplicate buttons, then refresh YouTube.</li></ol>' +
+      '<p>Keep the launcher open while downloading. To update this script later, return to this page or use the Tampermonkey menu.</p>';
   } else { response.writeHead(404).end(); return; }
   response.writeHead(200, {
     'Content-Type': type, 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff',
@@ -176,7 +178,7 @@ const server = createServer((request, response) => {
   response.end(request.method === 'HEAD' ? undefined : body);
 });
 server.on('error', failure => { console.error(failure.message); process.exit(1); });
-server.listen(8766, '127.0.0.1', () => console.log(`Development server: ${base}`));
+server.listen(8766, '127.0.0.1', () => console.log(`YouTube Tools is ready. Open ${base} to install or update the userscript. Keep this window open for downloads.`));
 const queueBuild = () => { clearTimeout(pending); pending = setTimeout(build, 200); };
 const sourceWatcher = watch(join(here, 'src'), queueBuild);
 const buildWatcher = watch(join(here, 'build.mjs'), queueBuild);

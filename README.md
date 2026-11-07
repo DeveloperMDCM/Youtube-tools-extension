@@ -1,202 +1,46 @@
+# YouTube Tools: local downloads
 
+This fork of [DeveloperMDCM's YouTube Tools](https://github.com/DeveloperMDCM/Youtube-tools-extension) adds one-click video and transcript downloads to the YouTube player. A small service on your computer uses yt-dlp to save videos; the transcript button saves Markdown directly from the browser.
 
-<p align="center">
-  <a href="https://github.com/DeveloperMDCM/Youtube-tools-extension/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/DeveloperMDCM/Youtube-tools-extension"></a>
-  <a href="https://github.com/DeveloperMDCM/Youtube-tools-extension"><img alt="GitHub stars" src="https://img.shields.io/github/stars/DeveloperMDCM/Youtube-tools-extension"></a>
-</p>
+## Install on Windows
 
-<img width="1717" height="916" alt="d059976e-54fa-4ff0-91ba-946cd55d3075" src="https://github.com/user-attachments/assets/366d5e95-507b-480c-b0d9-a10e80253b75" />
+This setup supports **64-bit Windows**, Chrome, and Tampermonkey. You need internet access for the initial setup. The local service automatically downloads pinned copies of Node.js, yt-dlp, FFmpeg and FFprobe into the project folder and verifies their checksums. You don't need to install those tools, Python, or npm system-wide.
 
-# Youtube Tools
+1. Install [Tampermonkey](https://www.tampermonkey.net/) in Chrome. In Chrome's Tampermonkey extension settings, enable **Allow User Scripts** if available. See [Tampermonkey's instructions](https://www.tampermonkey.net/faq.php?q=Q209) if the option is missing.
+2. [Download the project ZIP](https://github.com/neuronsarealsocool/Youtube-tools-extension/archive/refs/heads/dev/live-testing.zip) and **extract it** to a folder you intend to keep. Do not run it from inside the ZIP.
+3. In the extracted folder, double-click **Start YouTube Tools.cmd**. The first start downloads the local tools and may take several minutes. Wait until the window says YouTube Tools is ready, and leave it open while downloading.
+4. Open [http://127.0.0.1:8766/](http://127.0.0.1:8766/) in Chrome. Click **Install or update the YouTube Tools userscript** and confirm the installation in Tampermonkey. If Tampermonkey asks to allow connections to the local service, allow them.
+5. If you already have another YouTube Tools userscript enabled, disable the older one in the Tampermonkey dashboard to avoid duplicate controls. Refresh YouTube.
 
-Enhancements for YouTube: themes, downloads, dislikes, bookmarks, continue watching, wave visualizer, and more.
+The Tampermonkey entry is named **YouTube Tools - Local Development** for compatibility with earlier installs of this fork. Its name and namespace are kept so existing settings are retained when updating.
 
-This repository ships **two ways** to use the same tools:
+## Use
 
-| | Browser extension | Tampermonkey userscript |
-|---|---|---|
-| **Where** | Chrome · Edge · Firefox | Tampermonkey / Greasy Fork |
-| **UI** | Popup (settings) | Gear menu on YouTube |
-| **Version** | Extension package | Script **v2.5** |
-| **Install** | Load unpacked build | Install `.user.js` |
-| **Publish** | Store / self-host | [Greasy Fork](https://greasyfork.org/es/scripts/460680-youtube-tools-all-in-one-local-download-mp3-mp4-higt-quality-return-dislikes-and-more) |
+- Open a YouTube video and click **MP4** beside the play button. The download starts immediately and its status appears in the player, including in full screen. The initial default is 720p.
+- Click **Transcript ↓** beside the play button to save a Markdown (`.md`) transcript with the video title, link and timestamps. In the YouTube Tools settings panel (gear icon), choose **Default transcript language**. If the requested language isn't available, the script attempts a YouTube translation when available; otherwise it reports an error.
+- In the same settings panel, choose **Default MP4 download resolution**. The downloader chooses an available stream at or below that resolution. The MP4 download attempts to embed the YouTube thumbnail as cover art; Windows File Explorer may choose a different preview frame.
+- Video and audio downloads are saved to your Windows Downloads folder. Transcript files use the browser's configured download location. The local service handles one video or audio download at a time.
 
-Features are **shared** (same engine). Prefer the **extension** for a modern popup and sync via browser storage; prefer the **userscript** if you already use Tampermonkey.
+The player controls can be enabled or disabled with the corresponding YouTube Tools button settings. Existing tools inherited from upstream remain available in the Tampermonkey version.
 
----
+## Start and update later
 
-## Features
+Start **Start YouTube Tools.cmd** each time you want local video or audio downloads, and leave its window open. It does not currently start automatically with Windows. The transcript button does not need the local service once the userscript is installed.
 
-<details open>
-<summary>Click to expand / collapse</summary>
+To update, download and extract the newer project version, start its launcher, visit [http://127.0.0.1:8766/](http://127.0.0.1:8766/) and choose **Install or update**. Alternatively, with YouTube open, use the Tampermonkey menu **YouTube Tools: install or update**. Accept the update and refresh YouTube. Don't run two copies of the local service at the same time.
 
-- Continue watching (history)
-- Bookmarks (timestamps)
-- Like vs Dislike bar
-- Shorts: show channel name
-- Download fallbacks (extra providers)
-- Download again button
-- Download audio: Flac, WAV, WebM, MP3, M4A, AAC, OPUS, OGG
-- Download MP4 / MP3 up to 8K
-- Default video player quality
-- Copy video description
-- Transcript: copy / download .txt (multi-language, optional timestamps)
-- Playback stats
-- Hide comments / hide sidebar
-- Cinematic mode + sync with YouTube ambient mode
-- Disable autoplay / subtitles
-- Wave visualizer effects
-- Download avatars (including comments)
-- Change video player size
-- Custom themes + country presets
-- Background image / colors
-- Skip ads (where supported)
-- Picture-in-Picture
-- Loop / repeat video
-- Dislikes on videos and Shorts
-- Rate video with stars
-- Customize text / icon colors
-- Download thumbnail
-- Video screenshot
-- Translate comments (videos & Shorts)
-- Screen filter / mirror mode
-- Adapt background to video
-- Reset settings
-- Import / export config (`.developermdcm`)
-- Multi-language popup (extension)
+The tools downloaded into `.local/bin` are pinned and checksum-verified. Updating the project is how you receive a newer pinned tool version. Moving the project to a new folder requires starting the new copy and updating the userscript so it has the new local service's token.
 
-</details>
+## Troubleshooting
 
-### Download note
+- **No player buttons:** refresh YouTube, confirm the local userscript is enabled and that Tampermonkey has permission to run user scripts. Check the YouTube Tools settings if a button is hidden.
+- **Local service unavailable:** start the launcher and leave it open. If setup reports an error, check the window for details and your internet connection. Port `127.0.0.1:8766` must be available.
+- **No transcript or wrong language:** not every video has captions or translation for every language. Change the default transcript language in settings or use the existing transcript panel to select an available caption track.
+- **Download fails:** YouTube or yt-dlp may have changed, or the video may be unavailable. Update the project and try again. The existing public-provider paths in the upstream extension are separate from this local-service setup.
+- **Can't find the file:** check the Windows Downloads folder for video and audio, and Chrome's Downloads page for transcripts.
 
-If MP3/MP4 download fails in the browser, install and enable this Chrome/Brave helper extension:
+## How it works and source
 
-https://chrome.google.com/webstore/detail/lfhmikememgdcahcdlaciloancbhjino
+The launcher starts a loopback-only service on `127.0.0.1:8766`. The service accepts a video ID and supported format, authenticates requests using a locally generated token, and saves downloads to the Windows Downloads folder. The userscript and service need to be installed from the same project folder. The service's first-run downloads are verified against hashes pinned in the repository. See [local development notes](tampermonkey/LOCAL-DEVELOPMENT.md) for maintainers and [changes in this fork](CHANGELOG.md).
 
----
-
-## Repository layout
-
-```
-Youtube-tools-extension/
-├── extension/          ← Browser extension (React popup + content script)
-│   ├── src/popup/      ← Settings UI
-│   ├── src/content/    ← Runs on YouTube (bundles userscript engine)
-│   ├── scripts/        ← Build (Chrome / Edge / Firefox)
-│   └── dist/           ← Output after build (load unpacked)
-├── tampermonkey/       ← Userscript sources + build
-│   ├── src/            ← Modular script (edit here)
-│   ├── build.mjs
-│   └── youtube-tools.user.js   ← Generated file to install
-├── images/             ← Screenshots for this README
-├── package.json
-└── README.md
-```
-
----
-
-## Requirements
-
-- **Node.js** ≥ 18
-- npm
-
-```bash
-npm install
-```
-
----
-
-## Build
-
-### Extension (Chrome / Edge / Firefox)
-
-```bash
-npm run build:extension
-```
-
-Outputs:
-
-| Browser | Load this folder |
-|---------|------------------|
-| Chrome | `extension/dist/chrome` |
-| Edge | `extension/dist/edge` |
-| Firefox | `extension/dist/firefox` (or its `manifest.json`) |
-
-`npm run build` is an alias for `build:extension`.
-
-**Dev popup preview** (UI only):
-
-```bash
-npm run dev
-```
-
-### Userscript (Tampermonkey)
-
-```bash
-npm run build:userscript
-```
-
-Output: `tampermonkey/youtube-tools.user.js`
-
-Edit modules under `tampermonkey/src/`, then rebuild. Do not hand-edit the generated `.user.js`.
-
-More detail: [`tampermonkey/README.md`](tampermonkey/README.md)
-
----
-
-## Install
-
-### A) Browser extension (from this repo)
-
-1. Run `npm install` and `npm run build:extension`.
-2. Open `chrome://extensions/` (or Edge / Firefox equivalents).
-3. Enable **Developer mode**.
-4. **Load unpacked** → select `extension/dist/chrome` (or `edge` / `firefox`).
-5. Open YouTube and use the extension popup to change settings.
-
-<img src="/images/how%20install.png" width="670" alt="How to install the extension">
-
-### B) Tampermonkey userscript
-
-**From Greasy Fork (users):**
-
-[Install on Greasy Fork](https://greasyfork.org/es/scripts/460680-youtube-tools-all-in-one-local-download-mp3-mp4-higt-quality-return-dislikes-and-more)
-
-**From this repo (developers):**
-
-1. Run `npm run build:userscript`.
-2. In Tampermonkey → **Create a new script** / **Install from file**.
-3. Use `tampermonkey/youtube-tools.user.js`.
-4. Open YouTube → use the **gear** icon in the top bar to open settings.
-
----
-
-## Screenshots
-
-<img src="/images/multi.png" width="470" alt="Multi features">
-<img src="/images/ex2.png" width="470" alt="Example 2">
-
-<div align="center">
-  <img src="/images/ex1.png" width="470" alt="Example 1">
-  <img src="/images/ex3.png" width="470" alt="Example 3">
-</div>
-
----
-
-## Scripts reference
-
-| Command | Description |
-|---------|-------------|
-| `npm run build:extension` | Build Chrome / Edge / Firefox packages |
-| `npm run build:userscript` | Build Tampermonkey `.user.js` |
-| `npm run build` | Same as `build:extension` |
-| `npm run dev` | Preview extension popup (Vite) |
-| `npm run preview` | Preview production popup build |
-
----
-
-## Author
-
-[DeveloperMDCM](https://github.com/DeveloperMDCM)
-
-[![Star History Chart](https://star-history.dera.page/svg?repos=DeveloperMDCM/Youtube-tools-extension&type=Date)](https://star-history.dera.page/#DeveloperMDCM/Youtube-tools-extension&Date)
+This fork's supported install path is the Tampermonkey userscript generated by the local service. The upstream browser-extension source remains in `extension/`; this local download setup has not been packaged or tested as a standalone browser extension. The upstream [userscript metadata](tampermonkey/src/header.meta.js) declares MIT; this repository does not contain a separate project license file.
