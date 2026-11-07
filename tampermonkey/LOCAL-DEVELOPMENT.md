@@ -6,20 +6,22 @@ Upstream: https://github.com/DeveloperMDCM/Youtube-tools-extension
 
 ## Start
 
-Node.js is required to run the local service. On 64-bit Windows, the first start
-automatically downloads the official standalone yt-dlp to `.local/bin/` and
-verifies its SHA-256 checksum. Python and pip are not required. Internet access
-is needed for the first setup. FFmpeg must also be installed and available on
-PATH for merging video and audio, conversion and embedding thumbnails.
+On 64-bit Windows, double-click **Start YouTube Tools.cmd** in the repository
+folder. The first start downloads pinned standalone builds of Node.js, yt-dlp,
+FFmpeg and FFprobe into `.local/bin/` and verifies their SHA-256 checksums.
+No system-wide installation, Python, pip, npm, Node.js or FFmpeg on PATH is
+required. The first setup needs internet access and downloads roughly 150 MB.
+Keep the launcher window open while downloading.
 
-```powershell
-npm run dev:userscript
-```
+Alternatively, if Node.js is already installed, `npm run dev:userscript` starts
+the service and automatically installs the other local tools.
 
 The local service must be started for downloads; the userscript alone cannot
 install or run native programs. If setup fails, the terminal reports the cause.
-The pinned yt-dlp version and checksum live in `ensure-yt-dlp.mjs` and must be
-updated together when a newer version is needed.
+Pinned versions and checksums live in `start-local.ps1`, `ensure-yt-dlp.mjs`,
+and `ensure-ffmpeg.mjs`. Update each version and its checksums together. The
+FFmpeg binaries are obtained from the [ffmpeg-static release](https://github.com/eugeneware/ffmpeg-static/releases/tag/b6.1.1),
+which includes licensing and source information for those binaries.
 
 Open http://127.0.0.1:8766 and install **YouTube Tools - Local Development**
 in Tampermonkey. Disable the original YouTube Tools script while testing so the

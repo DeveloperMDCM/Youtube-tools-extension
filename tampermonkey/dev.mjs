@@ -7,6 +7,7 @@ import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import { homedir } from 'node:os';
 import { Script } from 'node:vm';
 import { ensureYtDlp } from './ensure-yt-dlp.mjs';
+import { ensureFfmpeg } from './ensure-ffmpeg.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = dirname(here);
@@ -25,8 +26,10 @@ function downloadsDirectory() {
 }
 const downloads = downloadsDirectory();
 let ytDlp;
+let ffmpegDir;
 try {
   ytDlp = await ensureYtDlp(join(root, '.local', 'bin'));
+  ffmpegDir = await ensureFfmpeg(join(root, '.local', 'bin'));
 } catch (failure) {
   console.error(`Local downloader setup failed: ${failure.message}`);
   process.exit(1);
@@ -116,7 +119,7 @@ const server = createServer((request, response) => {
       const id = randomUUID();
       const job = { state: 'running', message: 'Downloading to your Downloads folder…' };
       jobs.set(id, job);
-      const args = ['--ignore-config', '--no-playlist', '--no-overwrites', '--js-runtimes', `node:${process.execPath}`, '--newline', '--print', 'after_move:YT_TOOLS_FILE:%(filepath)s', '-P', downloads, '-o', '%(title).150B [%(id)s].%(ext)s'];
+      const args = ['--ignore-config', '--no-playlist', '--no-overwrites', '--js-runtimes', `node:${process.execPath}`, '--ffmpeg-location', ffmpegDir, '--newline', '--print', 'after_move:YT_TOOLS_FILE:%(filepath)s', '-P', downloads, '-o', '%(title).150B [%(id)s].%(ext)s'];
       if (audio.includes(input.format)) {
         args.push('-x', '--audio-format', input.format === 'webm' ? 'best' : input.format);
       } else {
