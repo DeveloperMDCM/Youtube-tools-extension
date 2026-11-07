@@ -6,6 +6,7 @@ import { spawn, spawnSync } from 'node:child_process';
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import { homedir } from 'node:os';
 import { Script } from 'node:vm';
+import { ensureYtDlp } from './ensure-yt-dlp.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = dirname(here);
@@ -23,6 +24,13 @@ function downloadsDirectory() {
   return join(homedir(), 'Downloads');
 }
 const downloads = downloadsDirectory();
+let ytDlp;
+try {
+  ytDlp = await ensureYtDlp(join(root, '.local', 'bin'));
+} catch (failure) {
+  console.error(`Local downloader setup failed: ${failure.message}`);
+  process.exit(1);
+}
 mkdirSync(output, { recursive: true });
 const tokenFile = join(output, 'download-token');
 let downloadToken;
@@ -108,7 +116,7 @@ const server = createServer((request, response) => {
       const id = randomUUID();
       const job = { state: 'running', message: 'Downloading to your Downloads folder…' };
       jobs.set(id, job);
-      const args = ['-m', 'yt_dlp', '--ignore-config', '--no-playlist', '--no-overwrites', '--js-runtimes', 'node', '--newline', '--print', 'after_move:YT_TOOLS_FILE:%(filepath)s', '-P', downloads, '-o', '%(title).150B [%(id)s].%(ext)s'];
+      const args = ['--ignore-config', '--no-playlist', '--no-overwrites', '--js-runtimes', `node:${process.execPath}`, '--newline', '--print', 'after_move:YT_TOOLS_FILE:%(filepath)s', '-P', downloads, '-o', '%(title).150B [%(id)s].%(ext)s'];
       if (audio.includes(input.format)) {
         args.push('-x', '--audio-format', input.format === 'webm' ? 'best' : input.format);
       } else {
@@ -119,7 +127,7 @@ const server = createServer((request, response) => {
         if (ext === 'mp4') args.push('--embed-thumbnail', '--convert-thumbnails', 'jpg');
       }
       args.push(`https://www.youtube.com/watch?v=${input.videoId}`);
-      const child = spawn('py', args, { windowsHide: true, env: { ...process.env, PYTHONPATH: join(root, '.local', 'python-deps'), PYTHONIOENCODING: 'utf-8' } });
+      const child = spawn(ytDlp, args, { windowsHide: true, env: { ...process.env, PYTHONIOENCODING: 'utf-8' } });
       let lastError = '';
       let output = '';
       child.stderr.on('data', chunk => { lastError = (lastError + chunk.toString()).slice(-1500); });
