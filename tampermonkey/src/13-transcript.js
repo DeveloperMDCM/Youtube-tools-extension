@@ -1,5 +1,5 @@
 // =============================================================================
-// 13-transcript.js — Transcript: copy / download as .txt (multi-language,
+// 13-transcript.js — Transcript: copy / download as Markdown (multi-language,
 // optional timestamps). Works in Tampermonkey and in the browser extension.
 // Captions are fetched through the InnerTube ANDROID client, whose caption
 // track URLs still work (WEB timedtext now needs a proof-of-origin token).
@@ -199,27 +199,51 @@
     return out;
   }
 
-  function ytTranscriptFilename() {
-    const id = getCurrentVideoId() || 'video';
+  function ytTranscriptVideoTitle() {
     let title = '';
     try {
       title = $e('h1.style-scope.ytd-watch-metadata')?.innerText || '';
       if (!title) title = (document.title || '').replace(/\s*-\s*YouTube\s*$/, '');
     } catch (e) {}
-    title = String(title).replace(/[\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80);
-    return `${title || id} - transcript.txt`;
+    return String(title).replace(/\s+/g, ' ').trim();
   }
 
-  function ytTranscriptDownloadText(text) {
-    const blob = new Blob([`\uFEFF${text}`], { type: 'text/plain;charset=utf-8' });
+  function ytTranscriptFilename(title = ytTranscriptVideoTitle(), id = getCurrentVideoId() || 'video') {
+    const safeTitle = String(title).replace(/[\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80);
+    return `${safeTitle || id} - transcript.md`;
+  }
+
+  function ytTranscriptDownloadText(text, title = ytTranscriptVideoTitle(), videoId = getCurrentVideoId()) {
+    const heading = (title || 'Transcript').replace(/[\r\n]+/g, ' ').replace(/([\\`*_\[\]])/g, '\\$1');
+    const markdown = `# ${heading}\n\n${videoId ? `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}\n\n` : ''}${text.replace(/\n/g, '  \n')}\n`;
+    const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = $cl('a');
     link.href = url;
-    link.download = ytTranscriptFilename();
+    link.download = ytTranscriptFilename(title, videoId);
     document.body.appendChild(link);
     link.click();
     link.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1500);
+  }
+
+  async function ytTranscriptDownloadDefault() {
+    const videoId = getCurrentVideoId();
+    if (!videoId) throw new Error('Open a video to download its transcript.');
+    const title = ytTranscriptVideoTitle();
+    const language = readJsonGM('ytSettingsMDCM', {}).defaultTranscriptLanguage || 'en';
+    const tracks = ytTranscriptGetTracks(await ytTranscriptResolvePlayerResponse(videoId));
+    if (!tracks.length) throw new Error('No transcript is available for this video.');
+    const code = language.toLowerCase();
+    const matching = tracks.filter(track => {
+      const trackCode = String(track.languageCode || '').toLowerCase();
+      return trackCode === code || trackCode.startsWith(`${code}-`);
+    });
+    const track = matching.find(item => item.kind !== 'asr') || matching[0] || tracks.find(item => item.isTranslatable);
+    if (!track) throw new Error(`No ${languagesTranslate[language] || language} transcript or translation is available.`);
+    const cues = await ytTranscriptFetchCues(track, matching.length ? '' : language);
+    if (!cues.length) throw new Error(`No ${languagesTranslate[language] || language} transcript content was returned.`);
+    ytTranscriptDownloadText(ytTranscriptBuildText(cues, true), title, videoId);
   }
 
   async function ytTranscriptCopyText(text) {
@@ -323,7 +347,7 @@
       </div>
       <div class="yt-tr-actions">
         <button type="button" class="yt-tr-btn" id="yt-tr-copy" disabled><i class="fa-solid fa-copy"></i> Copy</button>
-        <button type="button" class="yt-tr-btn primary" id="yt-tr-download" disabled><i class="fa-solid fa-download"></i> Download .txt</button>
+        <button type="button" class="yt-tr-btn primary" id="yt-tr-download" disabled><i class="fa-solid fa-download"></i> Download .md</button>
       </div>
       <div class="yt-tr-status" id="yt-tr-status"></div>
       <pre class="yt-tr-preview" id="yt-tr-preview"></pre>
@@ -360,7 +384,7 @@
     $id('yt-tr-download')?.addEventListener('click', () => {
       if (!__ytTranscriptState.text) return;
       ytTranscriptDownloadText(__ytTranscriptState.text);
-      ytTranscriptSetStatus('Transcript downloaded as .txt', 'ok');
+      ytTranscriptSetStatus('Transcript downloaded as .md', 'ok');
       Notify('success', 'Transcript downloaded');
     });
   }

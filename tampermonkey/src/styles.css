@@ -1704,3 +1704,17 @@ a.icon-btn-mdcm {
         text-align: center;
         margin-top: 10px;
         }
+/* MP4 control and panel stay within the player, including in fullscreen. */
+#movie_player .yt-tools-player-mp4 { width: 48px; font-size: 13px; font-weight: 700; vertical-align: top; }
+#movie_player .yt-tools-player-mp4[hidden], #movie_player .yt-tools-player-download[hidden], #movie_player .yt-tools-player-download-box[hidden] { display: none !important; }
+#movie_player .yt-tools-player-transcript[hidden] { display: none !important; }
+#movie_player .yt-tools-player-transcript { width: 86px; font-size: 12px; font-weight: 600; }
+#movie_player .yt-tools-player-transcript:disabled { opacity: .6; }
+#movie_player .yt-tools-transcript-status { position: absolute; left: 16px; bottom: 65px; z-index: 105; max-width: min(420px, calc(100% - 32px)); padding: 10px 14px; border-radius: 8px; background: #202020; color: #fff; font: 14px/1.4 Arial, sans-serif; box-shadow: 0 4px 18px #0009; }
+#movie_player .yt-tools-player-download { position: absolute; left: 16px; bottom: 65px; z-index: 100; width: min(320px, calc(100% - 32px)); box-sizing: border-box; padding: 16px; border-radius: 12px; background: #202020; color: #fff; font: 14px/1.4 Arial, sans-serif; box-shadow: 0 4px 18px #0009; }
+#movie_player .yt-tools-player-download-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+#movie_player .yt-tools-player-close { border: 0; background: transparent; color: white; font-size: 24px; cursor: pointer; }
+#movie_player .yt-tools-player-quality { width: 100%; min-height: 38px; padding: 6px; color: #111; background: white; border-radius: 5px; }
+#movie_player .yt-tools-player-download-box { box-sizing: border-box; width: 100%; margin-top: 10px; padding: 10px; border-radius: 8px; background: #333; }
+#movie_player .yt-tools-player-download-box button { margin: 8px 4px 0 0; padding: 7px 12px; border: 0; border-radius: 5px; cursor: pointer; }
+#movie_player .yt-tools-player-download-box .progress-container { margin-top: 8px; }

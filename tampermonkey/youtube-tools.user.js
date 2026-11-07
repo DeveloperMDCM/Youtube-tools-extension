@@ -382,7 +382,86 @@
   }
 
   // --- 02-download.js ---
+  function resetDownloadState(container) {
+    if (!container) return;
+    container.__ytDownloadGeneration = (container.__ytDownloadGeneration || 0) + 1;
+    if (container.__ytDownloadPoll) clearInterval(container.__ytDownloadPoll);
+    container.__ytDownloadPoll = null;
+    container.classList.remove('completed');
+    for (const name of ['downloading', 'urlOpened', 'lastDownloadUrl']) delete container.dataset[name];
+    const show = (selector, value) => { const node = container.querySelector(selector); if (node) node.style.display = value; };
+    show('.download-btn', 'block');
+    show('.retry-btn', 'none');
+    show('.progress-retry-btn', 'none');
+    show('.download-again-btn', 'none');
+    show('.progress-container', 'none');
+    const fill = container.querySelector('.progress-fill');
+    const progress = container.querySelector('.progress-text');
+    if (fill) fill.style.width = '0%';
+    if (progress) progress.textContent = '0%';
+  }
+
+  async function startLocalDownload(format, container) {
+    if (container.dataset.downloading === 'true') return;
+    const videoId = paramsVideoURL();
+    const generation = container.__ytDownloadGeneration || 0;
+    const isCurrent = () => (container.__ytDownloadGeneration || 0) === generation;
+    const download = container.querySelector('.download-btn');
+    const retry = container.querySelector('.retry-btn');
+    const progress = container.querySelector('.progress-container');
+    const progressText = container.querySelector('.progress-text');
+    const progressFill = container.querySelector('.progress-fill');
+    const label = container.querySelector('.download-text');
+    const progressRetry = container.querySelector('.progress-retry-btn');
+    const again = container.querySelector('.download-again-btn');
+    container.dataset.downloading = 'true';
+    download.style.display = 'none'; retry.style.display = 'none';
+    progressRetry.style.display = 'none'; if (again) again.style.display = 'none';
+    progress.style.display = 'flex'; progressFill.style.width = '0%';
+    progressText.textContent = 'Starting…';
+    const request = (method, url, data) => new Promise((resolve, reject) => {
+      GM_xmlhttpRequest({ method, url, timeout: 15000,
+        headers: { 'Content-Type': 'application/json', 'X-YT-Tools-Token': localDownloadToken },
+        data: data ? JSON.stringify(data) : undefined,
+        onload: response => {
+          let result = {}; try { result = JSON.parse(response.responseText); } catch {}
+          if (response.status >= 200 && response.status < 300) resolve(result);
+          else reject(new Error(result.error || `Local service returned HTTP ${response.status}`));
+        },
+        onerror: () => reject(new Error('Local download service is unavailable. Start the development server.')),
+        ontimeout: () => reject(new Error('Local download service timed out.')),
+      });
+    });
+    try {
+      const base = 'http://127.0.0.1:8766/local-download';
+      const job = await request('POST', base, { videoId, format: String(format) });
+      if (!isCurrent()) return;
+      let state;
+      do {
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        state = await request('GET', `${base}?id=${encodeURIComponent(job.id)}`);
+        if (!isCurrent()) return;
+        progressText.textContent = state.message;
+        const percent = state.message.match(/(\d+(?:\.\d+)?)%/);
+        if (percent) progressFill.style.width = `${percent[1]}%`;
+      } while (state.state === 'running');
+      if (state.state !== 'complete') throw new Error(state.message);
+      progressFill.style.width = '100%';
+      label.textContent = 'Saved to Downloads';
+      progressText.textContent = 'Complete';
+      container.classList.add('completed');
+      container.dataset.downloading = 'false';
+    } catch (error) {
+      if (!isCurrent()) return;
+      label.textContent = error.message;
+      progress.style.display = 'none'; retry.style.display = 'block';
+      container.dataset.downloading = 'false';
+      console.error('Local download failed:', error);
+    }
+  }
+
   async function startDownloadVideoOrAudio(format, container) {
+    if (typeof localDownloadToken !== 'undefined') return startLocalDownload(format, container);
     const videoURL = window.location.href;
     // Notify('info', 'Starting download...');
 
@@ -3920,6 +3999,20 @@ a.icon-btn-mdcm {
         text-align: center;
         margin-top: 10px;
         }
+/* MP4 control and panel stay within the player, including in fullscreen. */
+#movie_player .yt-tools-player-mp4 { width: 48px; font-size: 13px; font-weight: 700; vertical-align: top; }
+#movie_player .yt-tools-player-mp4[hidden], #movie_player .yt-tools-player-download[hidden], #movie_player .yt-tools-player-download-box[hidden] { display: none !important; }
+#movie_player .yt-tools-player-transcript[hidden] { display: none !important; }
+#movie_player .yt-tools-player-transcript { width: 86px; font-size: 12px; font-weight: 600; }
+#movie_player .yt-tools-player-transcript:disabled { opacity: .6; }
+#movie_player .yt-tools-transcript-status { position: absolute; left: 16px; bottom: 65px; z-index: 105; max-width: min(420px, calc(100% - 32px)); padding: 10px 14px; border-radius: 8px; background: #202020; color: #fff; font: 14px/1.4 Arial, sans-serif; box-shadow: 0 4px 18px #0009; }
+#movie_player .yt-tools-player-download { position: absolute; left: 16px; bottom: 65px; z-index: 100; width: min(320px, calc(100% - 32px)); box-sizing: border-box; padding: 16px; border-radius: 12px; background: #202020; color: #fff; font: 14px/1.4 Arial, sans-serif; box-shadow: 0 4px 18px #0009; }
+#movie_player .yt-tools-player-download-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+#movie_player .yt-tools-player-close { border: 0; background: transparent; color: white; font-size: 24px; cursor: pointer; }
+#movie_player .yt-tools-player-quality { width: 100%; min-height: 38px; padding: 6px; color: #111; background: white; border-radius: 5px; }
+#movie_player .yt-tools-player-download-box { box-sizing: border-box; width: 100%; margin-top: 10px; padding: 10px; border-radius: 8px; background: #333; }
+#movie_player .yt-tools-player-download-box button { margin: 8px 4px 0 0; padding: 7px 12px; border: 0; border-radius: 5px; cursor: pointer; }
+#movie_player .yt-tools-player-download-box .progress-container { margin-top: 8px; }
 `);
 
   // --- 10-player-buttons.js ---
@@ -4728,6 +4821,21 @@ a.icon-btn-mdcm {
             </select>
           </div>
           <div class="yt-field">
+            <label class="yt-field-label" for="default-mp4-quality">Default MP4 download resolution</label>
+            <select class="yt-select" id="default-mp4-quality">
+              <option value="144">144p</option>
+              <option value="240">240p</option>
+              <option value="360">360p</option>
+              <option value="480">480p</option>
+              <option value="720" selected>720p HD</option>
+              <option value="1080">1080p Full HD</option>
+            </select>
+          </div>
+          <div class="yt-field">
+            <label class="yt-field-label" for="default-transcript-language">Default transcript language</label>
+            <select class="yt-select" id="default-transcript-language">${languageOptionsHTML}</select>
+          </div>
+          <div class="yt-field">
             <label class="yt-field-label" for="select-languages-comments-select">Language for translate comments</label>
             <select class="yt-select" id="select-languages-comments-select">${languageOptionsHTML}</select>
           </div>
@@ -4998,6 +5106,8 @@ a.icon-btn-mdcm {
       // fontSize: $id('font-size-slider').value,
       playerSize: $id('player-size-slider').value,
       selectVideoQuality: $id('select-video-qualitys-select').value,
+      defaultMp4Quality: $id('default-mp4-quality').value,
+      defaultTranscriptLanguage: $id('default-transcript-language').value,
       languagesComments: $id('select-languages-comments-select').value,
       btnThumbnail: readBtnToggle('btn-thumbnail-toggle'),
       btnBuffer: readBtnToggle('btn-buffer-toggle'),
@@ -5069,6 +5179,8 @@ a.icon-btn-mdcm {
     // $id('font-size-slider').value = settings.fontSize || 16;
     $id('player-size-slider').value = settings.playerSize || 100;
     $id('select-video-qualitys-select').value = settings.selectVideoQuality || 'user';
+    $id('default-mp4-quality').value = ['144', '240', '360', '480', '720', '1080'].includes(settings.defaultMp4Quality) ? settings.defaultMp4Quality : '720';
+    $id('default-transcript-language').value = Object.hasOwn(languagesTranslate, settings.defaultTranscriptLanguage) ? settings.defaultTranscriptLanguage : 'en';
     $id('select-languages-comments-select').value = settings.languagesComments || 'en';
     const setBtn = (id, value) => {
       const el = $id(id);
@@ -5363,6 +5475,10 @@ a.icon-btn-mdcm {
   }
 
   function syncPlayerButtonsVisibility(settings) {
+    const playerMp4 = document.getElementById('yt-tools-player-mp4');
+    if (playerMp4) playerMp4.hidden = settings.btnDownloadMp4 === false;
+    const playerTranscript = $id('yt-tools-player-transcript');
+    if (playerTranscript) playerTranscript.hidden = settings.btnTranscript === false;
     const root = $e('.containerButtons');
     if (!root) return;
     const setVisible = (selector, visible) => {
@@ -6865,6 +6981,7 @@ a.icon-btn-mdcm {
       const progressContainer = downloadContainer.querySelector('.progress-container');
 
       // Update UI
+      resetDownloadState(downloadContainer);
       downloadContainer.classList.add('video');
       downloadContainer.classList.remove('ocultarframe');
       downloadText.textContent = `Download ${quality.toUpperCase()} And Please Wait...`;
@@ -6895,6 +7012,7 @@ a.icon-btn-mdcm {
       const progressContainer = downloadContainer.querySelector('.progress-container');
 
       // Update UI
+      resetDownloadState(downloadContainer);
       downloadContainer.classList.add('audio');
       downloadContainer.classList.remove('ocultarframeaudio');
       downloadText.textContent = `Download ${format.toUpperCase()} And Please Wait...`;
@@ -7436,6 +7554,8 @@ a.icon-btn-mdcm {
   }
 
   bindSelectOnce('select-video-qualitys-select');
+  bindSelectOnce('default-mp4-quality');
+  bindSelectOnce('default-transcript-language');
   bindSelectOnce('select-languages-comments-select');
   bindSelectOnce('select-wave-visualizer-select');
 
@@ -7573,7 +7693,22 @@ a.icon-btn-mdcm {
     }
   });
 
+  let downloadVideoId = paramsVideoURL();
   document.addEventListener('yt-navigate-finish', () => {
+    const currentVideoId = paramsVideoURL();
+    if (downloadVideoId !== currentVideoId) {
+      for (const [id, hiddenClass] of [['descargando', 'ocultarframe'], ['descargandomp3', 'ocultarframeaudio']]) {
+        const container = $id(id);
+        if (container) {
+          resetDownloadState(container);
+          container.classList.add(hiddenClass);
+          delete container.dataset.quality;
+        }
+      }
+      document.querySelector('.formulariodescarga')?.reset();
+      document.querySelector('.formulariodescargaaudio')?.reset();
+      downloadVideoId = currentVideoId;
+    }
     if (!document.location.href.includes('watch')) {
       hideCanvas();
     }
@@ -7850,27 +7985,51 @@ a.icon-btn-mdcm {
     return out;
   }
 
-  function ytTranscriptFilename() {
-    const id = getCurrentVideoId() || 'video';
+  function ytTranscriptVideoTitle() {
     let title = '';
     try {
       title = $e('h1.style-scope.ytd-watch-metadata')?.innerText || '';
       if (!title) title = (document.title || '').replace(/\s*-\s*YouTube\s*$/, '');
     } catch (e) {}
-    title = String(title).replace(/[\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80);
-    return `${title || id} - transcript.txt`;
+    return String(title).replace(/\s+/g, ' ').trim();
   }
 
-  function ytTranscriptDownloadText(text) {
-    const blob = new Blob([`\uFEFF${text}`], { type: 'text/plain;charset=utf-8' });
+  function ytTranscriptFilename(title = ytTranscriptVideoTitle(), id = getCurrentVideoId() || 'video') {
+    const safeTitle = String(title).replace(/[\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80);
+    return `${safeTitle || id} - transcript.md`;
+  }
+
+  function ytTranscriptDownloadText(text, title = ytTranscriptVideoTitle(), videoId = getCurrentVideoId()) {
+    const heading = (title || 'Transcript').replace(/[\r\n]+/g, ' ').replace(/([\\`*_\[\]])/g, '\\$1');
+    const markdown = `# ${heading}\n\n${videoId ? `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}\n\n` : ''}${text.replace(/\n/g, '  \n')}\n`;
+    const blob = new Blob([markdown], { type: 'text/markdown;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = $cl('a');
     link.href = url;
-    link.download = ytTranscriptFilename();
+    link.download = ytTranscriptFilename(title, videoId);
     document.body.appendChild(link);
     link.click();
     link.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1500);
+  }
+
+  async function ytTranscriptDownloadDefault() {
+    const videoId = getCurrentVideoId();
+    if (!videoId) throw new Error('Open a video to download its transcript.');
+    const title = ytTranscriptVideoTitle();
+    const language = readJsonGM('ytSettingsMDCM', {}).defaultTranscriptLanguage || 'en';
+    const tracks = ytTranscriptGetTracks(await ytTranscriptResolvePlayerResponse(videoId));
+    if (!tracks.length) throw new Error('No transcript is available for this video.');
+    const code = language.toLowerCase();
+    const matching = tracks.filter(track => {
+      const trackCode = String(track.languageCode || '').toLowerCase();
+      return trackCode === code || trackCode.startsWith(`${code}-`);
+    });
+    const track = matching.find(item => item.kind !== 'asr') || matching[0] || tracks.find(item => item.isTranslatable);
+    if (!track) throw new Error(`No ${languagesTranslate[language] || language} transcript or translation is available.`);
+    const cues = await ytTranscriptFetchCues(track, matching.length ? '' : language);
+    if (!cues.length) throw new Error(`No ${languagesTranslate[language] || language} transcript content was returned.`);
+    ytTranscriptDownloadText(ytTranscriptBuildText(cues, true), title, videoId);
   }
 
   async function ytTranscriptCopyText(text) {
@@ -7974,7 +8133,7 @@ a.icon-btn-mdcm {
       </div>
       <div class="yt-tr-actions">
         <button type="button" class="yt-tr-btn" id="yt-tr-copy" disabled><i class="fa-solid fa-copy"></i> Copy</button>
-        <button type="button" class="yt-tr-btn primary" id="yt-tr-download" disabled><i class="fa-solid fa-download"></i> Download .txt</button>
+        <button type="button" class="yt-tr-btn primary" id="yt-tr-download" disabled><i class="fa-solid fa-download"></i> Download .md</button>
       </div>
       <div class="yt-tr-status" id="yt-tr-status"></div>
       <pre class="yt-tr-preview" id="yt-tr-preview"></pre>
@@ -8011,7 +8170,7 @@ a.icon-btn-mdcm {
     $id('yt-tr-download')?.addEventListener('click', () => {
       if (!__ytTranscriptState.text) return;
       ytTranscriptDownloadText(__ytTranscriptState.text);
-      ytTranscriptSetStatus('Transcript downloaded as .txt', 'ok');
+      ytTranscriptSetStatus('Transcript downloaded as .md', 'ok');
       Notify('success', 'Transcript downloaded');
     });
   }
@@ -8132,6 +8291,164 @@ a.icon-btn-mdcm {
         __ytToolsRuntime.transcriptPanelOpen = false;
       }
     });
+  })();
+
+  // --- 14-player-mp4.js ---
+  // Keep the download UI inside the player so it remains visible in fullscreen.
+  (() => {
+    let panel;
+    let button;
+    let transcriptButton;
+    let panelVideoId = paramsVideoURL();
+    const element = (tag, className, text) => {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text) node.textContent = text;
+      return node;
+    };
+
+    function closePanel() {
+      if (panel) panel.hidden = true;
+      if (button) button.setAttribute('aria-expanded', 'false');
+    }
+
+    function createPanel(player) {
+      panel = element('section', 'yt-tools-player-download');
+      panel.id = 'yt-tools-player-download';
+      panel.setAttribute('role', 'dialog');
+      panel.setAttribute('aria-label', 'Download video');
+      panel.hidden = true;
+      const header = element('div', 'yt-tools-player-download-header');
+      header.appendChild(element('strong', '', 'Download MP4'));
+      const close = element('button', 'yt-tools-player-close', '×');
+      close.type = 'button';
+      close.setAttribute('aria-label', 'Close download panel');
+      close.addEventListener('click', closePanel);
+      header.appendChild(close);
+      panel.appendChild(header);
+      const box = element('div', 'download-container yt-tools-player-download-box');
+      box.dataset.type = 'video';
+      box.hidden = true;
+      const text = element('span', 'download-text', 'Download video');
+      const quality = element('span', 'download-quality');
+      const download = element('button', 'download-btn', 'Download');
+      download.type = 'button';
+      const retry = element('button', 'retry-btn', 'Retry');
+      retry.type = 'button'; retry.style.display = 'none';
+      const progressRetry = element('button', 'progress-retry-btn', 'Retry');
+      progressRetry.type = 'button'; progressRetry.style.display = 'none';
+      const again = element('button', 'download-again-btn', 'Download again');
+      again.type = 'button'; again.style.display = 'none';
+      const progress = element('div', 'progress-container'); progress.style.display = 'none';
+      const bar = element('div', 'progress-bar');
+      bar.appendChild(element('div', 'progress-fill'));
+      progress.append(bar, element('span', 'progress-text', '0%'));
+      box.append(text, quality, download, retry, progressRetry, again, progress);
+      panel.appendChild(box);
+      panel.addEventListener('click', event => {
+        const target = event.target.closest('button');
+        if (target && box.contains(target)) {
+          event.preventDefault();
+          if (target === again) { if (box.dataset.lastDownloadUrl) window.open(box.dataset.lastDownloadUrl); }
+          else if (box.dataset.quality) {
+            if (target === progressRetry) box.dataset.downloading = 'false';
+            startDownloadVideoOrAudio(box.dataset.quality, box);
+          }
+        }
+        event.stopPropagation();
+      });
+      panel.addEventListener('keydown', event => {
+        if (event.key === 'Escape') { closePanel(); button?.focus(); event.stopPropagation(); }
+      });
+      player.appendChild(panel);
+    }
+
+    function ensurePlayerButton() {
+      const player = document.querySelector('#movie_player');
+      const controls = player?.querySelector('.ytp-left-controls');
+      const play = controls?.querySelector('.ytp-play-button');
+      if (!player || !controls || !play) return;
+      if (button?.parentElement !== controls) {
+        button = element('button', 'ytp-button yt-tools-player-mp4', 'MP4');
+        button.id = 'yt-tools-player-mp4';
+        button.type = 'button';
+        button.title = 'Download video (MP4)';
+        button.setAttribute('aria-label', 'Download video (MP4)');
+        button.setAttribute('aria-expanded', 'false');
+        button.setAttribute('aria-controls', 'yt-tools-player-download');
+        button.addEventListener('click', event => {
+          event.preventDefault(); event.stopPropagation();
+          if (!panel || panel.parentElement !== player) createPanel(player);
+          panel.hidden = !panel.hidden;
+          button.setAttribute('aria-expanded', String(!panel.hidden));
+          if (!panel.hidden) {
+            const box = panel.querySelector('.download-container');
+            if (!box.dataset.started) {
+              const configured = readJsonGM('ytSettingsMDCM', {}).defaultMp4Quality;
+              const quality = ['144', '240', '360', '480', '720', '1080'].includes(configured) ? configured : '720';
+              box.dataset.started = 'true';
+              box.dataset.quality = quality;
+              box.hidden = false;
+              box.querySelector('.download-quality').textContent = ` ${quality}p MP4`;
+              startDownloadVideoOrAudio(quality, box);
+            }
+          }
+        });
+        play.insertAdjacentElement('afterend', button);
+      }
+      const settings = readJsonGM('ytSettingsMDCM', {});
+      button.hidden = settings.btnDownloadMp4 === false;
+      if (transcriptButton?.parentElement !== controls) {
+        transcriptButton = element('button', 'ytp-button yt-tools-player-transcript', 'Transcript ↓');
+        transcriptButton.type = 'button';
+        transcriptButton.id = 'yt-tools-player-transcript';
+        transcriptButton.title = 'Download transcript as Markdown';
+        transcriptButton.setAttribute('aria-label', 'Download transcript as Markdown');
+        transcriptButton.addEventListener('click', async event => {
+          event.preventDefault(); event.stopPropagation();
+          if (transcriptButton.disabled) return;
+          const currentButton = transcriptButton;
+          currentButton.disabled = true;
+          currentButton.textContent = 'Loading…';
+          const status = element('div', 'yt-tools-transcript-status', 'Preparing transcript…');
+          status.setAttribute('role', 'status');
+          player.appendChild(status);
+          try {
+            await ytTranscriptDownloadDefault();
+            status.textContent = 'Transcript downloaded';
+          } catch (error) {
+            status.textContent = error.message || 'Could not download transcript.';
+            console.warn('[YouTube Tools] transcript download:', error);
+          } finally {
+            currentButton.disabled = false;
+            currentButton.textContent = 'Transcript ↓';
+            setTimeout(() => status.remove(), 6000);
+          }
+        });
+        button.insertAdjacentElement('afterend', transcriptButton);
+      }
+      transcriptButton.hidden = settings.btnTranscript === false;
+    }
+
+    let scheduled = false;
+    const observer = new MutationObserver(() => {
+      if (scheduled) return;
+      const controls = document.querySelector('#movie_player .ytp-left-controls');
+      if (controls && button?.parentElement === controls && transcriptButton?.parentElement === controls) return;
+      scheduled = true;
+      requestAnimationFrame(() => { scheduled = false; ensurePlayerButton(); });
+    });
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+    document.addEventListener('yt-navigate-start', closePanel);
+    document.addEventListener('yt-navigate-finish', () => {
+      const currentVideoId = paramsVideoURL();
+      if (currentVideoId !== panelVideoId) {
+        if (panel) { resetDownloadState(panel.querySelector('.download-container')); panel.remove(); panel = null; }
+        panelVideoId = currentVideoId;
+      }
+      ensurePlayerButton();
+    });
+    ensurePlayerButton();
   })();
 
 })();

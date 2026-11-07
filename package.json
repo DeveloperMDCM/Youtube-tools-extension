@@ -8,6 +8,8 @@
     "build": "npm run build:extension",
     "build:extension": "node extension/scripts/build.mjs",
     "build:userscript": "node tampermonkey/build.mjs",
+    "dev:userscript": "node tampermonkey/dev.mjs",
+    "check:userscript": "node tampermonkey/build.mjs && node tampermonkey/verify-build.mjs && node --check tampermonkey/youtube-tools.user.js",
     "preview": "vite preview --config extension/vite.config.ts"
   },
   "dependencies": {

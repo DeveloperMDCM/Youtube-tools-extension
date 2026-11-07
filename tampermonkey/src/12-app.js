@@ -115,6 +115,8 @@
       // fontSize: $id('font-size-slider').value,
       playerSize: $id('player-size-slider').value,
       selectVideoQuality: $id('select-video-qualitys-select').value,
+      defaultMp4Quality: $id('default-mp4-quality').value,
+      defaultTranscriptLanguage: $id('default-transcript-language').value,
       languagesComments: $id('select-languages-comments-select').value,
       btnThumbnail: readBtnToggle('btn-thumbnail-toggle'),
       btnBuffer: readBtnToggle('btn-buffer-toggle'),
@@ -186,6 +188,8 @@
     // $id('font-size-slider').value = settings.fontSize || 16;
     $id('player-size-slider').value = settings.playerSize || 100;
     $id('select-video-qualitys-select').value = settings.selectVideoQuality || 'user';
+    $id('default-mp4-quality').value = ['144', '240', '360', '480', '720', '1080'].includes(settings.defaultMp4Quality) ? settings.defaultMp4Quality : '720';
+    $id('default-transcript-language').value = Object.hasOwn(languagesTranslate, settings.defaultTranscriptLanguage) ? settings.defaultTranscriptLanguage : 'en';
     $id('select-languages-comments-select').value = settings.languagesComments || 'en';
     const setBtn = (id, value) => {
       const el = $id(id);
@@ -480,6 +484,10 @@
   }
 
   function syncPlayerButtonsVisibility(settings) {
+    const playerMp4 = document.getElementById('yt-tools-player-mp4');
+    if (playerMp4) playerMp4.hidden = settings.btnDownloadMp4 === false;
+    const playerTranscript = $id('yt-tools-player-transcript');
+    if (playerTranscript) playerTranscript.hidden = settings.btnTranscript === false;
     const root = $e('.containerButtons');
     if (!root) return;
     const setVisible = (selector, visible) => {
@@ -1982,6 +1990,7 @@
       const progressContainer = downloadContainer.querySelector('.progress-container');
 
       // Update UI
+      resetDownloadState(downloadContainer);
       downloadContainer.classList.add('video');
       downloadContainer.classList.remove('ocultarframe');
       downloadText.textContent = `Download ${quality.toUpperCase()} And Please Wait...`;
@@ -2012,6 +2021,7 @@
       const progressContainer = downloadContainer.querySelector('.progress-container');
 
       // Update UI
+      resetDownloadState(downloadContainer);
       downloadContainer.classList.add('audio');
       downloadContainer.classList.remove('ocultarframeaudio');
       downloadText.textContent = `Download ${format.toUpperCase()} And Please Wait...`;
@@ -2553,6 +2563,8 @@
   }
 
   bindSelectOnce('select-video-qualitys-select');
+  bindSelectOnce('default-mp4-quality');
+  bindSelectOnce('default-transcript-language');
   bindSelectOnce('select-languages-comments-select');
   bindSelectOnce('select-wave-visualizer-select');
 
@@ -2690,7 +2702,22 @@
     }
   });
 
+  let downloadVideoId = paramsVideoURL();
   document.addEventListener('yt-navigate-finish', () => {
+    const currentVideoId = paramsVideoURL();
+    if (downloadVideoId !== currentVideoId) {
+      for (const [id, hiddenClass] of [['descargando', 'ocultarframe'], ['descargandomp3', 'ocultarframeaudio']]) {
+        const container = $id(id);
+        if (container) {
+          resetDownloadState(container);
+          container.classList.add(hiddenClass);
+          delete container.dataset.quality;
+        }
+      }
+      document.querySelector('.formulariodescarga')?.reset();
+      document.querySelector('.formulariodescargaaudio')?.reset();
+      downloadVideoId = currentVideoId;
+    }
     if (!document.location.href.includes('watch')) {
       hideCanvas();
     }
